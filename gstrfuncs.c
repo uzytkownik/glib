@@ -988,6 +988,9 @@ g_strcasecmp (const gchar *s1,
 	      const gchar *s2)
 {
 #ifdef HAVE_STRCASECMP
+  g_return_val_if_fail (s1 != NULL, 0);
+  g_return_val_if_fail (s2 != NULL, 0);
+
   return strcasecmp (s1, s2);
 #else
   gint c1, c2;
@@ -1107,7 +1110,7 @@ g_strchug (gchar *string)
   for (start = string; *start && isspace (*start); start++)
     ;
 
-  strcpy (string, start);
+  memmove(string, start, strlen(start) + 1);
 
   return string;
 }
