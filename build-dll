@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# Temporary hack until building dlls or executables with exported
+# entry points is easier with gcc -mno-cygwin.
+
+# This is usable with cygwin b20.1 and egcs-2.91.66 19990314
+# (egcs-1.1.2 release) as distributed by Mumit Khan. For other combinations,
+# no idea.
+
+GCC=gcc
+DLLTOOL=dlltool
+AS=as
+
+library=$1; shift
+version=$1; shift;
+def=$1; shift
+ldargs="$*"
+
+defswitch=""
+[ -n "$def" -a "$def" != '-' ] && defswitch="--def $def"
+
+libname=$library
+[ $version != '-' ] && libname=$library-$version
+dllfile=$libname.dll
+
+for F in $ldargs; do
+    case $F in
+	*.o)	objs="$objs $F";;
+    esac
+done
+
+$GCC -s -mdll -mno-cygwin -Wl,--base-file,$library.base -o $dllfile $ldargs &&
+$DLLTOOL --as=$AS --dllname $dllfile $defswitch --base-file $library.base --output-exp $library.exp $objs &&
+$GCC -s -mdll -mno-cygwin -Wl,--base-file,$library.base,$library.exp -o $dllfile $ldargs &&
+$DLLTOOL --as=$AS --dllname $dllfile $defswitch --base-file $library.base --output-exp $library.exp $objs &&
+$GCC -mdll -mno-cygwin -Wl,$library.exp -o $dllfile $ldargs &&
+$DLLTOOL --as=$AS --dllname $dllfile $defswitch --output-lib lib$libname.a $objs
+
+rm $library.base $library.exp 2>/dev/null
