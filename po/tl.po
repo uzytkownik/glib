@@ -1,198 +1,190 @@
-# translation of es.po to
-# traducción de es.po al Spanish
-# translation of es.po to Spanish
-# Spanish/Spain translation of glib.
-# Copyright (C) 2001, 2004 Free Software Foundation, Inc.
-# José Antonio Salgueiro <joseantsa@eresmas.net>, 2001.
-# Germán Poo Caamaño <gpoo@ubiobio.cl>, 2002.
-# Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004.
-#
+# Tagalog translation of glib.
+# Copyright (C) 2005 
+# This file is distributed under the same license as the glib package.
+# Eric Pareja <xenos@upm.edu.ph>, 2005.
+# 
+# 
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: es\n"
+"Project-Id-Version: glib\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-04 00:11-0500\n"
-"PO-Revision-Date: 2004-12-04 12:05+0100\n"
-"Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
-"Language-Team: Spanish <traductores@es.gnome.org>\n"
+"PO-Revision-Date: 2005-01-28 23:47+0800\n"
+"Last-Translator: Eric Pareja <xenos@upm.edu.ph>\n"
+"Language-Team: Tagalog <debian-tl@banwa.upm.edu.ph>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3.1\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: glib/gconvert.c:403
 #, c-format
 msgid "Conversion from character set '%s' to '%s' is not supported"
-msgstr "La conversión desde el conjunto de caracteres «%s»·a·«%s»·no soportada"
+msgstr "Pagpalit mula sa karakter set '%s' tungong '%s' ay hindi suportado"
 
 #: glib/gconvert.c:407
 #, c-format
 msgid "Could not open converter from '%s' to '%s'"
-msgstr "No se pudo abrir el conversor de «%s»·a·«%s»"
+msgstr "Hindi mabuksan ang converter mula '%s' tungong '%s'"
 
 #: glib/gconvert.c:605 glib/gconvert.c:892 glib/giochannel.c:1318
 #: glib/giochannel.c:1360 glib/giochannel.c:2202 glib/gutf8.c:911
 #: glib/gutf8.c:1361
 msgid "Invalid byte sequence in conversion input"
-msgstr "La secuencia de bytes no es válida en la entrada de conversión"
+msgstr "Di tanggap na byte sequence sa conversion input"
 
 #: glib/gconvert.c:610 glib/gconvert.c:825 glib/giochannel.c:1325
 #: glib/giochannel.c:2214
 #, c-format
 msgid "Error during conversion: %s"
-msgstr "Ha ocurrido un error·durante la·conversión:·%s"
+msgstr "Error habang nagco-convert: %s"
 
 #: glib/gconvert.c:628 glib/gutf8.c:907 glib/gutf8.c:1112 glib/gutf8.c:1253
 #: glib/gutf8.c:1357
 msgid "Partial character sequence at end of input"
-msgstr "La secuencia parcial de caracteres en el final de la entrada"
+msgstr "Di kumpletong karakter sequence sa dulo ng input"
 
 #: glib/gconvert.c:801
 #, c-format
 msgid "Cannot convert fallback '%s' to codeset '%s'"
-msgstr "No se puede convertir el fallback «%s»·al conjunto de códigos·«%s»"
+msgstr "Hindi maka-balik '%s' sa codeset '%s'"
 
 #: glib/gconvert.c:1601
 #, c-format
 msgid "The URI '%s' is not an absolute URI using the \"file\" scheme"
-msgstr "La URI·«%s»·no es una URI·absoluta utilizando el esquema «file»"
+msgstr "Ang URI '%s' ay hindi absolute URI na gamit ang paraang \"file\""
 
 #: glib/gconvert.c:1611
 #, c-format
 msgid "The local file URI '%s' may not include a '#'"
-msgstr "El archivo local·en la URI «%s»·no debe incluir un·«#»"
+msgstr "Ang lokal na tipunang URI '%s' ay hindi maaaring maglaman ng '#'"
 
 #: glib/gconvert.c:1628
 #, c-format
 msgid "The URI '%s' is invalid"
-msgstr "La URI·«%s»·es inválida"
+msgstr "Ang URI '%s' ay di tanggap"
 
 #: glib/gconvert.c:1640
 #, c-format
 msgid "The hostname of the URI '%s' is invalid"
-msgstr "El nombre del host de la·URI·«%s»·es inválido"
+msgstr "Ang hostname ng URI '%s' ay di tanggap"
 
 #: glib/gconvert.c:1656
 #, c-format
 msgid "The URI '%s' contains invalidly escaped characters"
-msgstr "La·URI·«%s»·contiene caracteres de escape inválidos"
+msgstr "Ang URI '%s' ay may di tanggap na escaped karakter"
 
 #: glib/gconvert.c:1750
 #, c-format
 msgid "The pathname '%s' is not an absolute path"
-msgstr "El nombre de la ruta «%s» no es una ruta absoluta"
+msgstr "Ang pathname '%s' ay hindi absolute path"
 
 #: glib/gconvert.c:1760
 msgid "Invalid hostname"
-msgstr "Nombre del host inválido"
+msgstr "Di tanggap na hostname"
 
 #: glib/gdir.c:120 glib/gdir.c:140
 #, c-format
 msgid "Error opening directory '%s': %s"
-msgstr "Ha ocurrido un error al abrir el directorio «%s»:·%s"
+msgstr "Error sa pagbukas ng directory '%s': %s"
 
 #: glib/gfileutils.c:501 glib/gfileutils.c:569
 #, c-format
 msgid "Could not allocate %lu bytes to read file \"%s\""
-msgstr "No se pueden asignar %lu bytes para leer el archivo «%s»"
+msgstr "Hindi makapag-tabi ng %lu byte upang basahin ang tipunang \"%s\""
 
 #: glib/gfileutils.c:514
 #, c-format
 msgid "Error reading file '%s': %s"
-msgstr "Ha ocurrido un error al leer el archivo «%s»:·%s"
+msgstr "Error sa pagbasa ng tipunang '%s': %s"
 
 #: glib/gfileutils.c:593
 #, c-format
 msgid "Failed to read from file '%s': %s"
-msgstr "Ha ocurrido un error en la lectura desde el archivo «%s»:·%s"
+msgstr "Sawi ang pagbabasa ng tipunang '%s': %s"
 
 #: glib/gfileutils.c:644 glib/gfileutils.c:733
 #, c-format
 msgid "Failed to open file '%s': %s"
-msgstr "Ha ocurrido un error al abrir el archivo «%s»:·%s"
+msgstr "Sawi ang pagbukas ng tipunang '%s': %s"
 
 #: glib/gfileutils.c:661
 #, c-format
 msgid "Failed to get attributes of file '%s': fstat() failed: %s"
 msgstr ""
-"Ha ocurrido un error al obtener los atributos del archivo %s':·fstat()·falló:"
-"·%s"
+"Sawi ang pagkuha ng mga attribute ng tipunang '%s': sawi ang fstat(): %s"
 
 #: glib/gfileutils.c:695
 #, c-format
 msgid "Failed to open file '%s': fdopen() failed: %s"
-msgstr "Ha ocurrido un error al abrir el archivo «%s»:·fdopen()·falló:·%s"
+msgstr "Sawi ang pagbukas ng tipunang '%s': sawi ang fdopen(): %s"
 
 #: glib/gfileutils.c:1032
 #, c-format
 msgid "Template '%s' invalid, should not contain a '%s'"
-msgstr "La plantilla «%s» es inválida, no debería contener un «%s»"
+msgstr "Di tanggap ang template '%s', wala dapat na '%s'"
 
 #: glib/gfileutils.c:1046
 #, c-format
 msgid "Template '%s' doesn't end with XXXXXX"
-msgstr "La plantilla ·«%s»· no termina con XXXXXX"
+msgstr "Hindi XXXXXX ang dulo ng template '%s'"
 
 #: glib/gfileutils.c:1071
 #, c-format
 msgid "Failed to create file '%s': %s"
-msgstr "Ha ocurrido un error al crear el archivo «%s»:·%s"
+msgstr "Sawi ang paglikha ng tipunang '%s': %s"
 
 #: glib/gfileutils.c:1449
 #, c-format
 msgid "Failed to read the symbolic link '%s': %s"
-msgstr "Ha ocurrido un error al leer el enlace simbólico «%s»:·%s"
+msgstr "Sawi ang pagbasa ng symbolic link '%s': %s"
 
 #: glib/gfileutils.c:1470
 msgid "Symbolic links not supported"
-msgstr "Enlaces simbólicos no soportados"
+msgstr "Hindi suportado ang mga symbolic link"
 
 #: glib/giochannel.c:1146
 #, c-format
 msgid "Conversion from character set `%s' to `%s' is not supported"
-msgstr ""
-"La conversión desde el conjunto de caracteres «%s»·a·«%s»·no está soportada"
+msgstr "Paglipat mula karakter set `%s' tungong `%s' ay di suportado"
 
 #: glib/giochannel.c:1150
 #, c-format
 msgid "Could not open converter from `%s' to `%s': %s"
-msgstr "No se pudo abrir el conversor de «%s»·a·«%s»:·%s"
+msgstr "Hindi mabuksan ang converter mula `%s' tungong `%s': %s"
 
 #: glib/giochannel.c:1495
 msgid "Can't do a raw read in g_io_channel_read_line_string"
-msgstr ""
-"No se puede hacer una lectura en bruto (raw) en g_io_channel_read_line_string"
+msgstr "Hindi mabasa ng hilaw ang g_io_channel_read_line_string"
 
 #: glib/giochannel.c:1542 glib/giochannel.c:1799 glib/giochannel.c:1885
 msgid "Leftover unconverted data in read buffer"
-msgstr "Datos no convertidos que quedaron en el búfer de lectura"
+msgstr "May natirang di na-convert na datos sa read buffer"
 
 #: glib/giochannel.c:1622 glib/giochannel.c:1699
 msgid "Channel terminates in a partial character"
-msgstr "El canal termina en un carácter parcial"
+msgstr "Nagwakas sa partial karakter ang channel"
 
 #: glib/giochannel.c:1685
 msgid "Can't do a raw read in g_io_channel_read_to_end"
-msgstr ""
-"No se puede hacer una lectura en bruto (raw) en g_io_channel_read_to_end"
+msgstr "Hindi makapagbasa ng hilaw sa g_io_channel_read_to_end"
 
 #: glib/gmarkup.c:226
 #, c-format
 msgid "Error on line %d char %d: %s"
-msgstr "Error en la línea %d,·carácter·%d:·%s"
+msgstr "Error sa linya %d char %d: %s"
 
 #: glib/gmarkup.c:324
 #, c-format
 msgid "Error on line %d: %s"
-msgstr "Error·en la línea·%d:·%s"
+msgstr "Error sa linya %d: %s"
 
 #: glib/gmarkup.c:428
 msgid ""
 "Empty entity '&;' seen; valid entities are: &amp; &quot; &lt; &gt; &apos;"
 msgstr ""
-"La entidad '&;' está vacía; las entidades válidas son:·&amp;·&quot;·&lt;·&gt;"
-"·&apos;"
+"Walang laman na entity '&' ay nakita; tanggap na mga entity ay: &amp; &quot; "
+"&lt; &gt; &apos;"
 
 #: glib/gmarkup.c:438
 #, c-format
@@ -201,28 +193,28 @@ msgid ""
 "begins an entity; if this ampersand isn't supposed to be an entity, escape "
 "it as &amp;"
 msgstr ""
-"El carácter «%s»·no es válido al inicio del nombre de una entidad; el "
-"carácter & inicia una entidad; si el signo '&' no debiera que ser una "
-"entidad, nómbrela como &amp;"
+"Di tanggap ang karakter '%s' sa umpisa ng pangalan ng entity; ang & karakter "
+"ang nag-uumpisa ng entity; kung ang ampersand ay di dapat maging entity, "
+"itaglay ito bilang &amp;"
 
 #: glib/gmarkup.c:472
 #, c-format
 msgid "Character '%s' is not valid inside an entity name"
-msgstr "El carácter «%s»·no es válido dentro del nombre de una entidad"
+msgstr "Di tanggap ang karakter '%s' sa loob ng pangalan ng entity"
 
 #: glib/gmarkup.c:509
 #, c-format
 msgid "Entity name '%s' is not known"
-msgstr "El nombre de la entidad «%s»·es desconocido"
+msgstr "Pangalan ng entity '%s' ay di kilala"
 
 #: glib/gmarkup.c:520
 msgid ""
 "Entity did not end with a semicolon; most likely you used an ampersand "
 "character without intending to start an entity - escape ampersand as &amp;"
 msgstr ""
-"La entidad no termina con un punto y coma; probablemente utilizó el carácter "
-"\"&\" sin la intención de indicar una entidad - escape el signo \"&\" como "
-"&amp;"
+"Di nagtapos ang entity sa puntukoma; malamang ay gumamit kayo ng ampersand "
+"karakter na hindi sinasadyang mag-umpisa ng entity - itaglay ang ampersand "
+"ng &amp;"
 
 #: glib/gmarkup.c:573
 #, c-format
@@ -230,19 +222,19 @@ msgid ""
 "Failed to parse '%-.*s', which should have been a digit inside a character "
 "reference (&#234; for example) - perhaps the digit is too large"
 msgstr ""
-"Ha ocurrido un error al analizar «%-.*s»,·el cual debería tener un dígito "
-"dentro de un carácter de referencia·( por ejemplo &#234;·)·-·tal vez el "
-"dígito es demasiado grande"
+"Sawi sa pag-parse ng '%-.*s', na dapat ay numero sa loob ng reference sa "
+"karakter (halimbawa ay &#234;) - maaaring ang numero ay sobra ang laki"
 
 #: glib/gmarkup.c:598
 #, c-format
 msgid "Character reference '%-.*s' does not encode a permitted character"
-msgstr "El carácter de referencia «%-.*s» no codifica un carácter permitido"
+msgstr ""
+"Reference sa karakter '%-.*s' ay hindi nag-encode ng tanggap na karakter"
 
 #: glib/gmarkup.c:613
 msgid "Empty character reference; should include a digit such as &#454;"
 msgstr ""
-"El carácter de referencia está vacío; debería incluir un dígito tal como "
+"Walang laman na reference sa karakter; dapat may kasamang numero tulad ng "
 "&#454;"
 
 #: glib/gmarkup.c:623
@@ -251,25 +243,25 @@ msgid ""
 "ampersand character without intending to start an entity - escape ampersand "
 "as &amp;"
 msgstr ""
-"El carácter de referencia no termina con punto y coma; probablemente utilizó "
-"un carácter «&» sin pretender iniciar una entidad - utilice·el·carácter·\"&"
-"\"·como·&amp;"
+"Ang reference sa karakter ay di nagtapos sa puntukoma; malamang ay gumamit "
+"kayo ng ampersand na karakter na hindi sinadyang mag-umpisa ng entity - "
+"itaglay ang ampersand bilang &amp;"
 
 #: glib/gmarkup.c:709
 msgid "Unfinished entity reference"
-msgstr "Referencia a entidad sin terminar"
+msgstr "Di tapos na reference sa entity"
 
 #: glib/gmarkup.c:715
 msgid "Unfinished character reference"
-msgstr "Referencia a carácter sin terminar"
+msgstr "Di tapos na reference sa karakter"
 
 #: glib/gmarkup.c:958 glib/gmarkup.c:986 glib/gmarkup.c:1017
 msgid "Invalid UTF-8 encoded text"
-msgstr "El texto codificado como UTF-8 no es válido"
+msgstr "Di tanggap na tekstong encoded ng UTF-8"
 
 #: glib/gmarkup.c:1053
 msgid "Document must begin with an element (e.g. <book>)"
-msgstr "El documento debe comenzar con un elemento (por ejemplo: <book>)"
+msgstr "Kailangang mag-umpisa ang dokumento ng elemento (hal. <book>)"
 
 #: glib/gmarkup.c:1093
 #, c-format
@@ -277,8 +269,8 @@ msgid ""
 "'%s' is not a valid character following a '<' character; it may not begin an "
 "element name"
 msgstr ""
-"«%s» no es un carácter válido a continuación del carácter '<': no debe "
-"iniciar el nombre de un elemento"
+"'%s' ay di tanggap na karakter matapos ng '<' na karakter; hindi ito "
+"maaaring mag-umpisa ng pangalang elemento"
 
 #: glib/gmarkup.c:1157
 #, c-format
@@ -286,16 +278,16 @@ msgid ""
 "Odd character '%s', expected a '>' character to end the start tag of element "
 "'%s'"
 msgstr ""
-"Carácter impropio «%s», se esperaba un carácter '>' para terminar la "
-"etiqueta del elemento «%s»"
+"Kakaibang karakter '%s', inasahan na '>' karakter ang pambungad ng pambukas "
+"na tag ng elementong '%s'"
 
 #: glib/gmarkup.c:1246
 #, c-format
 msgid ""
 "Odd character '%s', expected a '=' after attribute name '%s' of element '%s'"
 msgstr ""
-"Carácter impropio «%s»,·se esperaba el carácter '='·después del nombre de "
-"atributo·«%s»·del elemento·«%s»"
+"Kakaibang karakter '%s', inasahan na '=' matapos ng pangalang attribute '%s' "
+"ng elementong '%s'"
 
 #: glib/gmarkup.c:1288
 #, c-format
@@ -304,9 +296,9 @@ msgid ""
 "element '%s', or optionally an attribute; perhaps you used an invalid "
 "character in an attribute name"
 msgstr ""
-"Carácter impropio «%s»,·se esperaba un carácter '>'·o·'/'·para finalizar el "
-"inicio de la etiqueta del elemento «%s» u opcionalmente un atributo;·tal vez "
-"utilizó un carácter que no es válido en un nombre de atributo"
+"Kakaibang karakter '%s', inasahan na '>' o '/' na karakter ang pambungad ng "
+"pangbukas na tag ng elementong '%s' o attribute; maaaring gumamit kayo ng di "
+"tanggap na karakter sa pangalang attribute"
 
 #: glib/gmarkup.c:1377
 #, c-format
@@ -314,8 +306,9 @@ msgid ""
 "Odd character '%s', expected an open quote mark after the equals sign when "
 "giving value for attribute '%s' of element '%s'"
 msgstr ""
-"Carácter impropio «%s», se esperaba una marca de apertura de comillas "
-"después del signo igual al darle valor al atributo «%s» del elemento «%s»"
+"Kakaibang karakter '%s', inasahan na pambukas na quote mark matapos ng "
+"equals sign kapag nagbigay ng halaga para sa attribute '%s' ng elementong '%"
+"s'"
 
 #: glib/gmarkup.c:1522
 #, c-format
@@ -323,8 +316,8 @@ msgid ""
 "'%s' is not a valid character following the characters '</'; '%s' may not "
 "begin an element name"
 msgstr ""
-"«%s» no es un carácter válido a continuación de los caracteres '</';·«%s»· "
-"no debe iniciar el nombre de un elemento"
+"Hindi tanggap na karakter ang '%s' matapos ng mga karakter na '</'; Ang '%s' "
+"ay hindi maaaring umpisa ng pangalang elemento"
 
 #: glib/gmarkup.c:1562
 #, c-format
@@ -332,28 +325,30 @@ msgid ""
 "'%s' is not a valid character following the close element name '%s'; the "
 "allowed character is '>'"
 msgstr ""
-"«%s»·no es un carácter válido a continuación del nombre del elemento de "
-"cierre «%s»; el carácter permitido es '>'"
+"Hindi tanggap na karakter ang '%s' matapos ang pangsara ng pangalang "
+"elemento '%s'; ang tinatanggap na karakter ay '>'"
 
 #: glib/gmarkup.c:1573
 #, c-format
 msgid "Element '%s' was closed, no element is currently open"
-msgstr "El elemento «%s» fue cerrado, no existe ningún elemento abierto"
+msgstr "Sinarhan ang elementong '%s', walang bukas na elemento."
 
 #: glib/gmarkup.c:1582
 #, c-format
 msgid "Element '%s' was closed, but the currently open element is '%s'"
 msgstr ""
-"El·elemento·«%s» fue cerrado,·pero el elemento que está abierto actualmente "
-"es «%s»"
+"Sinarhan ang elementong '%s', ngunit ang kasalukuyang elementong bukas ay '%"
+"s'"
 
 #: glib/gmarkup.c:1729
 msgid "Document was empty or contained only whitespace"
-msgstr "El documento estaba vacío o sólo contenía espacios en blanco"
+msgstr "Walang laman ang dokumento o naglalaman lamang ito ng puwang"
 
 #: glib/gmarkup.c:1743
 msgid "Document ended unexpectedly just after an open angle bracket '<'"
-msgstr "El documento termina inesperadamente justo después de un '<'"
+msgstr ""
+"Nagwakas ng di inaasahan ang dokumento matapos lamang ng pangbukas na angle "
+"bracket '<'"
 
 #: glib/gmarkup.c:1751 glib/gmarkup.c:1795
 #, c-format
@@ -361,8 +356,8 @@ msgid ""
 "Document ended unexpectedly with elements still open - '%s' was the last "
 "element opened"
 msgstr ""
-"El documento termina inesperadamente con elementos todavía abiertos - «%s» "
-"fue el último elemento abierto"
+"Nagwakas ng di inaasahan ang dokumento na may mga bukas na elemento - '%s' "
+"ay ang huling elementong binuksan"
 
 #: glib/gmarkup.c:1759
 #, c-format
@@ -370,21 +365,22 @@ msgid ""
 "Document ended unexpectedly, expected to see a close angle bracket ending "
 "the tag <%s/>"
 msgstr ""
-"El documento termina inesperadamente, se esperada un carácter '>' "
-"finalizando la etiqueta <%s/>"
+"Nagwakas ng di inaasahan ang dokumento, inasahan na makita ang angle bracket "
+"na pang-sara ng tag <%s/>"
 
 #: glib/gmarkup.c:1765
 msgid "Document ended unexpectedly inside an element name"
-msgstr "El documento termina inesperadamente dentro de un nombre de elemento"
+msgstr "Nagwakas ng di inaasahan ang dokumento sa loob ng pangalan ng elemento"
 
 #: glib/gmarkup.c:1770
 msgid "Document ended unexpectedly inside an attribute name"
-msgstr "El documento termina inesperadamente dentro de un nombre de atributo"
+msgstr ""
+"Nagwakas ng di inaasahan ang dokumento sa loob ng pangalan ng attribute"
 
 #: glib/gmarkup.c:1775
 msgid "Document ended unexpectedly inside an element-opening tag."
 msgstr ""
-"El documento termina inesperadamente dentro de una etiqueta de apertura de "
+"Nagwakas ng di inaasahan ang dokumento sa loob ng pagbukas na tag ng "
 "elemento."
 
 #: glib/gmarkup.c:1781
@@ -392,249 +388,240 @@ msgid ""
 "Document ended unexpectedly after the equals sign following an attribute "
 "name; no attribute value"
 msgstr ""
-"El documento termina inesperadamente después de los signos igual que siguen "
-"al nombre de atributo; sin valor de atributo"
+"Nagwakas ng di inaasahan ang dokumento matapos ang equal sign na sumunod sa "
+"pangalan ng attribute; walang halaga ang attribute"
 
 #: glib/gmarkup.c:1788
 msgid "Document ended unexpectedly while inside an attribute value"
-msgstr "El documento termina inesperadamente dentro del valor de un atributo"
+msgstr ""
+"Nagwakas ng di inaasahan ang dokumento habang nasa loob ng halagang attribute"
 
 #: glib/gmarkup.c:1803
 #, c-format
 msgid "Document ended unexpectedly inside the close tag for element '%s'"
 msgstr ""
-"El documento termina inesperadamente dentro de la etiqueta cierre del "
-"elemento «%s»"
+"Nagwakas ang dokumento ng di inaasahan sa loob ng tag ng pagsara para sa "
+"elementong '%s'"
 
 #: glib/gmarkup.c:1809
 msgid "Document ended unexpectedly inside a comment or processing instruction"
 msgstr ""
-"El documento termina inesperadamente dentro de un comentario o procesando "
-"una instrucción"
+"Nagwakas ang dokumento ng di inaasahan sa loob ng komento o utos ng "
+"pagproseso"
 
 #: glib/gshell.c:73
 msgid "Quoted text doesn't begin with a quotation mark"
-msgstr "El texto entrecomillado no empieza con un signo de comilla"
+msgstr "Ang binanggit na teksto ay di nag-umpisa sa quotation mark"
 
 #: glib/gshell.c:163
 msgid "Unmatched quotation mark in command line or other shell-quoted text"
 msgstr ""
-"Falta una comilla en la línea de comandos o en otro texto con comillas tipo "
-"shell"
+"Walang kapares na quotation mark sa command line o ibang shell na teksto."
 
 #: glib/gshell.c:541
 #, c-format
 msgid "Text ended just after a '\\' character. (The text was '%s')"
-msgstr ""
-"El texto termina justo después de un carácter '\\'. (El texto era «%s»)"
+msgstr "Nagwakas ang teksto matapos ng karakter na '\\'. (Ang teksto ay '%s')"
 
 #: glib/gshell.c:548
 #, c-format
 msgid "Text ended before matching quote was found for %c. (The text was '%s')"
 msgstr ""
-"El texto terminó antes de que se encontrase la comilla correspondiente con %"
-"c (El texto era «%s»)"
+"Nagwakas ang teksto bago nakahanap ng kapares na quote para sa %c. (Ang "
+"teksto ay '%s')"
 
 #: glib/gshell.c:560
 msgid "Text was empty (or contained only whitespace)"
-msgstr "El texto está vacío (o sólo contiene espacios en blanco)"
+msgstr "Ang teksto ay walang laman (o naglaman lamang ng puwang)"
 
 #: glib/gspawn-win32.c:264
 msgid "Failed to read data from child process"
-msgstr "Ha ocurrido un error al leer los datos desde un proceso hijo"
+msgstr "Sawi sa pagbasa ng datos mula sa prosesong anak"
 
 #: glib/gspawn-win32.c:281 glib/gspawn.c:1350
 #, c-format
 msgid "Failed to create pipe for communicating with child process (%s)"
-msgstr ""
-"Ha ocurrido un error en la creación de un conducto (pipe) para comunicarse "
-"con el proceso hijo (%s)"
+msgstr "Sawi sa paglikha ng pipe para makausap ang prosesong anak (%s)"
 
 #: glib/gspawn-win32.c:321 glib/gspawn.c:1014
 #, c-format
 msgid "Failed to read from child pipe (%s)"
-msgstr "Ha ocurrido un error al leer desde el conducto (pipe) hijo (%s)"
+msgstr "Sawi sa pagbasa mula sa child pipe (%s)"
 
 #: glib/gspawn-win32.c:349 glib/gspawn.c:1219
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
-msgstr "Ha ocurrido un error al cambiar al directorio «%s»·(%s)"
+msgstr "Sawi sa paglipat sa directory '%s' (%s)"
 
 #: glib/gspawn-win32.c:357 glib/gspawn-win32.c:442
 #, c-format
 msgid "Failed to execute child process (%s)"
-msgstr "Ha ocurrido un error al ejecutar el proceso hijo (%s)"
+msgstr "Sawi sa pagtakbo ng prosesong anak (%s)"
 
 #: glib/gspawn-win32.c:590
 msgid "Failed to execute helper program"
-msgstr "Ha ocurrido un error al ejecutar el programa auxiliar"
+msgstr "Sawi sa pagtakbo ng programang katulong"
 
 #: glib/gspawn-win32.c:789
 msgid ""
 "Unexpected error in g_io_channel_win32_poll() reading data from a child "
 "process"
 msgstr ""
-"Ha ocurrido un error inesperado en g_io_channel_win32_poll() al leer datos "
-"desde un proceso hijo"
+"Di inaasahang error sa g_io_channel_win32_poll() sa pagbasa ng datos mula sa "
+"prosesong anak"
 
 #: glib/gspawn.c:179
 #, c-format
 msgid "Failed to read data from child process (%s)"
-msgstr "Ha ocurrido un error en la lectura de datos desde el proceso hijo (%s)"
+msgstr "Sawi sa pagbasa ng datos mula sa prosesong anak (%s)"
 
 #: glib/gspawn.c:310
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr ""
-"Ha ocurrido un error inesperado en select()·leyendo datos desde el proceso "
-"hijo (%s)"
+"Di inaasahang error sa select() habang nagbabasa ng datos mula sa prosesong "
+"anak (%s)"
 
 #: glib/gspawn.c:393
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
-msgstr "Ha ocurrido un error inesperado en waitpid()·(%s)"
+msgstr "Di inaasahang error sa waitpid() (%s)"
 
 #: glib/gspawn.c:1079
 #, c-format
 msgid "Failed to fork (%s)"
-msgstr "Falló al bifurcar (fork) (%s)"
+msgstr "Sawi sa pag-fork (%s)"
 
 #: glib/gspawn.c:1229
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
-msgstr "Ha ocurrido un error al ejecutar el proceso hijo «%s» (%s)"
+msgstr "Sawi sa pagtakbo ng prosesong anak \"%s\" (%s)"
 
 #: glib/gspawn.c:1239
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
-msgstr ""
-"Ha ocurrido un error al redirigir la salida o la entrada del proceso hijo (%"
-"s)"
+msgstr "Sawi sa pag-redirect ng output o input ng prosesong anak (%s)"
 
 #: glib/gspawn.c:1248
 #, c-format
 msgid "Failed to fork child process (%s)"
-msgstr "Ha ocurrido un error al lanzar el proceso hijo·(%s)"
+msgstr "Sawi sa pag-fork ng prosesong anak (%s)"
 
 #: glib/gspawn.c:1256
 #, c-format
 msgid "Unknown error executing child process \"%s\""
-msgstr "Ha ocurrido un error desconocido al ejecutar el proceso hijo «%s»"
+msgstr "Di kilalang error sa pagpatakbo ng prosesong anak \"%s\""
 
 #: glib/gspawn.c:1278
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
-msgstr ""
-"Ha ocurrido un error al intentar leer suficientes datos desde el conducto "
-"hijo (%s)"
+msgstr "Sawi sa pagbasa ng akmang datos mula sa child pid pipe (%s)"
 
 #: glib/gutf8.c:986
 msgid "Character out of range for UTF-8"
-msgstr "El carácter se encuentra fuera del rango para UTF-8"
+msgstr "Character wala sa sakop ng UTF-8"
 
 #: glib/gutf8.c:1080 glib/gutf8.c:1089 glib/gutf8.c:1221 glib/gutf8.c:1230
 #: glib/gutf8.c:1371 glib/gutf8.c:1467
 msgid "Invalid sequence in conversion input"
-msgstr "La secuencia en la conversión de entrada no es válida"
+msgstr "Di tanggap na sequence sa conversion input"
 
 #: glib/gutf8.c:1382 glib/gutf8.c:1478
 msgid "Character out of range for UTF-16"
-msgstr "El carácter se encuentra fuera del rango para UTF-16"
+msgstr "Character wala sa sakop ng UTF-16"
 
 #: glib/goption.c:405
 msgid "Usage:"
-msgstr "Uso:"
+msgstr "Pag-gamit:"
 
 #: glib/goption.c:405
 msgid "[OPTION...]"
-msgstr "[OPCIÓN...]"
+msgstr "[OPTION...]"
 
 #: glib/goption.c:494
 msgid "Help Options:"
-msgstr "Opciones de ayuda:"
+msgstr "Option ng Tulong:"
 
 #: glib/goption.c:494
 msgid "Show help options"
-msgstr "Mostrar opciones de ayuda"
+msgstr "Ipakita ang option ng tulong"
 
 #: glib/goption.c:498
 msgid "Show all help options"
-msgstr "Mostrar todas las opciones de ayuda"
+msgstr "Ipakita ang option ng tulong"
 
 #: glib/goption.c:547
 msgid "Application Options:"
-msgstr "Opciones de la aplicación:"
+msgstr "Option ng Aplikasyon:"
 
 #: glib/goption.c:586
 #, c-format
 msgid "Cannot parse integer value '%s' for --%s"
-msgstr "No se puede parsear el valor entero «%s» para --%s"
+msgstr "Di mai-parse ang halagang integer '%s' para sa --%s"
 
 #: glib/goption.c:596
 #, c-format
 msgid "Integer value '%s' for %s out of range"
-msgstr "El valor entero «%s» para %s está fuera de rango"
+msgstr "Halagang integer '%s' para sa %s ay wala sa sakop"
 
 #: glib/goption.c:1323
 #, c-format
 msgid "Unknown option %s"
-msgstr "Opción desconocida %s"
+msgstr "Di kilalang option %s"
 
 #: glib/gkeyfile.c:338
 msgid "Valid key file could not be found in data dirs"
-msgstr ""
-"No se pudo encontrar la clave de archivo válida en los directorios de datos"
+msgstr "Walang mahanap na tipunang susi sa mga dir ng datos"
 
 #: glib/gkeyfile.c:371
 msgid "Not a regular file"
-msgstr "No es un archivo regular"
+msgstr "Hindi karaniwang tipunan"
 
 #: glib/gkeyfile.c:379
 msgid "File is empty"
-msgstr "El archivo está vacío"
+msgstr "Walang laman ang tipunan"
 
 #: glib/gkeyfile.c:689
 #, c-format
 msgid ""
 "Key file contains line '%s' which is not a key-value pair, group, or comment"
 msgstr ""
-"El archivo clave contiene la línea «%s» que no es un par valor-clave, grupo "
-"o comentario"
+"Ang tipunang susi ay naglalaman ng linyang '%s' na hindi pares na susi-"
+"halaga, grupo, o komento"
 
 #: glib/gkeyfile.c:757
 msgid "Key file does not start with a group"
-msgstr "El archivo clave no empieza con un grupo"
+msgstr "Ang tipunang susi ay hindi naguumpisa sa isang grupo"
 
 #: glib/gkeyfile.c:800
 #, c-format
 msgid "Key file contains unsupported encoding '%s'"
-msgstr "El archivo clave contiene una codificación no soportada «%s»"
+msgstr "Ang tipunang susi ay naglalaman ng di suportadong encoding '%s'"
 
 #: glib/gkeyfile.c:1009 glib/gkeyfile.c:1155 glib/gkeyfile.c:2161
 #: glib/gkeyfile.c:2226 glib/gkeyfile.c:2344 glib/gkeyfile.c:2412
 #: glib/gkeyfile.c:2597 glib/gkeyfile.c:2771 glib/gkeyfile.c:2828
 #, c-format
 msgid "Key file does not have group '%s'"
-msgstr "El archivo clave no tiene el grupo «%s»"
+msgstr "Ang tipunang susi ay walang grupong '%s'"
 
 #: glib/gkeyfile.c:1167
 #, c-format
 msgid "Key file does not have key '%s'"
-msgstr "El archivo clave no tiene la clave «%s»"
+msgstr "Ang tipunang susi ay walang susing '%s'"
 
 #: glib/gkeyfile.c:1268 glib/gkeyfile.c:1377
 #, c-format
 msgid "Key file contains key '%s' with value '%s' which is not UTF-8"
 msgstr ""
-"El archivo clave contiene la clave  «%s» con el valor «%s» el cual no está "
-"en UTF-8"
+"Ang tipunang susi ay naglalaman ng susing '%s' na may halagang '%s' na hindi "
+"UTF-8"
 
 #: glib/gkeyfile.c:1286 glib/gkeyfile.c:1395 glib/gkeyfile.c:1769
 #, c-format
 msgid "Key file contains key '%s' which has value that cannot be interpreted."
 msgstr ""
-"El archivo clave contiene la clave «%s» que tiene un valor que no puede ser "
-"interpretado."
+"Ang tipunang susi ay naglalaman ng susing '%s' na may halagang di mabasa."
 
 #: glib/gkeyfile.c:1986
 #, c-format
@@ -642,29 +629,29 @@ msgid ""
 "Key file contains key '%s' in group '%s' which has value that cannot be "
 "interpreted."
 msgstr ""
-"El archivo clave contiene la clave «%s» en el grupo «%s» que tiene un valor "
-"que no puede ser interpretado."
+"Ang tipunang susi ay naglalaman ng susing '%s' sa grupong '%s' na may halaga "
+"na hindi mabasa."
 
 #: glib/gkeyfile.c:2176 glib/gkeyfile.c:2359 glib/gkeyfile.c:2839
 #, c-format
 msgid "Key file does not have key '%s' in group '%s'"
-msgstr "El archivo clave no tiene la clave «%s» en el grupo «%s»"
+msgstr "Ang tipunang susi ay walang susing '%s' sa grupong '%s'"
 
 #: glib/gkeyfile.c:3035
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
-msgstr "El archivo clave contiene la secuencia de escape inválida «%s»"
+msgstr "Ang tipunang susi ay may di tanggap na escape sequence '%s'"
 
 #: glib/gkeyfile.c:3059
 msgid "Key file contains escape character at end of line"
-msgstr "El archivo clave contiene un carácter de escape al final de la línea"
+msgstr "Ang tipunang susi ay may escape karakter sa dulo ng linya"
 
 #: glib/gkeyfile.c:3175
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
-msgstr "El valor «%s» no puede interpretarse como un número."
+msgstr "Ang halagang '%s' ay hindi mabasa bilang numero."
 
 #: glib/gkeyfile.c:3203
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
-msgstr "El valor «%s» no puede interpretarse como un booleano."
+msgstr "Ang halagang '%s' ay hindi mabasa bilang boolean."
