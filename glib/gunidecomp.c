@@ -65,14 +65,14 @@ g_unicode_canonical_ordering (gunichar *string,
 	    {
 	      gsize j;
 	      /* Percolate item leftward through string.  */
-	      for (j = i; j > 0; --j)
+	      for (j = i + 1; j > 0; --j)
 		{
 		  gunichar t;
-		  if (COMBINING_CLASS (string[j]) <= next)
+		  if (COMBINING_CLASS (string[j - 1]) <= next)
 		    break;
-		  t = string[j + 1];
-		  string[j + 1] = string[j];
-		  string[j] = t;
+		  t = string[j];
+		  string[j] = string[j - 1];
+		  string[j - 1] = t;
 		  swap = 1;
 		}
 	      /* We're re-entering the loop looking at the old
@@ -186,7 +186,7 @@ g_unicode_canonical_decomposition (gunichar ch,
 #define COMPOSE_INDEX(Char) \
      (((Char) > (G_UNICODE_LAST_CHAR)) ? 0 : CI((Char) >> 8, (Char) & 0xff))
 
-gboolean
+static gboolean
 combine (gunichar  a,
 	 gunichar  b,
 	 gunichar *result)
@@ -218,7 +218,7 @@ combine (gunichar  a,
     }
 
   if (index_a >= COMPOSE_FIRST_START && index_a < COMPOSE_FIRST_SINGLE_START &&
-      index_b >= COMPOSE_SECOND_START && index_a < COMPOSE_SECOND_SINGLE_START)
+      index_b >= COMPOSE_SECOND_START && index_b < COMPOSE_SECOND_SINGLE_START)
     {
       gunichar res = compose_array[index_a - COMPOSE_FIRST_START][index_b - COMPOSE_SECOND_START];
 

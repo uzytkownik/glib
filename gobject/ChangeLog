@@ -1,3 +1,42 @@
+Mon Aug 25 14:51:46 2003  Manish Singh  <yosh@gimp.org>
+
+        * gtypemodule.c (g_type_module_register_type): fix typo in last
+        commit, cast to GTypeValueTable * to get rid of const warning.
+
+Mon Aug 25 14:16:48 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gtypemodule.c (g_type_module_register_type): Clarify
+	docs on the return. Fix a memory leak if a type with a
+	value table is reloaded. (#112439, Daniel Yacob)
+
+Fri May 30 14:42:24 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gobject.c (g_value_set_object): Order refs/unrefs
+	so setting the same object back is safe. (#112861,
+	Morten Welinder)
+
+2003-03-31  Sven Neumann  <sven@gimp.org>
+
+	* gobject.c (g_object_class_install_property): for inline docs,
+	use the parameter name as spelled in the header file.
+
+2003-03-24  Sven Neumann  <sven@gimp.org>
+
+	* gtype.c (type_data_finalize_class_ifaces_Wm): removed leftover
+	debugging message (bug #109093).
+
+2003-03-06  Matthias Clasen  <maclas@gmx.de>
+
+	* gsignal.c (g_signal_handlers_block_matched): 
+	(g_signal_handlers_unblock_matched): 
+	(g_signal_handlers_disconnect_matched): Fix 0/FALSE confusion.
+	(#107662, Morten Welinder)
+
+2003-01-12  Tor Lillqvist  <tml@iki.fi>
+
+	* gobject.def: Add g_type_interface_prerequisites. Thanks to
+	Kenichi SUTO.
+
 2002-12-18  Matthias Clasen  <maclas@gmx.de>
 
 	* gobject.c: Add docs.

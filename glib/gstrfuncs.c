@@ -83,11 +83,13 @@ gchar*
 g_strdup (const gchar *str)
 {
   gchar *new_str;
+  gsize length;
 
   if (str)
     {
-      new_str = g_new (char, strlen (str) + 1);
-      strcpy (new_str, str);
+      length = strlen (str) + 1;
+      new_str = g_new (char, length);
+      memcpy (new_str, str, length);
     }
   else
     new_str = NULL;
@@ -325,7 +327,7 @@ g_strtod (const gchar *nptr,
  * To handle input from the user you should normally use the
  * locale-sensitive system strtod() function.
  *
- * To convert from a string to #gdouble in a locale-insensitive
+ * To convert from a #gdouble to a string in a locale-insensitive
  * way, use g_ascii_dtostr().
  *
  * If the correct value would cause overflow, plus or minus %HUGE_VAL
@@ -475,7 +477,7 @@ g_ascii_strtod (const gchar *nptr,
  * decimal point. 
  * 
  * This functions generates enough precision that converting
- * the string back using g_strtod() gives the same machine-number
+ * the string back using g_ascii_strtod() gives the same machine-number
  * (on machines with IEEE compatible 64bit doubles). It is
  * guaranteed that the size of the resulting string will never
  * be larger than @G_ASCII_DTOSTR_BUF_SIZE bytes.
@@ -494,13 +496,13 @@ g_ascii_dtostr (gchar       *buffer,
  * g_ascii_formatd:
  * @buffer: A buffer to place the resulting string in
  * @buf_len: The length of the buffer.
- * @format: The printf-style format to use for the
+ * @format: The printf()-style format to use for the
  *          code to use for converting. 
  * @d: The #gdouble to convert
  *
  * Converts a #gdouble to a string, using the '.' as
  * decimal point. To format the number you pass in
- * a printf-style formating string. Allowed conversion
+ * a printf()-style format string. Allowed conversion
  * specifiers are 'e', 'E', 'f', 'F', 'g' and 'G'. 
  * 
  * If you just want to want to serialize the value into a
@@ -1734,8 +1736,8 @@ g_ascii_strcasecmp (const gchar *s1,
 
   while (*s1 && *s2)
     {
-      c1 = (gint)(guchar) g_ascii_tolower (*s1);
-      c2 = (gint)(guchar) g_ascii_tolower (*s2);
+      c1 = (gint)(guchar) TOLOWER (*s1);
+      c2 = (gint)(guchar) TOLOWER (*s2);
       if (c1 != c2)
 	return (c1 - c2);
       s1++; s2++;
@@ -1775,8 +1777,8 @@ g_ascii_strncasecmp (const gchar *s1,
   while (n && *s1 && *s2)
     {
       n -= 1;
-      c1 = (gint)(guchar) g_ascii_tolower (*s1);
-      c2 = (gint)(guchar) g_ascii_tolower (*s2);
+      c1 = (gint)(guchar) TOLOWER (*s1);
+      c2 = (gint)(guchar) TOLOWER (*s2);
       if (c1 != c2)
 	return (c1 - c2);
       s1++; s2++;

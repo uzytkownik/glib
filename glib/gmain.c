@@ -174,6 +174,8 @@ struct _GPollRec
 #endif
 
 #define SOURCE_DESTROYED(source) (((source)->flags & G_HOOK_FLAG_ACTIVE) == 0)
+#define SOURCE_BLOCKED(source) (((source)->flags & G_HOOK_FLAG_IN_CALL) != 0 && \
+		                ((source)->flags & G_SOURCE_CAN_RECURSE) == 0)
 
 #define SOURCE_UNREF(source, context)                       \
    G_STMT_START {                                           \
@@ -270,6 +272,11 @@ g_poll (GPollFD *fds,
       {
 	if (f->fd == G_WIN32_MSG_HANDLE)
 	  poll_msgs = TRUE;
+	else if (nhandles == MAXIMUM_WAIT_OBJECTS)
+	  {
+	    g_warning (G_STRLOC ": Too many handles to wait for!\n");
+	    break;
+	  }
 	else
 	  {
 #ifdef G_MAIN_POLL_DEBUG
@@ -306,7 +313,11 @@ g_poll (GPollFD *fds,
 		  g_print ("WaitMessage\n");
 #endif
 		  if (!WaitMessage ())
-		    g_warning (G_STRLOC ": WaitMessage() failed");
+		    {
+		      gchar *emsg = g_win32_error_message (GetLastError ());
+		      g_warning (G_STRLOC ": WaitMessage() failed: %s", emsg);
+		      g_free (emsg);
+		    }
 		  ready = WAIT_OBJECT_0 + nhandles;
 		}
 	      else if (timeout == 0)
@@ -325,7 +336,9 @@ g_poll (GPollFD *fds,
 		  timer = SetTimer (NULL, 0, timeout, NULL);
 		  if (timer == 0)
 		    {
-		      g_warning (G_STRLOC ": SetTimer() failed");
+		      gchar *emsg = g_win32_error_message (GetLastError ());
+		      g_warning (G_STRLOC ": SetTimer() failed: %s", emsg);
+		      g_free (emsg);
 		      ready = WAIT_TIMEOUT;
 		    }
 		  else
@@ -358,7 +371,11 @@ g_poll (GPollFD *fds,
 						 timeout, QS_ALLINPUT);
 
 	      if (ready == WAIT_FAILED)
-		g_warning (G_STRLOC ": MsgWaitForMultipleObjects() failed");
+		{
+		  gchar *emsg = g_win32_error_message (GetLastError ());
+		  g_warning (G_STRLOC ": MsgWaitForMultipleObjects() failed: %s", emsg);
+		  g_free (emsg);
+		}
 	    }
 	}
     }
@@ -377,7 +394,11 @@ g_poll (GPollFD *fds,
 #endif
       ready = WaitForMultipleObjects (nhandles, handles, FALSE, timeout);
       if (ready == WAIT_FAILED)
-	g_warning (G_STRLOC ": WaitForMultipleObjects() failed");
+	{
+	  gchar *emsg = g_win32_error_message (GetLastError ());
+	  g_warning (G_STRLOC ": WaitForMultipleObjects() failed: %s", emsg);
+	  g_free (emsg);
+	}
     }
 
 #ifdef G_MAIN_POLL_DEBUG
@@ -531,6 +552,26 @@ g_main_context_ref (GMainContext *context)
   UNLOCK_CONTEXT (context);
 }
 
+/* If DISABLE_MEM_POOLS is defined, then freeing the
+ * mem chunk won't free the records, so we have to
+ * do it manually. The conditionalization here is
+ * an optimization; g_mem_chunk_free() is a no-op
+ * when DISABLE_MEM_POOLS is set.
+ */
+#ifdef DISABLE_MEM_POOLS
+static void
+poll_rec_list_free (GMainContext *context,
+		    GPollRec     *list)
+{
+  while (list)
+    {
+      GPollRec *tmp_rec = list;
+      list = list->next;
+      g_chunk_free (tmp_rec, context->poll_chunk);
+    }
+}
+#endif /* DISABLE_MEM_POOLS */
+
 static void
 g_main_context_unref_and_unlock (GMainContext *context)
 {
@@ -560,7 +601,13 @@ g_main_context_unref_and_unlock (GMainContext *context)
   g_ptr_array_free (context->pending_dispatches, TRUE);
   g_free (context->cached_poll_array);
   
-  g_mem_chunk_destroy (context->poll_chunk);
+#ifdef DISABLE_MEM_POLLS
+  poll_rec_list_free (context, context->poll_records);
+  poll_rec_list_free (context, context->poll_free_list);
+#endif /* DISABLE_MEM_POOLS */
+   
+  if (context->poll_chunk)
+    g_mem_chunk_destroy (context->poll_chunk);
 
 #ifdef G_THREADS_ENABLED
   if (g_thread_supported())
@@ -872,14 +919,17 @@ g_source_destroy_internal (GSource      *source,
 	  old_cb_funcs->unref (old_cb_data);
 	  LOCK_CONTEXT (context);
 	}
-      
-      tmp_list = source->poll_fds;
-      while (tmp_list)
+
+      if (!SOURCE_BLOCKED (source))
 	{
-	  g_main_context_remove_poll_unlocked (context, tmp_list->data);
-	  tmp_list = tmp_list->next;
+	  tmp_list = source->poll_fds;
+	  while (tmp_list)
+	    {
+	      g_main_context_remove_poll_unlocked (context, tmp_list->data);
+	      tmp_list = tmp_list->next;
+	    }
 	}
-      
+	  
       g_source_unref_internal (source, context, TRUE);
     }
 
@@ -985,7 +1035,8 @@ g_source_add_poll (GSource *source,
 
   if (context)
     {
-      g_main_context_add_poll_unlocked (context, source->priority, fd);
+      if (!SOURCE_BLOCKED (source))
+	g_main_context_add_poll_unlocked (context, source->priority, fd);
       UNLOCK_CONTEXT (context);
     }
 }
@@ -1017,7 +1068,8 @@ g_source_remove_poll (GSource *source,
 
   if (context)
     {
-      g_main_context_remove_poll_unlocked (context, fd);
+      if (!SOURCE_BLOCKED (source))
+	g_main_context_remove_poll_unlocked (context, fd);
       UNLOCK_CONTEXT (context);
     }
 }
@@ -1171,16 +1223,22 @@ g_source_set_priority (GSource  *source,
 
   if (context)
     {
-      source->next = NULL;
-      source->prev = NULL;
-      
-      tmp_list = source->poll_fds;
-      while (tmp_list)
+      /* Remove the source from the context's source and then
+       * add it back so it is sorted in the correct plcae
+       */
+      g_source_list_remove (source, source->context);
+      g_source_list_add (source, source->context);
+
+      if (!SOURCE_BLOCKED (source))
 	{
-	  g_main_context_remove_poll_unlocked (context, tmp_list->data);
-	  g_main_context_add_poll_unlocked (context, priority, tmp_list->data);
-      
-	  tmp_list = tmp_list->next;
+	  tmp_list = source->poll_fds;
+	  while (tmp_list)
+	    {
+	      g_main_context_remove_poll_unlocked (context, tmp_list->data);
+	      g_main_context_add_poll_unlocked (context, priority, tmp_list->data);
+	      
+	      tmp_list = tmp_list->next;
+	    }
 	}
       
       UNLOCK_CONTEXT (source->context);
@@ -1366,7 +1424,7 @@ g_main_context_find_source_by_id (GMainContext *context,
 {
   GSource *source;
   
-  g_return_val_if_fail (source_id > 0, FALSE);
+  g_return_val_if_fail (source_id > 0, NULL);
 
   if (context == NULL)
     context = g_main_context_default ();
@@ -1406,7 +1464,7 @@ g_main_context_find_source_by_funcs_user_data (GMainContext *context,
 {
   GSource *source;
   
-  g_return_val_if_fail (funcs != NULL, FALSE);
+  g_return_val_if_fail (funcs != NULL, NULL);
 
   if (context == NULL)
     context = g_main_context_default ();
@@ -1607,6 +1665,43 @@ g_get_current_time (GTimeVal *result)
 
 /* Running the main loop */
 
+/* Temporarily remove all this source's file descriptors from the
+ * poll(), so that if data comes available for one of the file descriptors
+ * we don't continually spin in the poll()
+ */
+/* HOLDS: source->context's lock */
+void
+block_source (GSource *source)
+{
+  GSList *tmp_list;
+
+  g_return_if_fail (!SOURCE_BLOCKED (source));
+
+  tmp_list = source->poll_fds;
+  while (tmp_list)
+    {
+      g_main_context_remove_poll_unlocked (source->context, tmp_list->data);
+      tmp_list = tmp_list->next;
+    }
+}
+
+/* HOLDS: source->context's lock */
+void
+unblock_source (GSource *source)
+{
+  GSList *tmp_list;
+  
+  g_return_if_fail (!SOURCE_BLOCKED (source)); /* Source already unblocked */
+  g_return_if_fail (!SOURCE_DESTROYED (source));
+  
+  tmp_list = source->poll_fds;
+  while (tmp_list)
+    {
+      g_main_context_add_poll_unlocked (source->context, source->priority, tmp_list->data);
+      tmp_list = tmp_list->next;
+    }
+}
+
 /* HOLDS: context's lock */
 static void
 g_main_dispatch (GMainContext *context)
@@ -1642,6 +1737,9 @@ g_main_dispatch (GMainContext *context)
 	  if (cb_funcs)
 	    cb_funcs->ref (cb_data);
 	  
+	  if ((source->flags & G_SOURCE_CAN_RECURSE) == 0)
+	    block_source (source);
+	  
 	  was_in_call = source->flags & G_HOOK_FLAG_IN_CALL;
 	  source->flags |= G_HOOK_FLAG_IN_CALL;
 
@@ -1661,6 +1759,10 @@ g_main_dispatch (GMainContext *context)
 	 if (!was_in_call)
 	    source->flags &= ~G_HOOK_FLAG_IN_CALL;
 
+	  if ((source->flags & G_SOURCE_CAN_RECURSE) == 0 &&
+	      !SOURCE_DESTROYED (source))
+	    unblock_source (source);
+	  
 	  /* Note: this depends on the fact that we can't switch
 	   * sources from one main context to another
 	   */
@@ -1949,7 +2051,7 @@ g_main_context_prepare (GMainContext *context,
 	  SOURCE_UNREF (source, context);
 	  break;
 	}
-      if ((source->flags & G_HOOK_FLAG_IN_CALL) && !(source->flags & G_SOURCE_CAN_RECURSE))
+      if (SOURCE_BLOCKED (source))
 	goto next;
 
       if (!(source->flags & G_SOURCE_READY))
@@ -2137,7 +2239,7 @@ g_main_context_check (GMainContext *context,
 	  SOURCE_UNREF (source, context);
 	  break;
 	}
-      if ((source->flags & G_HOOK_FLAG_IN_CALL) && !(source->flags & G_SOURCE_CAN_RECURSE))
+      if (SOURCE_BLOCKED (source))
 	goto next;
 
       if (!(source->flags & G_SOURCE_READY))
@@ -2465,7 +2567,7 @@ g_main_loop_run (GMainLoop *loop)
       if (!loop->context->cond)
 	loop->context->cond = g_cond_new ();
           
-      while (loop->is_running || !got_ownership)
+      while (loop->is_running && !got_ownership)
 	got_ownership = g_main_context_wait (loop->context,
 					     loop->context->cond,
 					     g_static_mutex_get_mutex (&loop->context->mutex));
@@ -2594,8 +2696,14 @@ g_main_context_poll (GMainContext *context,
       
       UNLOCK_CONTEXT (context);
       if ((*poll_func) (fds, n_fds, timeout) < 0 && errno != EINTR)
-	g_warning ("poll(2) failed due to: %s.",
-		   g_strerror (errno));
+	{
+#ifndef G_OS_WIN32
+	  g_warning ("poll(2) failed due to: %s.",
+		     g_strerror (errno));
+#else
+	  /* If g_poll () returns -1, it has already called g_warning() */
+#endif
+	}
       
 #ifdef	G_MAIN_POLL_DEBUG
       LOCK_CONTEXT (context);

@@ -1,3 +1,51 @@
+Overview of Changes from GLib 2.2.2 to GLib-2.2.3
+=================================================
+* Win32 [Tor Lillqvist]
+  - Fix socket handling for giochannel [Andrew Lanoix]
+  - Omit helper process for GSpawn when possible
+  - Accept / as well as \ as a pathname separators in
+    path handling functions.
+  - Fix g_strdup_printf to be locale sensitive [Ernst Lippe]
+  - Build fixes [Jeff Bonggren]
+  - Misc bug fixes
+* Documentation improvements [Matthias Clasen]
+* glib-gettext.m4 fixes [Tim Mooney, Owen Taylor, James Henstridge]
+* Improve configure checks for sprintf [Matthias]
+* Misc bug fixes [Albert Chin, Noah Levitt, Manish Singh, Owen, 
+  Morten Welinder, Daniel Yacob]
+* New and updated translations (ar,az,cy,eo,is,sr,sr@Latn,zh_CN)
+
+Overview of Changes from GLib 2.2.1 to GLib-2.2.2
+=================================================
+* Fix busy wait when main loop was recursed out of an IO watch or 
+  similar [Owen Taylor, Christian Krause]
+* Fix main loops run from from other threads [Owen, Jean-Yves Lefort]
+* Many bug fixes in Unicode manipulation routines [Noah Levitt]
+* Win32 bug fixes [Tor Lillqvist, Cedric Gustin, Daniel Kaufmann]
+* Fix portability problems with G_MIN/MAX_INT64 [Manish Singh]
+* Miscellaneous bug fixes [Matthias Clasen, Martin Kretzschmar, 
+  Sven Neumann, Havoc Pennington, Balasz Scheidler, Ray Strode, 
+  Hidetoshi Tajima, Owen, Morten Welinder, Dan Winship]
+* Code cleanups and performance tweaks [Morten, Matthias, Christian Biere, 
+  Noah Levitt, Owen]
+* Threading fixes for configure.in [Sebastian Wilhelmi]
+* Fix make uninstall in po/Makefile.in.in [James Henstridge]
+* Miscellaneous build fixes [Zach Frey, Raja Harinath, Evan Martin,
+  Andras Salamon, Jeffrey Stedfast, Hidetoshi Tajima, Owen, Morten]
+* Documentation improvements [Matthias, Christian Biere, Christophe Fergeau, 
+  Sven, Phillip Vandry]
+* New and updated translations (az,cy,et,fa,id,li,ml,pt,sr,ta,tr,yi,zh_TW)
+
+Overview of Changes from GLib 2.2.0 to GLib-2.2.1
+=================================================
+* Win32 [Tor Lillqvist]
+  - Improve handling of stderr/stdout
+  - Install .def files
+  - Fix quoting for GSpawn [Alex Shaduri]
+  - Miscellaneous bug fixes
+* configure fixes [Owen Taylor, Manish Singh, Rich Burridge, Tim Mooney]
+* New and updated translations (am,bn,et,fi,mn,nl,pl,pt_BR,ru,zh_TW,uk)
+
 Overview of Changes from GLib 2.1.5 to GLib-2.2.0
 =================================================
 

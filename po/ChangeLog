@@ -1,3 +1,160 @@
+2003-08-19  Dafydd Harries  <daf@parnassus.ath.cx>
+
+	* cy.po: Updated Welsh translation.
+
+2003-08-18  Richard Allen <ra@ra.is>
+
+	* is.po: Added Icelandic translation.
+
+2003-08-18  Metin Amiroff <metin@karegen.com>
+
+	* az.po: Updated Azerbaijani translation.
+
+2003-07-26  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Funda Wang <fundawang@linux.net.cn>.
+
+2003-07-14  Danilo Šegan  <dsegan@gmx.net>
+
+	* sr.po, sr@Latn.po: Updated Serbian translation by Serbian team
+	(Prevod.org).
+
+2003-07-12  Joel Brich <joel.brich@laposte.net>
+
+	* eo.po: Added Esperanto translation
+	from Charles Voegler <cvoegler@dweasel.com>.
+
+2003-06-22  Metin Amiroff <metin@karegen.com>
+
+	* az.po: Updated Azerbaijani translation.
+
+2003-06-15  Arafat Medini  <lumina@silverpen.de>
+
+	* ar.po: Added Arabic translation.
+
+2003-06-12  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Updated Malayalam translation. 
+
+2003-06-04  Abel Cheung  <maddog@linux.org.hk>
+
+	* ta.po: Fix broken encoding.
+
+2003-06-04  Mathieu van Woerkom  <mathieu@brabants.org>
+
+	* li.po: Added Limburgish translation.
+
+2003-05-30  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* cy.po: Added Welsh translation from Dafydd Harries
+	<daf@parnassus.ath.cx> and Kyfieithu contributors
+	<http://www.kyfieithu.co.uk>
+
+2003-05-27  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Updated traditional Chinese translation.
+
+2003-05-08  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2003-05-05  Christian Rose  <menthos@menthos.com>
+
+	* sr.po, sr@Latn.po: Added Serbian translation by
+	Danilo Šegan <dsegan@gmx.net>.
+
+2003-04-12  Fatih Demir	<kabalak@gtranslator.org>
+
+	* ta.po: Committed updated Tamil translation by Dinesh.
+
+2003-04-11  Raphael Finkel <raphael@cs.uky.edu>
+
+	* yi.po: Updated Yiddish translation
+
+2003-04-04  Raphael Finkel <raphael@cs.uky.edu>
+
+	* yi.po: Updated Yiddish translation by
+	Raphael Finkel <raphael@cs.uky.edu>.
+
+2003-03-26  Christian Rose  <menthos@menthos.com>
+
+	* yi.po: Added Yiddish translation by
+	Raphael Finkel <raphael@cs.uky.edu>.
+
+2003-03-20  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam (ml) translation by
+	FSF-India <locale@gnu.org.in>
+
+2003-02-24  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* fa.po: Updated Persian translation.
+
+2003-02-23  Metin Amiroff  <metin@karegen.com>
+
+	* az.po: Updated Azerbaijani translation.
+
+2003-02-11  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation by Arman.
+
+2003-02-10  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* id.po: Added Indonesian translation
+
+2003-01-31  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * pt.po: Updated Portuguese translation.
+
+2003-01-29  Tõivo Leedjärv  <toivo@linux.ee>
+
+	* et.po: Fixed a small bug in Estonian translation.
+
+2003-01-27  Yuriy Syrota  <rastaman renome.rovno.ua>
+
+	* uk.po: Updated Ukrainian translation by
+	Maxim Dzumanenko <mvd@mylinux.com.ua>.
+
+2003-01-24  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2003-01-24  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* fi.po: Updated Finnish translation (sync with HEAD).
+
+2003-01-24  Daniel Yacob <locales@geez.org>
+
+	* am.po: Added Amharic translation.
+
+2003-01-22  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* bn.po: Added Bengali file
+
+2003-01-22  Yuriy Syrota  <rastaman renome.rovno.ua>
+
+	* uk.po: Updated Ukrainian translation.
+
+2003-01-22  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Updated traditional Chinese translation.
+
+2003-01-21  Christian Rose  <menthos@menthos.com>
+
+	* mn.po: Added Mongolian translation by
+	Sanlig Badral <badral@chinggis.com>.
+
+2003-01-17  Gustavo Noronha Silva  <kov@debian.org>
+
+	* pt_BR.po: translation update
+
+2003-01-15  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* ru.po: updated Russian translation
+	from Russian team <gnome-cyr@gnome.org>.
+
 2002-12-28  Vincent van Adrighem  <V.vanAdrighem@dirck.mine.nu>
 
 	* nl.po: Dutch translation updated by Tino Meinen.

@@ -27,6 +27,7 @@ in order to use the printf() functions.
 <!-- ##### FUNCTION g_strdup ##### -->
 <para>
 Duplicates a string.
+If @str is %NULL it returns %NULL.
 The returned string should be freed when no longer needed.
 </para>
 
@@ -39,6 +40,7 @@ The returned string should be freed when no longer needed.
 Duplicates the first @n characters of a string, returning a newly-allocated
 buffer @n + 1 characters long which will always be nul-terminated.
 If @str is less than @n characters long the buffer is padded with nuls.
+If @str is %NULL it returns %NULL.
 The returned value should be freed when no longer needed.
 </para>
 
@@ -717,14 +719,16 @@ Removes leading and trailing whitespace from a string.
 <para>
 Converts any delimiter characters in @string to @new_delimiter.
 Any characters in @string which are found in @delimiters are changed
-to the @new_delimiter character.
+to the @new_delimiter character. Modifies @string in place, and returns 
+@string itself, not a copy. The return value is to allow nesting such as
+<literal>g_ascii_strup (g_strdelimit (str, "abc", '?'))</literal>.
 </para>
 
 @string: the string to convert.
 @delimiters: a string containing the current delimiters, or %NULL to use the
 standard delimiters defined in #G_STR_DELIMITERS.
 @new_delimiter: the new delimiter character.
-@Returns: 
+@Returns: @string
 
 
 <!-- ##### MACRO G_STR_DELIMITERS ##### -->
@@ -739,7 +743,7 @@ The standard delimiters, used in g_strdelimit().
 Escapes the special characters '\b', '\f', '\n', '\r', '\t', '\' and
 '&quot;' in the string @source by inserting a '\' before
 them. Additionally all characters in the range 0x01-0x1F (everything
-below SPACE) and in the range 0x80-0xFF (all non-ASCII chars) are
+below SPACE) and in the range 0x7F-0xFF (all non-ASCII chars) are
 replaced with a '\' followed by their octal representation. Characters
 supplied in @exceptions are not escaped.
 </para>
@@ -792,7 +796,8 @@ nesting such as <literal>g_ascii_strup (g_strcanon (str, "abc", '?'))</literal>.
 <!-- ##### FUNCTION g_strfreev ##### -->
 <para>
 Frees a %NULL-terminated array of strings, and the array itself.
-</para>
+If called on a %NULL value, g_strfreev() simply returns. 
+ </para>
 
 @str_array: a %NULL-terminated array of strings to free.
 

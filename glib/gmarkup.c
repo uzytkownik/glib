@@ -335,7 +335,7 @@ unescape_text (GMarkupParseContext *context,
   UnescapeState state;
   const gchar *start;
 
-  str = g_string_new ("");
+  str = g_string_new (NULL);
 
   state = USTATE_INSIDE_TEXT;
   p = text;
@@ -638,13 +638,19 @@ advance_char (GMarkupParseContext *context)
 
   context->iter = g_utf8_next_char (context->iter);
   context->char_number += 1;
-  if (*context->iter == '\n')
-    {
-      context->line_number += 1;
-      context->char_number = 1;
-    }
 
-  return context->iter != context->current_text_end;
+  if (context->iter != context->current_text_end)
+    {
+      if (*context->iter == '\n')
+        {
+          context->line_number += 1;
+          context->char_number = 1;
+        }
+
+      return TRUE;
+    }
+  else
+    return FALSE;
 }
 
 static gboolean
@@ -681,7 +687,7 @@ add_to_partial (GMarkupParseContext *context,
                 const gchar         *text_end)
 {
   if (context->partial_chunk == NULL)
-    context->partial_chunk = g_string_new ("");
+    context->partial_chunk = g_string_new (NULL);
 
   if (text_start != text_end)
     g_string_append_len (context->partial_chunk, text_start,
@@ -1821,7 +1827,7 @@ g_markup_escape_text (const gchar *text,
   if (length < 0)
     length = strlen (text);
 
-  str = g_string_new ("");
+  str = g_string_new (NULL);
   append_escaped_text (str, text, length);
 
   return g_string_free (str, FALSE);

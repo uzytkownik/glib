@@ -331,16 +331,19 @@ gboolean
 g_unichar_iswide (gunichar c)
 {
   if (c < 0x1100)
-    return 0;
+    return FALSE;
 
-  return ((c >= 0x1100 && c <= 0x115f)	   /* Hangul Jamo */
-	  || (c >= 0x2e80 && c <= 0xa4cf && (c & ~0x0011) != 0x300a &&
-	      c != 0x303f)		   /* CJK ... Yi */
-	  || (c >= 0xac00 && c <= 0xd7a3)  /* Hangul Syllables */
-	  || (c >= 0xf900 && c <= 0xfaff)  /* CJK Compatibility Ideographs */
-	  || (c >= 0xfe30 && c <= 0xfe6f)  /* CJK Compatibility Forms */
-	  || (c >= 0xff00 && c <= 0xff5f)  /* Fullwidth Forms */
-	  || (c >= 0xffe0 && c <= 0xffe6));
+  return (c <= 0x115f  /* Hangul Jamo init. consonants */ 
+          || c == 0x2329 || c == 0x232a     /* angle brackets */
+          || (c >= 0x2e80 && c <= 0xa4cf && (c < 0x302a || c > 0x302f) 
+              && c != 0x303f && c != 0x3099 && c!= 0x309a) /* CJK ... Yi */
+          || (c >= 0xac00 && c <= 0xd7a3)   /* Hangul Syllables */
+          || (c >= 0xf900 && c <= 0xfaff)   /* CJK Compatibility Ideographs */
+          || (c >= 0xfe30 && c <= 0xfe6f)   /* CJK Compatibility Forms */
+          || (c >= 0xff00 && c <= 0xff60)   /* Fullwidth Forms */
+          || (c >= 0xffe0 && c <= 0xffe6)   /* Fullwidth Forms */
+          || (c >= 0x20000 && c <= 0x2fffd) /* CJK extra stuff */
+          || (c >= 0x30000 && c <= 0x3fffd));
 }
 
 /**
@@ -533,10 +536,10 @@ get_locale_type (void)
 static int
 output_marks (const char **p_inout,
 	      char        *out_buffer,
-	      int          len,
 	      gboolean     remove_dot)
 {
   const char *p = *p_inout;
+  gint len = 0;
   
   while (*p)
     {
@@ -557,21 +560,21 @@ output_marks (const char **p_inout,
   return len;
 }
 
-static gsize
+static gint
 output_special_case (gchar *out_buffer,
-		     gsize  len,
 		     int    index,
 		     int    type,
 		     int    which)
 {
   const guchar *p = special_case_table[index];
+  gint len = 0;
 
   if (type != G_UNICODE_TITLECASE_LETTER)
     p += 2; /* +2 to skip over "best single match" */
 
   if (which == 1)
     {
-      while (p[0] && p[1])
+      while (p[0] || p[1])
 	p += 2;
       p += 2;
     }
@@ -632,7 +635,7 @@ real_toupper (const gchar *str,
 		    }
 		  g_free (decomp);
 		  
-		  len = output_marks (&p, out_buffer, len, TRUE);
+		  len += output_marks (&p, out_buffer ? out_buffer + len : NULL, TRUE);
 
 		  continue;
 		}
@@ -652,7 +655,7 @@ real_toupper (const gchar *str,
 	  /* Nasty, need to move it after other combining marks .. this would go away if
 	   * we normalized first.
 	   */
-	  len = output_marks (&p, out_buffer, len, FALSE);
+	  len += output_marks (&p, out_buffer ? out_buffer + len : NULL, FALSE);
 
 	  /* And output as GREEK CAPITAL LETTER IOTA */
 	  len += g_unichar_to_utf8 (0x399, out_buffer ? out_buffer + len : NULL); 	  
@@ -663,7 +666,7 @@ real_toupper (const gchar *str,
 
 	  if (val >= 0xd800 && val < 0xdc00)
 	    {
-	      len += output_special_case (out_buffer, len, val - 0xd800, t,
+	      len += output_special_case (out_buffer ? out_buffer + len : NULL, val - 0xd800, t,
 					  t == G_UNICODE_LOWERCASE_LETTER ? 0 : 1);
 	    }
 	  else
@@ -786,7 +789,7 @@ real_tolower (const gchar *str,
 
 	  if (val >= 0xd800 && val < 0xdc00)
 	    {
-	      len += output_special_case (out_buffer, len, val - 0xd800, t, 0);
+	      len += output_special_case (out_buffer ? out_buffer + len : NULL, val - 0xd800, t, 0);
 	    }
 	  else
 	    {

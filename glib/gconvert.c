@@ -870,8 +870,6 @@ g_convert_with_fallback (const gchar *str,
  * 
  */
 
-#ifndef G_PLATFORM_WIN32
-
 static gchar *
 strdup_len (const gchar *string,
 	    gssize       len,
@@ -912,8 +910,6 @@ strdup_len (const gchar *string,
   return g_strndup (string, real_len);
 }
 
-#endif
-
 /**
  * g_locale_to_utf8:
  * @opsysstring:   a string in the encoding of the current locale
@@ -945,104 +941,6 @@ g_locale_to_utf8 (const gchar  *opsysstring,
 		  gsize        *bytes_written,
 		  GError      **error)
 {
-#ifdef G_PLATFORM_WIN32
-
-  gint i, clen, total_len, wclen, first;
-  wchar_t *wcs, wc;
-  gchar *result, *bp;
-  const wchar_t *wcp;
-
-  if (len == -1)
-    len = strlen (opsysstring);
-  
-  wcs = g_new (wchar_t, len);
-  wclen = MultiByteToWideChar (CP_ACP, 0, opsysstring, len, wcs, len);
-
-  wcp = wcs;
-  total_len = 0;
-  for (i = 0; i < wclen; i++)
-    {
-      wc = *wcp++;
-
-      if (wc < 0x80)
-	total_len += 1;
-      else if (wc < 0x800)
-	total_len += 2;
-      else if (wc < 0x10000)
-	total_len += 3;
-      else if (wc < 0x200000)
-	total_len += 4;
-      else if (wc < 0x4000000)
-	total_len += 5;
-      else
-	total_len += 6;
-    }
-
-  result = g_malloc (total_len + 1);
-  
-  wcp = wcs;
-  bp = result;
-  for (i = 0; i < wclen; i++)
-    {
-      wc = *wcp++;
-
-      if (wc < 0x80)
-	{
-	  first = 0;
-	  clen = 1;
-	}
-      else if (wc < 0x800)
-	{
-	  first = 0xc0;
-	  clen = 2;
-	}
-      else if (wc < 0x10000)
-	{
-	  first = 0xe0;
-	  clen = 3;
-	}
-      else if (wc < 0x200000)
-	{
-	  first = 0xf0;
-	  clen = 4;
-	}
-      else if (wc < 0x4000000)
-	{
-	  first = 0xf8;
-	  clen = 5;
-	}
-      else
-	{
-	  first = 0xfc;
-	  clen = 6;
-	}
-      
-      /* Woo-hoo! */
-      switch (clen)
-	{
-	case 6: bp[5] = (wc & 0x3f) | 0x80; wc >>= 6; /* Fall through */
-	case 5: bp[4] = (wc & 0x3f) | 0x80; wc >>= 6; /* Fall through */
-	case 4: bp[3] = (wc & 0x3f) | 0x80; wc >>= 6; /* Fall through */
-	case 3: bp[2] = (wc & 0x3f) | 0x80; wc >>= 6; /* Fall through */
-	case 2: bp[1] = (wc & 0x3f) | 0x80; wc >>= 6; /* Fall through */
-	case 1: bp[0] = wc | first;
-	}
-
-      bp += clen;
-    }
-  *bp = 0;
-
-  g_free (wcs);
-
-  if (bytes_read)
-    *bytes_read = len;
-  if (bytes_written)
-    *bytes_written = total_len;
-  
-  return result;
-
-#else  /* !G_PLATFORM_WIN32 */
-
   const char *charset;
 
   if (g_get_charset (&charset))
@@ -1051,7 +949,6 @@ g_locale_to_utf8 (const gchar  *opsysstring,
     return g_convert (opsysstring, len, 
 		      "UTF-8", charset, bytes_read, bytes_written, error);
 
-#endif /* !G_PLATFORM_WIN32 */
 }
 
 /**
@@ -1085,110 +982,6 @@ g_locale_from_utf8 (const gchar *utf8string,
 		    gsize       *bytes_written,
 		    GError     **error)
 {
-#ifdef G_PLATFORM_WIN32
-
-  gint i, mask, clen, mblen;
-  wchar_t *wcs, *wcp;
-  gchar *result;
-  guchar *cp, *end, c;
-  gint n;
-  
-  if (len == -1)
-    len = strlen (utf8string);
-  
-  /* First convert to wide chars */
-  cp = (guchar *) utf8string;
-  end = cp + len;
-  n = 0;
-  wcs = g_new (wchar_t, len + 1);
-  wcp = wcs;
-  while (cp != end)
-    {
-      mask = 0;
-      c = *cp;
-
-      if (c < 0x80)
-	{
-	  clen = 1;
-	  mask = 0x7f;
-	}
-      else if ((c & 0xe0) == 0xc0)
-	{
-	  clen = 2;
-	  mask = 0x1f;
-	}
-      else if ((c & 0xf0) == 0xe0)
-	{
-	  clen = 3;
-	  mask = 0x0f;
-	}
-      else if ((c & 0xf8) == 0xf0)
-	{
-	  clen = 4;
-	  mask = 0x07;
-	}
-      else if ((c & 0xfc) == 0xf8)
-	{
-	  clen = 5;
-	  mask = 0x03;
-	}
-      else if ((c & 0xfc) == 0xfc)
-	{
-	  clen = 6;
-	  mask = 0x01;
-	}
-      else
-	{
-	  g_free (wcs);
-	  return NULL;
-	}
-
-      if (cp + clen > end)
-	{
-	  g_free (wcs);
-	  return NULL;
-	}
-
-      *wcp = (cp[0] & mask);
-      for (i = 1; i < clen; i++)
-	{
-	  if ((cp[i] & 0xc0) != 0x80)
-	    {
-	      g_free (wcs);
-	      return NULL;
-	    }
-	  *wcp <<= 6;
-	  *wcp |= (cp[i] & 0x3f);
-	}
-
-      cp += clen;
-      wcp++;
-      n++;
-    }
-  if (cp != end)
-    {
-      g_free (wcs);
-      return NULL;
-    }
-
-  /* n is the number of wide chars constructed */
-
-  /* Convert to a string in the current ANSI codepage */
-
-  result = g_new (gchar, 3 * n + 1);
-  mblen = WideCharToMultiByte (CP_ACP, 0, wcs, n, result, 3*n, NULL, NULL);
-  result[mblen] = 0;
-  g_free (wcs);
-
-  if (bytes_read)
-    *bytes_read = len;
-  if (bytes_written)
-    *bytes_written = mblen;
-  
-  return result;
-
-#else  /* !G_PLATFORM_WIN32 */
-  
   const gchar *charset;
 
   if (g_get_charset (&charset))
@@ -1196,8 +989,6 @@ g_locale_from_utf8 (const gchar *utf8string,
   else
     return g_convert (utf8string, len,
 		      charset, "UTF-8", bytes_read, bytes_written, error);
-
-#endif /* !G_PLATFORM_WIN32 */
 }
 
 #ifndef G_PLATFORM_WIN32
@@ -1342,8 +1133,7 @@ has_case_prefix (const gchar *haystack, const gchar *needle)
 typedef enum {
   UNSAFE_ALL        = 0x1,  /* Escape all unsafe characters   */
   UNSAFE_ALLOW_PLUS = 0x2,  /* Allows '+'  */
-  UNSAFE_PATH       = 0x4,  /* Allows '/' and '?' and '&' and '='  */
-  UNSAFE_DOS_PATH   = 0x8,  /* Allows '/' and '?' and '&' and '=' and ':' */
+  UNSAFE_PATH       = 0x8,  /* Allows '/', '&', '=', ':', '@', '+', '$' and ',' */
   UNSAFE_HOST       = 0x10, /* Allows '/' and ':' and '@' */
   UNSAFE_SLASHES    = 0x20  /* Allows all characters except for '/' and '%' */
 } UnsafeCharacterSet;
@@ -1351,11 +1141,11 @@ typedef enum {
 static const guchar acceptable[96] = {
   /* A table of the ASCII chars from space (32) to DEL (127) */
   /*      !    "    #    $    %    &    '    (    )    *    +    ,    -    .    / */ 
-  0x00,0x3F,0x20,0x20,0x20,0x00,0x2C,0x3F,0x3F,0x3F,0x3F,0x22,0x20,0x3F,0x3F,0x1C,
+  0x00,0x3F,0x20,0x20,0x28,0x00,0x2C,0x3F,0x3F,0x3F,0x3F,0x2A,0x28,0x3F,0x3F,0x1C,
   /* 0    1    2    3    4    5    6    7    8    9    :    ;    <    =    >    ? */
-  0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x38,0x20,0x20,0x2C,0x20,0x2C,
+  0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x38,0x20,0x20,0x2C,0x20,0x20,
   /* @    A    B    C    D    E    F    G    H    I    J    K    L    M    N    O */
-  0x30,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,
+  0x38,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,
   /* P    Q    R    S    T    U    V    W    X    Y    Z    [    \    ]    ^    _ */
   0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x20,0x20,0x20,0x20,0x3F,
   /* `    a    b    c    d    e    f    g    h    i    j    k    l    m    n    o */
@@ -1384,7 +1174,6 @@ g_escape_uri_string (const gchar *string,
   g_return_val_if_fail (mask == UNSAFE_ALL
 			|| mask == UNSAFE_ALLOW_PLUS
 			|| mask == UNSAFE_PATH
-			|| mask == UNSAFE_DOS_PATH
 			|| mask == UNSAFE_HOST
 			|| mask == UNSAFE_SLASHES, NULL);
   
@@ -1450,7 +1239,7 @@ g_escape_file_uri (const gchar *hostname,
       escaped_hostname = g_escape_uri_string (hostname, UNSAFE_HOST);
     }
 
-  escaped_path = g_escape_uri_string (pathname, UNSAFE_DOS_PATH);
+  escaped_path = g_escape_uri_string (pathname, UNSAFE_PATH);
 
   res = g_strconcat ("file://",
 		     (escaped_hostname) ? escaped_hostname : "",

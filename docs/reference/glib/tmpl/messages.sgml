@@ -11,6 +11,10 @@ used for debugging.
 </para>
 
 <para>
+Note that the formatted messages must not exceed 1024 bytes. Longer messages will be truncated. 
+</para>
+
+<para>
 There are several built-in levels of messages, defined in #GLogLevelFlags.
 These can be extended with user-defined levels.
 </para>
@@ -242,7 +246,6 @@ and if the log level is fatal it calls <function>abort()</function>.
 <para>
 stderr is used for levels %G_LOG_LEVEL_ERROR, %G_LOG_LEVEL_CRITICAL, and
 %G_LOG_LEVEL_WARNING. stdout is used for the rest.
-(On the Windows platform, stdout is always used.)
 </para>
 
 @log_domain: the log domain of the message.

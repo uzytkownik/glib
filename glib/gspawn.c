@@ -148,7 +148,7 @@ read_data (GString *str,
 
  again:
   
-  bytes = read (fd, &buf, 4096);
+  bytes = read (fd, buf, 4096);
 
   if (bytes == 0)
     return READ_EOF;
@@ -263,12 +263,12 @@ g_spawn_sync (const gchar          *working_directory,
 
   if (outpipe >= 0)
     {
-      outstr = g_string_new ("");
+      outstr = g_string_new (NULL);
     }
       
   if (errpipe >= 0)
     {
-      errstr = g_string_new ("");
+      errstr = g_string_new (NULL);
     }
 
   /* Read data until we get EOF on both pipes. */
@@ -432,6 +432,24 @@ g_spawn_sync (const gchar          *working_directory,
  * the program must be a full path; the <envar>PATH</envar> shell variable 
  * will only be searched if you pass the %G_SPAWN_SEARCH_PATH flag.
  *
+ * On Windows, the low-level child process creation API
+ * (<function>CreateProcess()</function>)doesn't use argument vectors,
+ * but a command line. The C runtime library's
+ * <function>spawn*()</function> family of functions (which
+ * g_spawn_async_with_pipes() eventually calls) paste the argument
+ * vector elements into a command line, and the C runtime startup code
+ * does a corresponding recostruction of an argument vector from the
+ * command line, to be passed to
+ * <function>main()</function>. Complications arise when you have
+ * argument vector elements that contain spaces of double quotes. The
+ * <function>spawn()</function> functions don't do any quoting or
+ * escaping, but on the other hand the startup code does do unquoting
+ * and unescaping in order to enable receiving arguments with embedded
+ * spaces or double quotes. To work around this asymmetry,
+ * g_spawn_async_with_pipes() will do quoting and escaping on argument
+ * vector elements that need it before calling the C runtime
+ * <function>spawn()</function> function.
+ *
  * @envp is a %NULL-terminated array of strings, where each string
  * has the form <literal>KEY=VALUE</literal>. This will become
  * the child's environment. If @envp is %NULL, the child inherits its
@@ -584,11 +602,11 @@ g_spawn_async_with_pipes (const gchar          *working_directory,
  * 
  * On Windows, please note the implications of g_shell_parse_argv()
  * parsing @command_line. Space is a separator, and backslashes are
- * special. Thus you cannot simply pass a @command_line consisting of
- * a canonical Windows path, like "c:\\program files\\app\\app.exe",
- * as the backslashes will be eaten, and the space will act as a
- * separator. You need to enclose the path with single quotes, like
- * "'c:\\program files\\app\\app.exe'".
+ * special. Thus you cannot simply pass a @command_line containing
+ * canonical Windows paths, like "c:\\program files\\app\\app.exe", as
+ * the backslashes will be eaten, and the space will act as a
+ * separator. You need to enclose such paths with single quotes, like
+ * "'c:\\program files\\app\\app.exe' 'e:\\folder\\argument.txt'".
  *
  * Return value: %TRUE on success, %FALSE if an error was set
  **/
@@ -775,13 +793,36 @@ exec_err_to_g_error (gint en)
     }
 }
 
+static gssize
+write_all (gint fd, gconstpointer vbuf, gsize to_write)
+{
+  gchar *buf = (gchar *) vbuf;
+  
+  while (to_write > 0)
+    {
+      gssize count = write (fd, buf, to_write);
+      if (count < 0)
+        {
+          if (errno != EINTR)
+            return FALSE;
+        }
+      else
+        {
+          to_write -= count;
+          buf += count;
+        }
+    }
+  
+  return TRUE;
+}
+
 static void
 write_err_and_exit (gint fd, gint msg)
 {
   gint en = errno;
   
-  write (fd, &msg, sizeof(msg));
-  write (fd, &en, sizeof(en));
+  write_all (fd, &msg, sizeof(msg));
+  write_all (fd, &en, sizeof(en));
   
   _exit (1);
 }
@@ -1063,8 +1104,8 @@ fork_exec_with_pipes (gboolean              intermediate_child,
           if (grandchild_pid < 0)
             {
               /* report -1 as child PID */
-              write (child_pid_report_pipe[1], &grandchild_pid,
-                     sizeof(grandchild_pid));
+              write_all (child_pid_report_pipe[1], &grandchild_pid,
+                         sizeof(grandchild_pid));
               
               write_err_and_exit (child_err_report_pipe[1],
                                   CHILD_FORK_FAILED);              
@@ -1089,7 +1130,7 @@ fork_exec_with_pipes (gboolean              intermediate_child,
             }
           else
             {
-              write (child_pid_report_pipe[1], &grandchild_pid, sizeof(grandchild_pid));
+              write_all (child_pid_report_pipe[1], &grandchild_pid, sizeof(grandchild_pid));
               close_and_invalidate (&child_pid_report_pipe[1]);
               
               _exit (0);

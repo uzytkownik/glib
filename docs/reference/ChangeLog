@@ -1,3 +1,70 @@
+2003-08-08  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/tmpl/macros_misc.sgml: Copy the G_GNUC_DEPRECATED docs from HEAD.
+
+	* glib/glib-docs.sgml: 
+	* gobject/gobject-docs.sgml: Add an index of all symbols.
+
+2003-08-05  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/tmpl/string_utils.sgml:  Add note about in-place editing to g_strdelimit() doc.
+	(#118875, Thomas Vander Stichele)
+
+2003-07-24  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/tmpl/messages.sgml: Mention the restriction on message length.  (#118043, Martyn Russell)
+
+2003-07-02  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/tmpl/string_utils.sgml: Document g_strfreev(NULL).
+
+2003-06-19  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/tmpl/misc_utils.sgml: Move g_path_get_basename() docs inline.
+
+Sun Jun  8 12:28:39 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/tmpl/error_reporting.sgml: XML fix.
+
+	* glib/glib-sections.txt: Updated.
+
+2003-06-06  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/tmpl/limits.sgml: Correct the documentation for
+	G_MINFLOAT and G_MINDOUBLE.  (#114513, Christophe Fergeau)
+
+2003-05-28  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/tmpl/string_utils.sgml: Document that g_strdup() and
+	g_strndup() accept NULL.  (#106987, Christian Biere)
+
+2003-04-18  Matthias Clasen  <maclas@gmx.de>
+
+	* gobject/tmpl/signals.sgml: Correct the documentation
+	GSignalEmissionHook (#110906) and some cleanups.
+
+2003-04-01  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/tmpl/error_reporting.sgml: 
+	* glib/tmpl/random_numbers.sgml: 
+	* glib/tmpl/arrays_pointer.sgml: 
+	* glib/tmpl/arrays.sgml: Fix formatting of examples.
+
+2003-03-31  Sven Neumann  <sven@gimp.org>
+
+	* gobject/tmpl/param_value_types.sgml: removed docs for
+	g_param_spec_ulong() since this function is documented inline.
+
+2003-02-11  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/tmpl/string_utils.sgml: Fix an off-by-one error in the
+	g_strescape() docs.  (#105431, Phillip Vandry)
+
+2003-01-01  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/tmpl/messages.sgml (g_log_default_handler): Remove note
+	that only stdout would be used on Windows, no longer true.
+
 2002-12-15  Matthias Clasen  <maclas@gmx.de>
 
 	* gobject/tmpl/param_value_types.sgml: Move some docs inline.

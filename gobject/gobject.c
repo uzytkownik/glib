@@ -260,7 +260,7 @@ g_object_do_class_init (GObjectClass *class)
 
 /**
  * g_object_class_install_property:
- * @class: a #GObjectClass
+ * @oclass: a #GObjectClass
  * @property_id: the id for the new property
  * @pspec: the #GParamSpec for the new property
  * 
@@ -589,7 +589,7 @@ object_set_property (GObject             *object,
     {
       gchar *contents = g_strdup_value_contents (value);
 
-      g_warning ("value \"%s\" of type `%s' is invalid for property `%s' of type `%s'",
+      g_warning ("value \"%s\" of type `%s' is invalid or out of range for property `%s' of type `%s'",
 		 contents,
 		 G_VALUE_TYPE_NAME (value),
 		 pspec->name,
@@ -1538,14 +1538,12 @@ void
 g_value_set_object (GValue   *value,
 		    gpointer  v_object)
 {
+  GObject *old;
+	
   g_return_if_fail (G_VALUE_HOLDS_OBJECT (value));
-  
-  if (value->data[0].v_pointer)
-    {
-      g_object_unref (value->data[0].v_pointer);
-      value->data[0].v_pointer = NULL;
-    }
 
+  old = value->data[0].v_pointer;
+  
   if (v_object)
     {
       g_return_if_fail (G_IS_OBJECT (v_object));
@@ -1554,6 +1552,11 @@ g_value_set_object (GValue   *value,
       value->data[0].v_pointer = v_object;
       g_object_ref (value->data[0].v_pointer);
     }
+  else
+    value->data[0].v_pointer = NULL;
+  
+  if (old)
+    g_object_unref (old);
 }
 
 void

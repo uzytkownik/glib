@@ -125,6 +125,8 @@
 # include <unistd.h>
 #endif
 #if defined(TRIO_PLATFORM_WIN32)
+# include <locale.h>
+# define USE_LOCALE
 # include <io.h>
 # define read _read
 # define write _write
@@ -3907,7 +3909,7 @@ TRIO_VARGS4((buffer, max, format, va_alist),
   int status;
   va_list args;
 
-  assert(VALID(buffer));
+  assert(max == 0 || VALID(buffer));
   assert(VALID(format));
 
   TRIO_VA_START(args, format);
@@ -3938,7 +3940,7 @@ TRIO_ARGS4((buffer, max, format, args),
 {
   int status;
 
-  assert(VALID(buffer));
+  assert(max == 0 || VALID(buffer));
   assert(VALID(format));
 
   status = TrioFormat(&buffer, max > 0 ? max - 1 : 0,
