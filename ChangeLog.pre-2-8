@@ -1,3 +1,215 @@
+2004-07-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.5 ===
+
+	* NEWS: Updates 
+
+2004-07-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gconvert.c (g_unescape_uri_string): Don't validate
+	for UTF-8 here.  (#148420, Robert Ögren)
+
+	* tests/uri-test.c (run_roundtrip_tests): Add tests for 
+	roundtrip compatibility. Going from filename to uri and 
+	back should always give you the same filename back. 
+
+2004-07-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* tests/markups/valid-{9,10,11}.gmarkup: 
+	* tests/markups/fail-{37,38,39}.gmarkup: Tests for handling
+	of whitespace inside tags.
+
+	* glib/gmarkup.c (enum GMarkupParseState): Add 
+	STATE_AFTER_ATTRIBUTE_NAME and STATE_AFTER_CLOSE_TAG_NAME.
+	(g_markup_parse_context_parse): Accept whitespace between
+	attribute names, '=' and attribute values and between
+	close tag name and '>'. (#148646, Hiroyuki Ikezoe)
+
+Sat Jul 24 17:50:07 2004  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* glib/gstrfuncs.c (g_strsplit_set):
+	s/g_strtokenize/g_strsplit_set/ in docs.
+
+Fri Jul 23 10:40:43 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* tests/type-test.c (main): Actually test G_MAXSIZE with a 
+	gsize variable.
+
+Thu Jul  8 00:51:30 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gi18n.h: Remove the ENABLE_NLS check, since GLib can't
+	be built without anyway.  (#135899, Murray Cumming)
+
+2004-07-21  Matthias Clasen  <mclasen@redhat.com>
+
+	Fix #132858, Sven Neumann, patch by James Henstridge:
+	
+	* glib-gettextize.in: modify so that mkinstalldirs will 
+	get installed into auxdir.
+
+	* Makefile.am (gettext_SCRIPTS): install mkinstalldirs.
+
+2004-07-21  Matthias Clasen  <mclasen@redhat.com>
+
+	Fix #147651, reported by Oliver Guntermann:
+
+	* glib/gprintfint.h (_g_vasprintf): Don't wrap vasprintf(),
+	_g_gnulib_vasprintf() in a macro, since they behave 
+	differently wrt. to memory allocation.
+
+	* glib/gprintf.c (g_vasprintf): Instead, differentiate 
+	here between the three cases: system vasprintf(), 
+	_g_gnulib_vasprintf(), no vasprintf().  
+
+2004-07-09  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Bump version.
+
+2004-07-09  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.4 ===
+
+	* configure.in: Sync version with GTK+ again.
+
+	* NEWS: Updates
+
+2004-07-09  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gdir.c (g_dir_open): Convert filename to UTF-8 
+	before using it in the error message.  (#146054, Federico
+	Mena Quintero)
+
+Mon Jul  5 18:42:30 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gnulib/Makefile.am (INCLUDES): Add top_srcdir to 
+	make srcdir != . work.  (#145166, Kaz Sasayama)
+
+Sun Jul  4 01:52:18 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* configure.in: Use a small test library instead of
+	libpthread.so for testing RTLD_GLOBAL brokenness.  (#139567,
+	Julio M. Merino Vidal)
+
+2004-07-01  John Ehresman  <jpe@wingide.com>
+
+	* glib/giowin32.c (g_io_channel_win32_init, g_io_win32_free)
+	Initialize reset_send & reset_recv fields and don't close
+	sockets unless they were created.  (#145153)
+
+Fri Jun 11 22:56:46 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gscanner.c (g_scanner_get_token_ll): Ignore a 
+	missing newline at EOF for single line comments.  
+	(#83674, Sven Neumann)
+
+Thu Jun 10 23:38:02 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* tests/printf-test.c (TEST): Actually set any_failed on 
+	failure.  (#143552, Philippe Blain)
+
+2004-06-09  Federico Mena Quintero  <federico@ximian.com>
+
+	Merge from HEAD:
+
+	* tests/uri-test.c (to_uri_tests): Fix expected results (ha ha)
+	for URIs that *should* have been invalid, or viceversa.
+	(from_uri_tests): Likewise.
+
+2004-06-08  Pawan Chitrakar  <pawan@nplinux.org>
+
+	* configure.in:Added "ne" (Nepali) in ALL_LINGUAS
+
+2004-06-07  Federico Mena Quintero  <federico@ximian.com>
+
+	* README.in: Added a note about the changes below.
+
+	Merge from HEAD:
+
+	Fixes #140532.
+
+	* glib/gconvert.c (is_asciialphanum): Renamed from
+	is_escalphanum(); ensures that this is an ASCII character.
+	(is_asciiescalpha): Renamed from is_escalpha().
+	(hostname_validate): Use the two functions above.
+	(g_filename_to_uri): Don't convert the filename to UTF-8.
+	(g_filename_from_uri): Don't convert the filename from UTF-8.
+
+Mon Jun  7 22:25:24 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* tests/run-markup-tests.sh: Default to silence, but support
+	a -v argument to get the old output back. 
+
+2004-06-06  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gutils.c (g_get_any_init): Check home for being
+	NULL. (#143812, Ivan Wong)
+
+2004-06-04  Manish Singh  <yosh@gimp.org>
+
+	* glib/galloca.h: cpp #directives should always have the "#" in the
+	first column of the the line. Do that for "#pragma alloca". Fixes
+	bug #143744.
+ 
+2004-06-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Bump version to 2.4.3
+
+	* === Released 2.4.2 ===
+
+	* NEWS: Updates
+
+Tue Jun  1 21:56:31 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gmarkup.c (advance_char): Fix an off-by-one error 
+	in g_markup_parse_context_parse().  (#142794, Morten Welinder)
+
+Sun May 16 23:20:33 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gcompletion.c (g_completion_add_items):
+	(g_completion_remove_items): Remove unnecessary 
+	checks.  (#142559, Morten Welinder)
+
+2004-05-15  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gutils.c (g_get_any_init): [Win32] Only believe HOME if it
+	is an absolute path and exists. (#138618)
+
+2004-05-14  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gnulib/vasnprintf.c (vasnprintf): Handle empty digit string
+	for precision correctly. (#142400)
+
+	For backward compatibility with the Trio implementation, make "ll"
+	format modifer work on Win32, too. Change into "I64" before
+	passing to the system printf. (#142433)
+
+	* tests/printf-test.c (main): Add tests for the above.
+
+2004-05-10  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gmain.c (block_source, unblock_source): Make these 
+	static.  (#142230, Morten Welinder)
+
+2004-05-10  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/giowin32.c (g_win32_print_gioflags): Remove two duplicated
+	lines. Thanks to Benoît Carpentier.
+
+Sun May  9 02:04:14 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/guniprop.c (g_utf8_casefold): Avoid an unnecessary
+	memleak.  (#141998, Nikolai Weibull)
+
+Sat May  8 23:02:26 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gutils.h: Remove vestigial g_get_codeset().
+	* glib/gutils.c (g_get_codeset): Call g_get_charset().
+	(#137703, Owen Taylor)
+
+2004-05-06  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Bump version number to 2.4.2.
+
 2004-05-03  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
 	* configure.in: Added Walloon (wa) to ALL_LINGUAS
@@ -12,6 +224,14 @@ Sun May  2 03:51:59 2004  Manish Singh  <yosh@gimp.org>
 	* glib/gnulib/Makefile.am : added makefile.msc to EXTRA_DIST
 	fixes #141563, Steve Lhomme
 
+2004-04-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.1 ===
+
+	* configure.in: Version 2.4.1, interface age 1. 
+
+	* NEWS: Updates
+	
 2004-04-25  Tor Lillqvist  <tml@iki.fi>
 
 	* glib/gwin32.c (g_win32_get_package_installation_subdirectory):
