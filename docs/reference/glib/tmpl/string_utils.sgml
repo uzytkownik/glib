@@ -27,6 +27,7 @@ in order to use the printf() functions.
 <!-- ##### FUNCTION g_strdup ##### -->
 <para>
 Duplicates a string.
+If @str is %NULL it returns %NULL.
 The returned string should be freed when no longer needed.
 </para>
 
@@ -39,6 +40,7 @@ The returned string should be freed when no longer needed.
 Duplicates the first @n characters of a string, returning a newly-allocated
 buffer @n + 1 characters long which will always be nul-terminated.
 If @str is less than @n characters long the buffer is padded with nuls.
+If @str is %NULL it returns %NULL.
 The returned value should be freed when no longer needed.
 </para>
 
@@ -739,7 +741,7 @@ The standard delimiters, used in g_strdelimit().
 Escapes the special characters '\b', '\f', '\n', '\r', '\t', '\' and
 '&quot;' in the string @source by inserting a '\' before
 them. Additionally all characters in the range 0x01-0x1F (everything
-below SPACE) and in the range 0x80-0xFF (all non-ASCII chars) are
+below SPACE) and in the range 0x7F-0xFF (all non-ASCII chars) are
 replaced with a '\' followed by their octal representation. Characters
 supplied in @exceptions are not escaped.
 </para>

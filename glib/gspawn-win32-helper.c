@@ -37,7 +37,7 @@ write_err_and_exit (gint fd,
   
   if (debug)
     {
-      debugstring = g_string_new ("");
+      debugstring = g_string_new (NULL);
       g_string_append (debugstring,
 		       g_strdup_printf ("writing error code %d and errno %d",
 					msg, en));
@@ -76,12 +76,13 @@ WinMain (struct HINSTANCE__ *hInstance,
   int handle;
   int no_error = CHILD_NO_ERROR;
   int zero = 0;
+  gchar **new_argv;
 
   SETUP_DEBUG();
 
   if (debug)
     {
-      debugstring = g_string_new ("");
+      debugstring = g_string_new (NULL);
 
       g_string_append (debugstring,
 		       g_strdup_printf ("g-spawn-win32-helper: "
@@ -204,9 +205,14 @@ WinMain (struct HINSTANCE__ *hInstance,
    * __argv[ARG_PROGRAM+1]... is its __argv.
    */
 
+  protect_argv (__argv, &new_argv);
+
+  /* For the program name passed to spawnv(), don't use the quoted
+   * version. */
+
   if (debug)
     {
-      debugstring = g_string_new ("");
+      debugstring = g_string_new (NULL);
       g_string_append (debugstring,
 		       g_strdup_printf ("calling %s %s mode=%s argv: ",
 					(__argv[ARG_USE_PATH][0] == 'y' ?
@@ -215,23 +221,23 @@ WinMain (struct HINSTANCE__ *hInstance,
 					(mode == P_WAIT ?
 					 "P_WAIT" : "P_NOWAIT")));
       i = ARG_PROGRAM+1;
-      while (__argv[i])
+      while (new_argv[i])
 	{
-	  g_string_append (debugstring, __argv[i++]);
-	  if (__argv[i])
+	  g_string_append (debugstring, new_argv[i++]);
+	  if (new_argv[i])
 	    g_string_append (debugstring, " ");
 	}
       MessageBox (NULL, debugstring->str, "gspawn-win32-helper", 0);
     }
 
-  if (__argv[ARG_USE_PATH][0] == 'y')
-    handle = spawnvp (mode, __argv[ARG_PROGRAM], __argv+ARG_PROGRAM);
+  if (new_argv[ARG_USE_PATH][0] == 'y')
+    handle = spawnvp (mode, __argv[ARG_PROGRAM], new_argv+ARG_PROGRAM);
   else
-    handle = spawnv (mode, __argv[ARG_PROGRAM], __argv+ARG_PROGRAM);
+    handle = spawnv (mode, __argv[ARG_PROGRAM], new_argv+ARG_PROGRAM);
 
   if (debug)
     {
-      debugstring = g_string_new ("");
+      debugstring = g_string_new (NULL);
       g_string_append (debugstring,
 		       g_strdup_printf ("%s returned %#x",
 					(__argv[ARG_USE_PATH][0] == 'y' ?

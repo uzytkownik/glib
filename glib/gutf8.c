@@ -97,8 +97,9 @@
 
 #define UNICODE_VALID(Char)                   \
     ((Char) < 0x110000 &&                     \
-     ((Char) < 0xD800 || (Char) >= 0xE000) && \
-     (Char) != 0xFFFE && (Char) != 0xFFFF)
+     (((Char) & 0xFFFFF800) != 0xD800) &&     \
+     ((Char) < 0xFDD0 || (Char) > 0xFDEF) &&  \
+     ((Char) & 0xFFFE) != 0xFFFE)
    
      
 static const gchar utf8_skip_data[256] = {
@@ -213,6 +214,7 @@ g_utf8_strlen (const gchar *p,
 {
   glong len = 0;
   const gchar *start = p;
+  g_return_val_if_fail (p != NULL || max == 0, 0);
 
   if (max < 0)
     {
