@@ -1,3 +1,32 @@
+2004-06-04  Matthias Clasen  <mclasen@redhat.com>
+
+ 	* === Released 2.4.2 ===
+
+2004-05-25  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation.
+
+2004-05-09  Christian Neumair  <chris@gnome-de.org>
+
+	* de.po: Updated German translation.
+
+2004-05-10  Funda Wang  <fundawang@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation.
+
+2004-05-09  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2004-05-08  Gustavo Noronha Silva  <kov@beterraba.horta>
+
+	* pt_BR.po: translation update done by
+	  "Raphael Higino" <raphaelh@uai.com.br>
+
+2004-05-08  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
 2004-05-04  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* no.po: Updated Norwegian translation.
