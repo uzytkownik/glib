@@ -30,15 +30,12 @@ extern "C" {
 #define	G_MODULE_IMPL_DLD	2
 #define	G_MODULE_IMPL_WIN32	3
 
-#define	G_MODULE_IMPL		@G_MODULE_IMPL@
+#define	G_MODULE_IMPL		G_MODULE_IMPL_WIN32
 #undef	G_MODULE_HAVE_DLERROR
-#if	(@G_MODULE_HAVE_DLERROR@)
-#define	G_MODULE_HAVE_DLERROR
-#endif
-#if	(@G_MODULE_NEED_USCORE@) || defined (hp9000s300) || defined (__hp9000s300) || defined (__hp9000s300__)
-#define	G_MODULE_NEED_USCORE
-#endif
 
+#ifdef __LCC__
+#define G_MODULE_NEED_USCORE
+#endif
 
 #ifdef __cplusplus
 }
