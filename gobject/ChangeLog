@@ -1,3 +1,31 @@
+Mon May 20 15:57:47 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* gsignal.c: When printing errors, handle NULL
+	returns from g_type_debug(). (#73559, Laszlo Peter)
+
+	* gtype.c (type_descriptive_name_I): De-inline,
+	since it's only used for debugging.
+
+Tue May  7 15:03:02 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* glib-genmarshal.c: Fix include order for config.h (#71704,
+	Morten Welinder)
+
+2002-05-07  Michael Natterer  <mitch@gimp.org>
+
+	* Makefile.am: use the glib-genmarshal found at configure time
+	if CROSS_COMPILING is set, use the one which was just built
+	otherwise.
+
+Mon May  6 16:06:23 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* gobject.c: Remove PROPERTIES_CHANGED enumeration
+	value that wasn't used any more. (#78833, 
+	Matthias Clasen)
+
+	* gboxed.c (g_boxed_copy): Remove check on data[2]
+	that no longer exists. (#80814, Daniel Elstner)
+
 Tue Mar 26 15:21:47 2002  Owen Taylor  <otaylor@redhat.com>
 
 	* gsignal.h (g_signal_handlers_*_by_func): Add explicit
