@@ -1,5 +1,5 @@
 # Macro to add for using GNU gettext.
-# Ulrich Drepper <drepper@cygnus.com>, 1995.
+# Ulrich Drepper <drepper@cygnus.com>, 1995, 1996
 #
 # Modified to never use included libintl. 
 # Owen Taylor <otaylor@redhat.com>, 12/15/1998
@@ -16,6 +16,55 @@
 # we run 'aclocal -I macros/' then we'll run into problems
 # once we've installed glib-gettext.m4 :-( ]
 #
+
+AC_DEFUN([AM_GLIB_LC_MESSAGES],
+  [if test $ac_cv_header_locale_h = yes; then
+    AC_CACHE_CHECK([for LC_MESSAGES], am_cv_val_LC_MESSAGES,
+      [AC_TRY_LINK([#include <locale.h>], [return LC_MESSAGES],
+       am_cv_val_LC_MESSAGES=yes, am_cv_val_LC_MESSAGES=no)])
+    if test $am_cv_val_LC_MESSAGES = yes; then
+      AC_DEFINE(HAVE_LC_MESSAGES, 1,
+        [Define if your <locale.h> file defines LC_MESSAGES.])
+    fi
+  fi])
+
+dnl AM_GLIB_PATH_PROG_WITH_TEST(VARIABLE, PROG-TO-CHECK-FOR,
+dnl   TEST-PERFORMED-ON-FOUND_PROGRAM [, VALUE-IF-NOT-FOUND [, PATH]])
+AC_DEFUN([AM_GLIB_PATH_PROG_WITH_TEST],
+[# Extract the first word of "$2", so it can be a program name with args.
+set dummy $2; ac_word=[$]2
+AC_MSG_CHECKING([for $ac_word])
+AC_CACHE_VAL(ac_cv_path_$1,
+[case "[$]$1" in
+  /*)
+  ac_cv_path_$1="[$]$1" # Let the user override the test with a path.
+  ;;
+  *)
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+  for ac_dir in ifelse([$5], , $PATH, [$5]); do
+    test -z "$ac_dir" && ac_dir=.
+    if test -f $ac_dir/$ac_word; then
+      if [$3]; then
+	ac_cv_path_$1="$ac_dir/$ac_word"
+	break
+      fi
+    fi
+  done
+  IFS="$ac_save_ifs"
+dnl If no 4th arg is given, leave the cache variable unset,
+dnl so AC_PATH_PROGS will keep looking.
+ifelse([$4], , , [  test -z "[$]ac_cv_path_$1" && ac_cv_path_$1="$4"
+])dnl
+  ;;
+esac])dnl
+$1="$ac_cv_path_$1"
+if test ifelse([$4], , [-n "[$]$1"], ["[$]$1" != "$4"]); then
+  AC_MSG_RESULT([$]$1)
+else
+  AC_MSG_RESULT(no)
+fi
+AC_SUBST($1)dnl
+])
 
 # serial 5
 
@@ -36,36 +85,45 @@ AC_DEFUN(AM_GLIB_WITH_NLS,
       nls_cv_header_intl=
       nls_cv_header_libgt=
       CATOBJEXT=NONE
+      XGETTEXT=:
 
       AC_CHECK_HEADER(libintl.h,
         [AC_CACHE_CHECK([for dgettext in libc], gt_cv_func_dgettext_libc,
 	  [AC_TRY_LINK([#include <libintl.h>], [return (int) dgettext ("","")],
 	    gt_cv_func_dgettext_libc=yes, gt_cv_func_dgettext_libc=no)])
 
-	  if test "$gt_cv_func_dgettext_libc" != "yes"; then
+          gt_cv_func_dgettext_libintl="no"
+          libintl_extra_libs=""
+
+	  if test "$gt_cv_func_dgettext_libc" != "yes" ; then
 	    AC_CHECK_LIB(intl, bindtextdomain,
-	      [AC_CACHE_CHECK([for dgettext in libintl],
-	        gt_cv_func_dgettext_libintl,
-	        [AC_CHECK_LIB(intl, dgettext,
-		  gt_cv_func_dgettext_libintl=yes,
-		  gt_cv_func_dgettext_libintl=no)],
-	        gt_cv_func_dgettext_libintl=no)])
-	  fi
+              [AC_CHECK_LIB(intl, dgettext,
+                            gt_cv_func_dgettext_libintl=yes)])
+
+	    if test "$gt_cv_func_dgettext_libc" != "yes" ; then
+              AC_MSG_CHECKING([if -liconv is needed to use gettext])
+              AC_MSG_RESULT([])
+              AC_CHECK_LIB(intl, dcgettext,
+                           [gt_cv_func_dgettext_libintl=yes
+                            libintl_extra_libs=-liconv],
+                           :,-liconv)
+            fi
+          fi
 
           if test "$gt_cv_func_dgettext_libintl" = "yes"; then
-	    LIBS="$LIBS -lintl";
+	    LIBS="$LIBS -lintl $libintl_extra_libs";
           fi
 
 	  if test "$gt_cv_func_dgettext_libc" = "yes" \
 	    || test "$gt_cv_func_dgettext_libintl" = "yes"; then
 	    AC_DEFINE(HAVE_GETTEXT,1,
               [Define if the GNU gettext() function is already present or preinstalled.])
-	    AM_PATH_PROG_WITH_TEST(MSGFMT, msgfmt,
+	    AM_GLIB_PATH_PROG_WITH_TEST(MSGFMT, msgfmt,
  	      [test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], no)dnl
 	    if test "$MSGFMT" != "no"; then
 	      AC_CHECK_FUNCS(dcgettext)
 	      AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
-	      AM_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
+	      AM_GLIB_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
 	        [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
 	      AC_TRY_LINK(, [extern int _nl_msg_cat_cntr;
 		 	     return _nl_msg_cat_cntr],
@@ -80,7 +138,7 @@ AC_DEFUN(AM_GLIB_WITH_NLS,
 	  # Added by Martin Baulig 12/15/98 for libc5 systems
 	  if test "$gt_cv_func_dgettext_libc" != "yes" \
 	    && test "$gt_cv_func_dgettext_libintl" = "yes"; then
-	    INTLLIBS=-lintl
+	    INTLLIBS="-lintl $libintl_extra_libs"
 	    LIBS=`echo $LIBS | sed -e 's/-lintl//'`
 	  fi
       ])
@@ -159,7 +217,7 @@ unistd.h sys/param.h])
    AC_CHECK_FUNCS([getcwd munmap putenv setenv setlocale strchr strcasecmp \
 strdup __argz_count __argz_stringify __argz_next])
 
-   AM_LC_MESSAGES
+   AM_GLIB_LC_MESSAGES
    AM_GLIB_WITH_NLS
 
    if test "x$CATOBJEXT" != "x"; then

@@ -97,6 +97,7 @@ struct _GMarkupParseContext
 
   guint document_empty : 1;
   guint parsing : 1;
+  gint balance;
 };
 
 /**
@@ -153,6 +154,8 @@ g_markup_parse_context_new (const GMarkupParser *parser,
 
   context->document_empty = TRUE;
   context->parsing = FALSE;
+
+  context->balance = 0;
 
   return context;
 }
@@ -270,6 +273,44 @@ utf8_str (const gchar *utf8,
   return buf;
 }
 
+static gboolean
+str_has_suffix (const gchar  *str,
+		const gchar  *suffix)
+{
+  int str_len;
+  int suffix_len;
+  
+  g_return_val_if_fail (str != NULL, FALSE);
+  g_return_val_if_fail (suffix != NULL, FALSE);
+
+  str_len = strlen (str);
+  suffix_len = strlen (suffix);
+
+  if (str_len < suffix_len)
+    return FALSE;
+
+  return strcmp (str + str_len - suffix_len, suffix) == 0;
+}
+
+static gboolean
+str_has_prefix (const gchar  *str,
+		const gchar  *prefix)
+{
+  int str_len;
+  int prefix_len;
+  
+  g_return_val_if_fail (str != NULL, FALSE);
+  g_return_val_if_fail (prefix != NULL, FALSE);
+
+  str_len = strlen (str);
+  prefix_len = strlen (prefix);
+
+  if (str_len < prefix_len)
+    return FALSE;
+  
+  return strncmp (str, prefix, prefix_len) == 0;
+}
+
 static void
 set_unescape_error (GMarkupParseContext *context,
                     GError             **error,
@@ -326,7 +367,6 @@ unescape_text (GMarkupParseContext *context,
                gchar              **unescaped,
                GError             **error)
 {
-#define MAX_ENT_LEN 5
   GString *str;
   const gchar *p;
   UnescapeState state;
@@ -409,11 +449,6 @@ unescape_text (GMarkupParseContext *context,
 
         case USTATE_INSIDE_ENTITY_NAME:
           {
-            gchar buf[MAX_ENT_LEN+1] = {
-              '\0', '\0', '\0', '\0', '\0', '\0'
-            };
-            gchar *dest;
-
             while (p != text_end)
               {
                 if (*p == ';')
@@ -438,31 +473,22 @@ unescape_text (GMarkupParseContext *context,
               {
                 if (p != text_end)
                   {
-                    const gchar *src;
-                
-                    src = start;
-                    dest = buf;
-                    while (src != p)
-                      {
-                        *dest = *src;
-                        ++dest;
-                        ++src;
-                      }
+		    gchar *ent = g_strndup (start, p - start);
 
                     /* move to after semicolon */
                     p = g_utf8_next_char (p);
                     start = p;
                     state = USTATE_INSIDE_TEXT;
 
-                    if (strcmp (buf, "lt") == 0)
+                    if (strcmp (ent, "lt") == 0)
                       g_string_append_c (str, '<');
-                    else if (strcmp (buf, "gt") == 0)
+                    else if (strcmp (ent, "gt") == 0)
                       g_string_append_c (str, '>');
-                    else if (strcmp (buf, "amp") == 0)
+                    else if (strcmp (ent, "amp") == 0)
                       g_string_append_c (str, '&');
-                    else if (strcmp (buf, "quot") == 0)
+                    else if (strcmp (ent, "quot") == 0)
                       g_string_append_c (str, '"');
-                    else if (strcmp (buf, "apos") == 0)
+                    else if (strcmp (ent, "apos") == 0)
                       g_string_append_c (str, '\'');
                     else
                       {
@@ -470,8 +496,9 @@ unescape_text (GMarkupParseContext *context,
                                             p, text_end,
                                             G_MARKUP_ERROR_PARSE,
                                             _("Entity name '%s' is not known"),
-                                            buf);
+                                            ent);
                       }
+		    g_free (ent);
                   }
                 else
                   {
@@ -592,9 +619,27 @@ unescape_text (GMarkupParseContext *context,
         }
     }
 
-  /* If no errors, we should have returned to USTATE_INSIDE_TEXT */
-  g_assert (context->state == STATE_ERROR ||
-            state == USTATE_INSIDE_TEXT);
+  if (context->state != STATE_ERROR) 
+    {
+      switch (state) 
+	{
+	case USTATE_INSIDE_TEXT:
+	  break;
+	case USTATE_AFTER_AMPERSAND:
+	case USTATE_INSIDE_ENTITY_NAME:
+	  set_unescape_error (context, error,
+			      NULL, NULL,
+			      G_MARKUP_ERROR_PARSE,
+			      _("Unfinished entity reference"));
+	  break;
+	case USTATE_AFTER_CHARREF_HASH:
+	  set_unescape_error (context, error,
+			      NULL, NULL,
+			      G_MARKUP_ERROR_PARSE,
+			      _("Unfinished character reference"));
+	  break;
+	}
+    }
 
   if (context->state == STATE_ERROR)
     {
@@ -607,8 +652,6 @@ unescape_text (GMarkupParseContext *context,
       *unescaped = g_string_free (str, FALSE);
       return TRUE;
     }
-
-#undef MAX_ENT_LEN
 }
 
 static gboolean
@@ -704,7 +747,7 @@ find_current_text_end (GMarkupParseContext *context)
   p = context->current_text;
   next = g_utf8_find_next_char (p, end);
 
-  while (next)
+  while (next && *next)
     {
       p = next;
       next = g_utf8_find_next_char (p, end);
@@ -945,6 +988,7 @@ g_markup_parse_context_parse (GMarkupParseContext *context,
               const gchar *openangle = "<";
               add_to_partial (context, openangle, openangle + 1);
               context->start = context->iter;
+	      context->balance = 1;
               context->state = STATE_INSIDE_PASSTHROUGH;
             }
           else if (*context->iter == '/')
@@ -1475,13 +1519,28 @@ g_markup_parse_context_parse (GMarkupParseContext *context,
               g_free (close_name);
             }
           break;
-
+	  
         case STATE_INSIDE_PASSTHROUGH:
           /* Possible next state: AFTER_CLOSE_ANGLE */
           do
             {
-              if (*context->iter == '>')
-                break;
+	      if (*context->iter == '<') 
+		context->balance++;
+              if (*context->iter == '>') 
+		{
+		  context->balance--;
+		  add_to_partial (context, context->start, context->iter);
+		  context->start = context->iter;
+		  if ((str_has_prefix (context->partial_chunk->str, "<?")
+		       && str_has_suffix (context->partial_chunk->str, "?")) ||
+		      (str_has_prefix (context->partial_chunk->str, "<!--")
+		       && str_has_suffix (context->partial_chunk->str, "--")) ||
+		      (str_has_prefix (context->partial_chunk->str, "<![CDATA[") 
+		       && str_has_suffix (context->partial_chunk->str, "]]")) ||
+		      (str_has_prefix (context->partial_chunk->str, "<!DOCTYPE")
+		       && context->balance == 0)) 
+		    break;
+		}
             }
           while (advance_char (context));
 
@@ -1504,13 +1563,25 @@ g_markup_parse_context_parse (GMarkupParseContext *context,
               advance_char (context); /* advance past close angle */
               add_to_partial (context, context->start, context->iter);
 
-              if (context->parser->passthrough)
-                (*context->parser->passthrough) (context,
-                                                 context->partial_chunk->str,
-                                                 context->partial_chunk->len,
-                                                 context->user_data,
-                                                 &tmp_error);
-                  
+	      if (str_has_prefix (context->partial_chunk->str, "<![CDATA[")) 
+		{
+		  if (context->parser->text)
+		    (*context->parser->text) (context,
+					      context->partial_chunk->str + 9,
+					      context->partial_chunk->len - 12,
+					      context->user_data,
+					      &tmp_error);
+		}
+	      else 
+		{
+		  if (context->parser->passthrough)
+		    (*context->parser->passthrough) (context,
+						     context->partial_chunk->str,
+						     context->partial_chunk->len,
+						     context->user_data,
+						     &tmp_error);
+		}
+
               truncate_partial (context);
 
               if (tmp_error == NULL)

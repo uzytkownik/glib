@@ -66,6 +66,7 @@ void g_mutex_init (void);
 void g_mem_init (void);
 void g_messages_init (void);
 void g_convert_init (void);
+void g_main_thread_init (void);
 
 #define G_MUTEX_DEBUG_INFO(mutex) (*((gpointer*)(((char*)mutex)+G_MUTEX_SIZE)))
 
@@ -350,7 +351,7 @@ g_thread_init (GThreadFunctions* init)
 	       init->cond_free &&
 	       init->private_new &&
 	       init->private_get &&
-	       init->private_get &&
+	       init->private_set &&
 	       init->thread_create &&
 	       init->thread_yield &&
 	       init->thread_join &&
@@ -381,6 +382,7 @@ g_thread_init (GThreadFunctions* init)
   g_mem_init ();
   g_messages_init ();
   g_convert_init ();
+  g_main_thread_init ();
 
   /* now we can set g_threads_got_initialized and thus enable
    * all the thread functions

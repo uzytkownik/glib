@@ -177,7 +177,7 @@ g_scanner_new (const GScannerConfig *config_templ)
   scanner = g_new0 (GScanner, 1);
   
   scanner->user_data = NULL;
-  scanner->max_parse_errors = 0;
+  scanner->max_parse_errors = 1;
   scanner->parse_errors	= 0;
   scanner->input_name = NULL;
   g_datalist_init (&scanner->qdata);
@@ -289,7 +289,9 @@ g_scanner_msg_handler (GScanner		*scanner,
 {
   g_return_if_fail (scanner != NULL);
   
-  fprintf (stderr, "%s:%d: ", scanner->input_name, scanner->line);
+  fprintf (stderr, "%s:%d: ",
+	   scanner->input_name ? scanner->input_name : "<memory>",
+	   scanner->line);
   if (is_error)
     fprintf (stderr, "error: ");
   fprintf (stderr, "%s\n", message);
@@ -954,7 +956,7 @@ g_scanner_unexp_token (GScanner		*scanner,
     case G_TOKEN_OCTAL:
     case G_TOKEN_INT:
     case G_TOKEN_HEX:
-      g_snprintf (token_string, token_string_len, "number `%ld'", scanner->value.v_int);
+      g_snprintf (token_string, token_string_len, "number `%lu'", scanner->value.v_int);
       break;
       
     case G_TOKEN_FLOAT:
@@ -994,7 +996,10 @@ g_scanner_unexp_token (GScanner		*scanner,
   switch (expected_token)
     {
       gboolean need_valid;
-      
+      gchar *tstring;
+    case G_TOKEN_EOF:
+      g_snprintf (expected_string, expected_string_len, "end of file");
+      break;
     default:
       if (expected_token >= 1 && expected_token <= 255)
 	{
@@ -1023,39 +1028,64 @@ g_scanner_unexp_token (GScanner		*scanner,
 		  symbol_spec);
       /* FIXME: should we attempt to lookup the symbol_name for symbol_2_token? */
       break;
-      
+    case G_TOKEN_CHAR:
+      g_snprintf (expected_string, expected_string_len, "%scharacter",
+		  scanner->token == G_TOKEN_CHAR ? "valid " : "");
+      break;
+    case G_TOKEN_BINARY:
+      tstring = "binary";
+      g_snprintf (expected_string, expected_string_len, "%snumber (%s)",
+		  scanner->token == expected_token ? "valid " : "", tstring);
+      break;
+    case G_TOKEN_OCTAL:
+      tstring = "octal";
+      g_snprintf (expected_string, expected_string_len, "%snumber (%s)",
+		  scanner->token == expected_token ? "valid " : "", tstring);
+      break;
     case G_TOKEN_INT:
-      g_snprintf (expected_string, expected_string_len, "%snumber (integer)",
-		  scanner->token == G_TOKEN_INT ? "valid " : "");
+      tstring = "integer";
+      g_snprintf (expected_string, expected_string_len, "%snumber (%s)",
+		  scanner->token == expected_token ? "valid " : "", tstring);
       break;
-      
+    case G_TOKEN_HEX:
+      tstring = "hexadecimal";
+      g_snprintf (expected_string, expected_string_len, "%snumber (%s)",
+		  scanner->token == expected_token ? "valid " : "", tstring);
+      break;
     case G_TOKEN_FLOAT:
-      g_snprintf (expected_string, expected_string_len, "%snumber (float)",
-		  scanner->token == G_TOKEN_FLOAT ? "valid " : "");
+      tstring = "float";
+      g_snprintf (expected_string, expected_string_len, "%snumber (%s)",
+		  scanner->token == expected_token ? "valid " : "", tstring);
       break;
-      
     case G_TOKEN_STRING:
       g_snprintf (expected_string,
 		  expected_string_len,
 		  "%sstring constant",
 		  scanner->token == G_TOKEN_STRING ? "valid " : "");
       break;
-      
     case G_TOKEN_IDENTIFIER:
     case G_TOKEN_IDENTIFIER_NULL:
+      need_valid = (scanner->token == G_TOKEN_IDENTIFIER_NULL ||
+		    scanner->token == G_TOKEN_IDENTIFIER);
       g_snprintf (expected_string,
 		  expected_string_len,
 		  "%s%s",
-		  (scanner->token == G_TOKEN_IDENTIFIER_NULL ||
-		   scanner->token == G_TOKEN_IDENTIFIER ? "valid " : ""),
+		  need_valid ? "valid " : "",
 		  identifier_spec);
       break;
-      
-    case G_TOKEN_EOF:
-      g_snprintf (expected_string, expected_string_len, "end of file");
+    case G_TOKEN_COMMENT_SINGLE:
+      tstring = "single-line";
+      g_snprintf (expected_string, expected_string_len, "%scomment (%s)",
+		  scanner->token == expected_token ? "valid " : "", tstring);
       break;
-
+    case G_TOKEN_COMMENT_MULTI:
+      tstring = "multi-line";
+      g_snprintf (expected_string, expected_string_len, "%scomment (%s)",
+		  scanner->token == expected_token ? "valid " : "", tstring);
+      break;
     case G_TOKEN_NONE:
+    case G_TOKEN_ERROR:
+      /* this is handled upon printout */
       break;
     }
   
@@ -1066,8 +1096,30 @@ g_scanner_unexp_token (GScanner		*scanner,
       message_prefix = "";
       message = "";
     }
-  
-  if (expected_token != G_TOKEN_NONE)
+  if (expected_token == G_TOKEN_ERROR)
+    {
+      msg_handler (scanner,
+		   "failure around %s%s%s",
+		   token_string,
+		   message_prefix,
+		   message);
+    }
+  else if (expected_token == G_TOKEN_NONE)
+    {
+      if (print_unexp)
+	msg_handler (scanner,
+		     "unexpected %s%s%s",
+		     token_string,
+		     message_prefix,
+		     message);
+      else
+	msg_handler (scanner,
+		     "%s%s%s",
+		     token_string,
+		     message_prefix,
+		     message);
+    }
+  else
     {
       if (print_unexp)
 	msg_handler (scanner,
@@ -1081,21 +1133,6 @@ g_scanner_unexp_token (GScanner		*scanner,
 		     "%s, expected %s%s%s",
 		     token_string,
 		     expected_string,
-		     message_prefix,
-		     message);
-    }
-  else
-    {
-      if (print_unexp)
-	msg_handler (scanner,
-		     "unexpected %s%s%s",
-		     token_string,
-		     message_prefix,
-		     message);
-      else
-	msg_handler (scanner,
-		     "%s%s%s",
-		     token_string,
 		     message_prefix,
 		     message);
     }
@@ -1523,15 +1560,15 @@ g_scanner_get_token_ll	(GScanner	*scanner,
 	  switch (token)
 	    {
 	    case G_TOKEN_BINARY:
-	      value.v_binary = strtol (gstring->str, &endptr, 2);
+	      value.v_binary = strtoul (gstring->str, &endptr, 2);
 	      break;
 	      
 	    case G_TOKEN_OCTAL:
-	      value.v_octal = strtol (gstring->str, &endptr, 8);
+	      value.v_octal = strtoul (gstring->str, &endptr, 8);
 	      break;
 	      
 	    case G_TOKEN_INT:
-	      value.v_int = strtol (gstring->str, &endptr, 10);
+	      value.v_int = strtoul (gstring->str, &endptr, 10);
 	      break;
 	      
 	    case G_TOKEN_FLOAT:
@@ -1539,7 +1576,7 @@ g_scanner_get_token_ll	(GScanner	*scanner,
 	      break;
 	      
 	    case G_TOKEN_HEX:
-	      value.v_hex = strtol (gstring->str, &endptr, 16);
+	      value.v_hex = strtoul (gstring->str, &endptr, 16);
 	      break;
 	      
 	    default:

@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#include        <config.h>
 #include	"gtype.h"
 
 /*
@@ -383,8 +384,8 @@ type_node_fundamental_new_W (GType                 ftype,
   g_assert ((ftype & TYPE_ID_MASK) == 0);
   g_assert (ftype <= G_TYPE_FUNDAMENTAL_MAX);
   
-  if (ftype == static_fundamental_next)
-    static_fundamental_next += 1 << G_TYPE_FUNDAMENTAL_SHIFT;
+  if (ftype >> G_TYPE_FUNDAMENTAL_SHIFT == static_fundamental_next)
+    static_fundamental_next++;
   
   type_flags &= TYPE_FUNDAMENTAL_FLAG_MASK;
   
@@ -473,7 +474,7 @@ type_lookup_prerequisite_L (TypeNode *iface,
   return FALSE;
 }
 
-static inline gchar*
+static gchar*
 type_descriptive_name_I (GType type)
 {
   if (type)
@@ -1202,13 +1203,12 @@ g_type_interface_add_prerequisite (GType interface_type,
     }
   else if (NODE_IS_IFACE (prerequisite_node))
     {
-      GType *dependants;
-      guint n_dependants, i;
+      GType *prerequisites;
+      guint i;
       
-      dependants = iface_node_get_dependants_array_L (prerequisite_node);
-      n_dependants = dependants ? dependants[0] : 0;
-      for (i = 1; i <= n_dependants; i++)
-	type_iface_add_prerequisite_W (iface, lookup_type_node_I (dependants[i]));
+      prerequisites = IFACE_NODE_PREREQUISITES (prerequisite_node);
+      for (i = 0; i < IFACE_NODE_N_PREREQUISITES (prerequisite_node); i++)
+	type_iface_add_prerequisite_W (iface, lookup_type_node_I (prerequisites[i]));
       type_iface_add_prerequisite_W (iface, prerequisite_node);
       G_WRITE_UNLOCK (&type_rw_lock);
     }
@@ -2582,7 +2582,7 @@ g_type_fundamental_next (void)
   G_READ_LOCK (&type_rw_lock);
   type = static_fundamental_next;
   G_READ_UNLOCK (&type_rw_lock);
-  
+  type = G_TYPE_MAKE_FUNDAMENTAL (type);
   return type <= G_TYPE_FUNDAMENTAL_MAX ? type : 0;
 }
 

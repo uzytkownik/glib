@@ -346,26 +346,34 @@ g_io_channel_shutdown (GIOChannel *channel,
   g_return_val_if_fail (channel != NULL, G_IO_STATUS_ERROR);
   g_return_val_if_fail (err == NULL || *err == NULL, G_IO_STATUS_ERROR);
 
-  if (flush && channel->write_buf && channel->write_buf->len > 0)
+  if (channel->write_buf && channel->write_buf->len > 0)
     {
-      GIOFlags flags;
-      
-      /* Set the channel to blocking, to avoid a busy loop
-       */
-      flags = g_io_channel_get_flags (channel);
-      /* Ignore any errors here, they're irrelevant */
-      g_io_channel_set_flags (channel, flags & ~G_IO_FLAG_NONBLOCK, NULL);
-
-      result = g_io_channel_flush (channel, &tmperr);
-
-      if (channel->partial_write_buf[0] != '\0')
+      if (flush)
         {
-          g_warning ("Partial character at end of write buffer not flushed.\n");
-          channel->partial_write_buf[0] = '\0';
+          GIOFlags flags;
+      
+          /* Set the channel to blocking, to avoid a busy loop
+           */
+          flags = g_io_channel_get_flags (channel);
+          /* Ignore any errors here, they're irrelevant */
+          g_io_channel_set_flags (channel, flags & ~G_IO_FLAG_NONBLOCK, NULL);
+
+          result = g_io_channel_flush (channel, &tmperr);
         }
+      else
+        result = G_IO_STATUS_NORMAL;
+
+      g_string_truncate(channel->write_buf, 0);
     }
   else
     result = G_IO_STATUS_NORMAL;
+
+  if (channel->partial_write_buf[0] != '\0')
+    {
+      if (flush)
+        g_warning ("Partial character at end of write buffer not flushed.\n");
+      channel->partial_write_buf[0] = '\0';
+    }
 
   status = channel->funcs->io_close (channel, err);
 
@@ -727,7 +735,7 @@ g_io_channel_get_flags (GIOChannel *channel)
 {
   GIOFlags flags;
 
-  g_return_val_if_fail (channel != NULL, G_IO_STATUS_ERROR);
+  g_return_val_if_fail (channel != NULL, 0);
 
   flags = (* channel->funcs->io_get_flags) (channel);
 
@@ -999,7 +1007,8 @@ g_io_channel_get_buffered	(GIOChannel *channel)
  *
  * The encoding %NULL is safe to use with binary data.
  *
- * The encoding can only be set under the following conditions:
+ * The encoding can only be set if one of the following conditions
+ * is true:
  *
  * 1. The channel was just created, and has not been written to
  *    or read from yet.
@@ -1022,9 +1031,9 @@ g_io_channel_get_buffered	(GIOChannel *channel)
  *    g_io_channel_read_line_string (), or g_io_channel_read_to_end ()
  *    does <emphasis>not</emphasis> guarantee that the encoding can be changed.
  *
- * Channels which do not meet the above conditions cannot call
+ * Channels which do not meet one of the above conditions cannot call
  * g_io_channel_seek_position () with an offset of %G_SEEK_CUR,
- * and if they are "seekable" cannot
+ * and, if they are "seekable", cannot
  * call g_io_channel_write_chars () after calling one
  * of the API "read" functions.
  *
@@ -1348,7 +1357,7 @@ reencode:
 /**
  * g_io_channel_read_line:
  * @channel: a #GIOChannel
- * @str_return: The line read from the #GIOChannel, not including the
+ * @str_return: The line read from the #GIOChannel, including the
  *              line terminator. This data should be freed with g_free()
  *              when no longer needed. This is a nul-terminated string. 
  *              If a @length of zero is returned, this will be %NULL instead.
@@ -1359,11 +1368,10 @@ reencode:
  *
  * Reads a line, including the terminating character(s),
  * from a #GIOChannel into a newly-allocated string.
- * @length will contain allocated memory if the return
+ * @str_return will contain allocated memory if the return
  * is %G_IO_STATUS_NORMAL.
  *
- * Return value: a newly-allocated string. Free this string
- *   with g_free() when you are done with it.
+ * Return value: the status of the operation.
  **/
 GIOStatus
 g_io_channel_read_line (GIOChannel *channel,
@@ -1592,7 +1600,10 @@ read_again:
           break;
         }
 
-      checked_to = MAX (use_buf->len - (line_term_len - 1), 0);
+      if (use_buf->len > line_term_len - 1)
+	checked_to = use_buf->len - (line_term_len - 1);
+      else
+	checked_to = 0;
     }
 
 done:
@@ -2047,15 +2058,16 @@ reconvert:
               if (!g_utf8_validate (from_buf, try_len, &badchar))
                 {
                   gunichar try_char;
+                  gsize incomplete_len = from_buf + try_len - badchar;
 
-                  left_len = from_buf + try_len - badchar;
+                  left_len = from_buf + from_buf_len - badchar;
 
-                  try_char = g_utf8_get_char_validated (badchar, left_len);
+                  try_char = g_utf8_get_char_validated (badchar, incomplete_len);
 
                   switch (try_char)
                     {
                       case -2:
-                        g_assert (left_len < 6);
+                        g_assert (incomplete_len < 6);
                         if (try_len == from_buf_len)
                           {
                             errnum = EINVAL;
@@ -2064,7 +2076,7 @@ reconvert:
                         else
                           {
                             errnum = 0;
-                            err = (size_t) -1;
+                            err = (size_t) 0;
                           }
                         break;
                       case -1:
@@ -2083,12 +2095,12 @@ reconvert:
                 {
                   err = (size_t) 0;
                   errnum = 0;
-                  left_len = 0;
+                  left_len = from_buf_len - try_len;
                 }
 
               g_string_append_len (channel->write_buf, from_buf,
-                                   try_len - left_len);
-              from_buf += try_len - left_len;
+                                   from_buf_len - left_len);
+              from_buf += from_buf_len - left_len;
             }
           else
             {

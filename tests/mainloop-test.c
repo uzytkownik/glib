@@ -1,3 +1,6 @@
+#undef G_DISABLE_ASSERT
+#undef G_LOG_DOMAIN
+
 #include <errno.h>
 #include <glib.h>
 #ifdef G_OS_UNIX
@@ -51,10 +54,10 @@ struct _TestData
 static void cleanup_crawlers (GMainContext *context);
 
 gboolean
-read_all (GIOChannel *channel, char *buf, int len)
+read_all (GIOChannel *channel, char *buf, gsize len)
 {
-  int bytes_read = 0;
-  int count;
+  gsize bytes_read = 0;
+  gsize count;
   GIOError err;
 
   while (bytes_read < len)
@@ -75,10 +78,10 @@ read_all (GIOChannel *channel, char *buf, int len)
 }
 
 gboolean
-write_all (GIOChannel *channel, char *buf, int len)
+write_all (GIOChannel *channel, char *buf, gsize len)
 {
-  int bytes_written = 0;
-  int count;
+  gsize bytes_written = 0;
+  gsize count;
   GIOError err;
 
   while (bytes_written < len)
@@ -244,6 +247,8 @@ adder_response (GIOChannel   *source,
 
       g_io_channel_unref (source);
       g_io_channel_unref (test_data->in);
+
+      g_free (test_data);
       
       return FALSE;
     }

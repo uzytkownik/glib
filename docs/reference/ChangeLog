@@ -1,3 +1,32 @@
+Thu Jul 25 18:58:29 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/tmpl/threads.sgml: Fix reference to non-existing
+	@priority parameter. (#88500, Linus Walleij)
+
+2002-05-21  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/tmpl/markup.sgml: Updates.
+
+Sat May 18 00:44:35 2002  Tim Janik  <timj@gtk.org>
+
+	* glib/tmpl/scanner.sgml: fix documentation for g_scanner_unexp_token().
+
+2002-05-01  Sebastian Wilhelmi  <wilhelmi@ira.uka.de>
+
+	Merged from HEAD:
+
+	* glib/tmpl/threads.sgml: Clarify recursion issues with
+	GMutex. (#78171)
+
+2002-04-24  Matthias Clasen  <maclas@gmx.de>
+
+	Merged from HEAD:
+
+	* gobject/gobject-sections.txt: Documentation fix.  (#78728)
+
+	* gobject/tmpl/gtype.sgml:
+	* glib/tmpl/strings.sgml: Documentation enhancements.
+
 2002-03-25  Sven Neumann  <sven@gimp.org>
 
 	* glib/tmpl/scanner.sgml: Fixed documentation about unused struct 

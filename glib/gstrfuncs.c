@@ -321,7 +321,7 @@ g_strtod (const gchar *nptr,
  * thread-safe.
  *
  * This function is typically used when reading configuration
- * files or other non-user input that should be locale dependent.
+ * files or other non-user input that should be locale independent.
  * To handle input from the user you should normally use the
  * locale-sensitive system strtod() function.
  *
@@ -463,6 +463,7 @@ g_ascii_strtod (const gchar *nptr,
   
   return val;
 }
+
 
 /**
  * g_ascii_dtostr:
