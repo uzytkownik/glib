@@ -1,187 +1,187 @@
-# Norwegian (Nynorsk) translation of glib
-# Copyright (C) Free Software Foundation, 2002.
-# Roy-Magne Mo <rmo@sunnmore.net>, 2002
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Isam Bayazidi <bayazidi@arabeyes.org>, 2001.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: glib/2.0\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2002-06-13 16:23-0400\n"
-"PO-Revision-Date: 2002-01-31 20:07+0100\n"
-"Last-Translator: Roy-Magne Mo <rmo@sunnmore.net>\n"
-"Language-Team: nynorsk <nn@li.org>\n"
+"PO-Revision-Date: 2002-05-27 14:39-0300\n"
+"Last-Translator: Isam Bayazidi <bayazidi@arabeyes.org>\n"
+"Language-Team: Arabic <support@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: glib/gconvert.c:398
 #, c-format
 msgid "Conversion from character set '%s' to '%s' is not supported"
-msgstr "Konvertering frå teiknsett «%s» til «%s» er ikkje støtta"
+msgstr "التحويل من صفحة المحارف '%s' الى '%s' غير مدعوم"
 
 #: glib/gconvert.c:402
 #, c-format
 msgid "Could not open converter from '%s' to '%s': %s"
-msgstr "Kunne ikkje opne konverterar frå «%s» til «%s»: %s"
+msgstr "لم يمكن فتح المحول من '%s' الى '%s': %s"
 
 #: glib/gconvert.c:600 glib/gconvert.c:890 glib/giochannel.c:1290
 #: glib/giochannel.c:1332 glib/giochannel.c:2171 glib/gutf8.c:875
 #: glib/gutf8.c:1320
 msgid "Invalid byte sequence in conversion input"
-msgstr "Ugyldig bytesekvens i inndata for konvertering"
+msgstr "تتابع بايتات غير موجود في مدخلات التحويل"
 
 #: glib/gconvert.c:605 glib/gconvert.c:821 glib/giochannel.c:1297
 #: glib/giochannel.c:2183
 #, c-format
 msgid "Error during conversion: %s"
-msgstr "Feil under konvertering: %s"
+msgstr "خطأ أثناء التحويل: %s"
 
 #: glib/gconvert.c:623 glib/gutf8.c:871 glib/gutf8.c:1071 glib/gutf8.c:1212
 #: glib/gutf8.c:1316
 msgid "Partial character sequence at end of input"
-msgstr "Delvis teiknsekvens på slutten av inndata"
+msgstr "تتابع حرفيات جزئي عند نهاية الإدخال"
 
 #: glib/gconvert.c:796
 #, c-format
 msgid "Cannot convert fallback '%s' to codeset '%s'"
-msgstr "Kan ikkje konvertere tilbakefall «%s» til kodesett «%s»"
+msgstr "لم يمكن تحويل fallback '%s' الى صفحة المحارف '%s'"
 
 #: glib/gconvert.c:1630
 #, c-format
 msgid "The URI '%s' is not an absolute URI using the file scheme"
-msgstr "URIen «%s» er ikkje ein absolutt URI som brukar «file» måten"
+msgstr "الـURI '%s' ليس URI كامل باستخدام مخطط الملفات"
 
 #: glib/gconvert.c:1640
 #, c-format
 msgid "The local file URI '%s' may not include a '#'"
-msgstr "file URIen «%s» kan ikkje innehalde ein «#»"
+msgstr "URI الملف المحلي '%s' قد لا يحتوي '#'"
 
 #: glib/gconvert.c:1657
 #, c-format
 msgid "The URI '%s' is invalid"
-msgstr "URIen «%s» er ugyldig"
+msgstr "الـURI '%s' غير موجود"
 
 #: glib/gconvert.c:1669
-#, fuzzy, c-format
+#, c-format
 msgid "The hostname of the URI '%s' is invalid"
-msgstr "Vertsnamnet i URIen «%s» inneheld feil koda teikn"
+msgstr "اسم مستضيف الـURI '%s' غير صالح"
 
 #: glib/gconvert.c:1685
 #, c-format
 msgid "The URI '%s' contains invalidly escaped characters"
-msgstr "URIen «%s» inneheld feil koda teikn"
+msgstr "الـURI '%s' يحتوي على حروف هاربة غير صحيحة"
 
 #: glib/gconvert.c:1756
 #, c-format
 msgid "The pathname '%s' is not an absolute path"
-msgstr "Filstien «%s» er ikkje ein absolutt sti"
+msgstr "اسم المسار '%s' ليس مسارا كاملا"
 
 #: glib/gconvert.c:1766
-#, fuzzy
 msgid "Invalid hostname"
-msgstr "Ugyldig bytesekvens i maskinnamn"
+msgstr "اسم المستضيف غير صالح"
 
 #: glib/gdir.c:80
 #, c-format
 msgid "Error opening directory '%s': %s"
-msgstr "Feil ved opning av katalog «%s»: %s"
+msgstr "خطأ أثناء فتح الدليل '%s': %s"
 
 #: glib/gfileutils.c:337 glib/gfileutils.c:402
 #, c-format
 msgid "Could not allocate %lu bytes to read file \"%s\""
-msgstr "Klarte ikkje allokere %lu byte for å lese «%s»"
+msgstr "لم يمكن تحديد %lu بايت لقرائة الملف \"%s\""
 
 #: glib/gfileutils.c:348
 #, c-format
 msgid "Error reading file '%s': %s"
-msgstr "Feil ved lesing a fil «%s»: %s"
+msgstr "خطأ أثناء قراءة الملف '%s': %s"
 
 #: glib/gfileutils.c:424
 #, c-format
 msgid "Failed to read from file '%s': %s"
-msgstr "Klarte ikkje å lese frå fila «%s»: %s"
+msgstr "فشلت القراءة من الملف '%s': %s"
 
 #: glib/gfileutils.c:471 glib/gfileutils.c:539
 #, c-format
 msgid "Failed to open file '%s': %s"
-msgstr "Klarte ikkje å opne fil: «%s»: %s"
+msgstr "فشل فتح الملف '%s': %s"
 
 #: glib/gfileutils.c:485
 #, c-format
 msgid "Failed to get attributes of file '%s': fstat() failed: %s"
-msgstr "Klarte ikkje å få tak i eigenskapar for fila «%s» fstat() feila: %s"
+msgstr "فشلت في أخذ صفات الملف '%s': فشل fstat(): %s"
 
 #: glib/gfileutils.c:511
 #, c-format
 msgid "Failed to open file '%s': fdopen() failed: %s"
-msgstr "Kunne ikkje opne fila «%s»: fdopen() feila: %s"
+msgstr "فشل فتح الملف '%s': فشل fdopen(): %s"
 
 #: glib/gfileutils.c:718
 #, c-format
 msgid "Template '%s' invalid, should not contain a '%s'"
-msgstr "Mal «%s» er ugyldig, kan ikkje ikkje innehalde ein «%s»"
+msgstr "القالب '%s' غير صحيح, لا يجب أن يحتوي '%s'"
 
 #: glib/gfileutils.c:730
 #, c-format
 msgid "Template '%s' doesn't end with XXXXXX"
-msgstr "Malfila «%s» er ikkje avslutta med XXXXXX"
+msgstr "القالب '%s' لا ينتهي بـXXXXXX"
 
 #: glib/gfileutils.c:751
 #, c-format
 msgid "Failed to create file '%s': %s"
-msgstr "Klarte ikkje å opprette fila «%s»: %s"
+msgstr "فشل عمل الملف '%s': %s"
 
 #: glib/giochannel.c:1118
 #, c-format
 msgid "Conversion from character set `%s' to `%s' is not supported"
-msgstr "Konvertering frå teiknsett «%s» til «%s» er ikkje støtta"
+msgstr "التحويل من صفحة المحارف `%s' الى `%s' غير مدعوم"
 
 #: glib/giochannel.c:1122
 #, c-format
 msgid "Could not open converter from `%s' to `%s': %s"
-msgstr "Kunne ikkje opne konverterar frå «%s» til «%s»: %s"
+msgstr "لم يمكن فتح المحول من `%s' الى `%s': %s"
 
 #: glib/giochannel.c:1468
 msgid "Can't do a raw read in g_io_channel_read_line_string"
-msgstr "Klarar ikkje å gjere ei rå lesing i g_io_channel_read_line_string"
+msgstr "لا يمكن عمل قراءة خام في g_io_channel_read_line_string"
 
 #: glib/giochannel.c:1515 glib/giochannel.c:1769 glib/giochannel.c:1855
 msgid "Leftover unconverted data in read buffer"
-msgstr "Ukonvert data til overs i lesebufferet"
+msgstr "بيانات غير محوّلة باقية في حاجز القراءة الخلفي"
 
 #: glib/giochannel.c:1595 glib/giochannel.c:1669
 msgid "Channel terminates in a partial character"
-msgstr "Kanalen avsluttar på eit delvis teikn"
+msgstr "القناة تنتهي عند حرف جزئي"
 
 #: glib/giochannel.c:1655
 msgid "Can't do a raw read in g_io_channel_read_to_end"
-msgstr "Kan ikkje lese rått i g_io_channel_read_to_end"
+msgstr "لا يمكن عمل قراءة خام في g_io_channel_read_to_end"
 
 #: glib/giowin32.c:712 glib/giowin32.c:741
 msgid "Incorrect message size"
-msgstr "Feil meldingsstorleik"
+msgstr "حجم رسالة غير صحيح"
 
 #: glib/giowin32.c:1045 glib/giowin32.c:1098
 msgid "Socket error"
-msgstr "Sokkelfeil"
+msgstr "خطأ في المقبس"
 
 #: glib/giowin32.c:1298
 msgid "Channel set flags unsupported"
-msgstr "Kanalen set flag ustøtta"
+msgstr "Channel set flags غير مدعوم"
 
 #: glib/gmarkup.c:222
 #, c-format
 msgid "Error on line %d char %d: %s"
-msgstr "Feil på linje %s teikn %d: %s"
+msgstr "خطأ في السطر %d الحرف %d: %s"
 
 #: glib/gmarkup.c:344
 #, c-format
 msgid "Error on line %d: %s"
-msgstr "Feil på linje %d: %s"
+msgstr "خطأ في السطر %d: %s"
 
 #: glib/gmarkup.c:423
 msgid ""
 "Empty entity '&;' seen; valid entities are: &amp; &quot; &lt; &gt; &apos;"
-msgstr "Tom entitet såg «&;»; gyldige entitetar er: &amp; &quot; &lt; &apos;"
+msgstr ""
 
 #: glib/gmarkup.c:433
 #, c-format
@@ -190,27 +190,22 @@ msgid ""
 "begins an entity; if this ampersand isn't supposed to be an entity, escape "
 "it as &amp;"
 msgstr ""
-"Teiknet «%s» er ikkje gyldig på byrjinga av eit entitetsnamn; &-teiknet "
-"opnar ein entitet; om dette et-teiknet ikkje er meint å vere ein entitet, "
-"skriv den som &amp;"
 
 #: glib/gmarkup.c:469
 #, c-format
 msgid "Character '%s' is not valid inside an entity name"
-msgstr "Teiknet '%s' er ikkje gyldig inne i eit entitetsnamn"
+msgstr "الحرف '%s' غير موجود داخل اسم أي كيان"
 
 #: glib/gmarkup.c:513
 #, c-format
 msgid "Entity name '%s' is not known"
-msgstr "Entitet namn '%s' er ikkje kjent"
+msgstr "اسم الكيان '%s' غير معروف"
 
 #: glib/gmarkup.c:523
 msgid ""
 "Entity did not end with a semicolon; most likely you used an ampersand "
 "character without intending to start an entity - escape ampersand as &amp;"
 msgstr ""
-"Entiteten slutta ikkje med eit semikolon; sannsynlegvis bruke du eit et-"
-"teikn utan å meine å opne ein entitet - skriv et-teikn som &amp;"
 
 #: glib/gmarkup.c:569
 #, c-format
@@ -218,17 +213,15 @@ msgid ""
 "Failed to parse '%s', which should have been a digit inside a character "
 "reference (&#234; for example) - perhaps the digit is too large"
 msgstr ""
-"Klarte ikkje å tolke «%s», som burde vere eit teikn i ein teiknreferanse "
-"(&#234; til dømes) - kan hende talet er for stort"
 
 #: glib/gmarkup.c:594
 #, c-format
 msgid "Character reference '%s' does not encode a permitted character"
-msgstr "Teiknreferansen '%s' kan ikkje kodast til eit lovleg teikn"
+msgstr ""
 
 #: glib/gmarkup.c:611
 msgid "Empty character reference; should include a digit such as &#454;"
-msgstr "Tom teiknreferanse, bør innehelad eit nummer slik som &#454;"
+msgstr ""
 
 #: glib/gmarkup.c:621
 msgid ""
@@ -236,24 +229,22 @@ msgid ""
 "ampersand character without intending to start an entity - escape ampersand "
 "as &amp;"
 msgstr ""
-"Teiknreferansen slutta ikkje med eit semikolon; sannsynlegvis brukte du eit "
-"et-teikn utan å ville starte ein entitet - skriv et-teikn som &amp;"
 
 #: glib/gmarkup.c:647
 msgid "Unfinished entity reference"
-msgstr ""
+msgstr "مرجع كيان غير منتهى منه"
 
 #: glib/gmarkup.c:653
 msgid "Unfinished character reference"
-msgstr ""
+msgstr "مرجع رمز غير منتهى منه"
 
 #: glib/gmarkup.c:896 glib/gmarkup.c:924 glib/gmarkup.c:955
 msgid "Invalid UTF-8 encoded text"
-msgstr "Ugyldig UTF-8 koda tekst"
+msgstr "نص UTF-8 مشفر غير صحيح"
 
 #: glib/gmarkup.c:991
 msgid "Document must begin with an element (e.g. <book>)"
-msgstr "Dokumentet må byrje med eit element (t.d. <book>)"
+msgstr "يجب أن يبدأ المستند مع عنصر (<book> مثلا)"
 
 #: glib/gmarkup.c:1030
 #, c-format
@@ -261,8 +252,6 @@ msgid ""
 "'%s' is not a valid character following a '<' character; it may not begin an "
 "element name"
 msgstr ""
-"«%s» er ikkje eit gyldig teikn etter ein «<»-teikn; den kan ikkje byrje med "
-"eit elementnamn"
 
 #: glib/gmarkup.c:1093
 #, c-format
@@ -270,16 +259,12 @@ msgid ""
 "Odd character '%s', expected a '>' character to end the start tag of element "
 "'%s'"
 msgstr ""
-"Merkeleg teikn «%s», venta eit «>»-teikn for å avslutte startmerket av "
-"elementet «%s»"
 
 #: glib/gmarkup.c:1180
 #, c-format
 msgid ""
 "Odd character '%s', expected a '=' after attribute name '%s' of element '%s'"
 msgstr ""
-"Merkeleg teikn «%s», venta ein «=» etter attributtnamnet «%s» av elementet «%"
-"s»"
 
 #: glib/gmarkup.c:1221
 #, c-format
@@ -288,9 +273,6 @@ msgid ""
 "element '%s', or optionally an attribute; perhaps you used an invalid "
 "character in an attribute name"
 msgstr ""
-"Merkeleg teikn «%s», venta eit «>» eller «/»-teikn for \"avslutte "
-"startmerket av elementet «%s», eller ein valfri attributt; kan hende du "
-"brukte eit ugyldig teikn i attributtnamnet"
 
 #: glib/gmarkup.c:1304
 #, c-format
@@ -298,8 +280,6 @@ msgid ""
 "Odd character '%s', expected an open quote mark after the equals sign when "
 "giving value for attribute '%s' of element '%s'"
 msgstr ""
-"Merkeleg teikn «%s», venta eit opent siteringsmerket etter lik-teikna for å "
-"gi ein verdi for attributten «%s» av elementet «%s»"
 
 #: glib/gmarkup.c:1444
 #, c-format
@@ -307,8 +287,6 @@ msgid ""
 "'%s' is not a valid character following the characters '</'; '%s' may not "
 "begin an element name"
 msgstr ""
-"«%s» er ikkje ien gyldig karakter etter teikna «<»; «%s» kan ikkje starte "
-"eit elementnamn"
 
 #: glib/gmarkup.c:1482
 #, c-format
@@ -316,26 +294,24 @@ msgid ""
 "'%s' is not a valid character following the close element name '%s'; the "
 "allowed character is '>'"
 msgstr ""
-"«%s» er ikkje eit gyldig teikn etter avsluttande merket «%s»; det tillatne "
-"teiknet er «>»"
 
 #: glib/gmarkup.c:1493
 #, c-format
 msgid "Element '%s' was closed, no element is currently open"
-msgstr "Element '%s' vart lukka, ikkje noko element er i augneblinken open."
+msgstr "العنصر '%s' كان مغلقا، لا عنصر مفتوح حاليا"
 
 #: glib/gmarkup.c:1502
 #, c-format
 msgid "Element '%s' was closed, but the currently open element is '%s'"
-msgstr "Element '%s' vart avslutta, men det aktive elementet er '%s'"
+msgstr "العنصر '%s' كان مغلقا, لكن العنصر المفتوح حاليا هو '%s'"
 
 #: glib/gmarkup.c:1661
 msgid "Document was empty or contained only whitespace"
-msgstr "Dokumentet var tomt eller innheldt kun tome teikn"
+msgstr "المستند كان فارغا أو كان يحتوي فقط على مساحة فارغة"
 
 #: glib/gmarkup.c:1675
 msgid "Document ended unexpectedly just after an open angle bracket '<'"
-msgstr "Dokument avslutta uventa rett etter ein open vinkel hake '<'"
+msgstr "انتهى المستند بشكل غير متوقع بعد قوس بزاوية '<'"
 
 #: glib/gmarkup.c:1683 glib/gmarkup.c:1727
 #, c-format
@@ -343,158 +319,155 @@ msgid ""
 "Document ended unexpectedly with elements still open - '%s' was the last "
 "element opened"
 msgstr ""
-"Dokumentet slutta uventa med element forsatt opne - «%s» var det siste "
-"elementet som vart opna"
+"انتهى المستند بشكل غير متوقع مع عناصر لا زالت مفتوحة - '%s' كان آخر العناصر "
+"المقتوحة"
 
 #: glib/gmarkup.c:1691
 #, c-format
 msgid ""
 "Document ended unexpectedly, expected to see a close angle bracket ending "
 "the tag <%s/>"
-msgstr "Dokumentet slutta uventa, venta å sjå det avsluttande merket <%s/>"
+msgstr ""
+"انتهى المستند بشكل غير متوقع، كنت أتوقع أن أري قوسا ذا زاوية لينهي العلامة<%"
+"s/>"
 
 #: glib/gmarkup.c:1697
 msgid "Document ended unexpectedly inside an element name"
-msgstr "Dokumentet tok uventa slutt inn i eit element namn"
+msgstr "انتهى المستند بشكل غير متوقع داخل اسم عنصر"
 
 #: glib/gmarkup.c:1702
 msgid "Document ended unexpectedly inside an attribute name"
-msgstr "Dokumentet tok uventa slutte inni i eit attributt namn"
+msgstr "انتهى المستند بشكل غير متوقع داخل اسم صفة"
 
 #: glib/gmarkup.c:1707
 msgid "Document ended unexpectedly inside an element-opening tag."
-msgstr "Dokumentet vart uventa avslutta inne i ein element opnings tag."
+msgstr "انتهى المستند بشكل غير متوقع بعد علامة فتح عنصر"
 
 #: glib/gmarkup.c:1713
 msgid ""
 "Document ended unexpectedly after the equals sign following an attribute "
 "name; no attribute value"
 msgstr ""
-"Dokumentet slutta uventa etter lik-teiknet etter attributtnamnet; ingen "
-"attributtverdi"
 
 #: glib/gmarkup.c:1720
 msgid "Document ended unexpectedly while inside an attribute value"
-msgstr "Dokumentet avslutta uventa medan det var inne i ein attributtverdi"
+msgstr "انتهى المستند بشكل غير متوقع داخل قيمة صفات"
 
 #: glib/gmarkup.c:1735
 #, c-format
 msgid "Document ended unexpectedly inside the close tag for element '%s'"
-msgstr "Dokumentet avslutta uventa i eit avsluttingsmerke for elementet «%s»"
+msgstr "انتهى المستند بشكل غير متوقع داخل علامة انهاء للعنصر '%s'"
 
 #: glib/gmarkup.c:1741
 msgid "Document ended unexpectedly inside a comment or processing instruction"
-msgstr ""
-"Dokumentet avslutta uventa inne i ein merknad eller prosseseringsinstruksjon"
+msgstr "انتهى المستند بشكل غير متوقع داخل تعليق أو تعليمات معالجة"
 
 #: glib/gshell.c:71
 msgid "Quoted text doesn't begin with a quotation mark"
-msgstr "Sitert tekst startar ikkje med eit siteringsmerke"
+msgstr "النص المقتبس لا يبدأ بعلامة اقتباس"
 
 #: glib/gshell.c:161
 msgid "Unmatched quotation mark in command line or other shell-quoted text"
-msgstr "Upara siteringsmerke i kommandolinje eller anna skal-sitert tekst"
+msgstr ""
 
 #: glib/gshell.c:529
-#, fuzzy, c-format
+#, c-format
 msgid "Text ended just after a '\\' character. (The text was '%s')"
-msgstr "Teksta tok slutt rett etter eit \" teikn (Teksta var '%s')"
+msgstr "انتهى النص تماماً بعد حرف '\\' (النص كان '%s')"
 
 #: glib/gshell.c:536
 #, c-format
 msgid "Text ended before matching quote was found for %c. (The text was '%s')"
-msgstr ""
-"Teksta tok slutt før avsluttane sitatteikn var funne for %c (Teksta var '%s')"
+msgstr "انتهى النص قبل ايجاد المُقتَبَس لـ%c (النص كان '%s')"
 
 #: glib/gshell.c:548
 msgid "Text was empty (or contained only whitespace)"
-msgstr "Teksta var tom (eller innehdlt kun tome teikn)"
+msgstr "النص كان فارغا (أو كان يحتوي على فراغ أبيض)"
 
 #: glib/gspawn-win32.c:198
 msgid "Failed to read data from child process"
-msgstr "Failed to read data from child process"
+msgstr "فشلت قراءة البيانات من العملية الإبنة"
 
 #: glib/gspawn-win32.c:323
 msgid ""
 "Unexpected error in g_io_channel_win32_poll() reading data from a child "
 "process"
 msgstr ""
-"Uventa feil i g_io_channel_win32_poll() ved lesing av data frå barneprosess"
 
 #: glib/gspawn-win32.c:690 glib/gspawn.c:929
 #, c-format
 msgid "Failed to read from child pipe (%s)"
-msgstr "Klarte ikkje å lese frå røyr frå barn (%s)"
+msgstr "فشلت القراءة من الأنبوب الإبن (%s)"
 
 #: glib/gspawn-win32.c:778 glib/gspawn.c:1134
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
-msgstr "Klarte ikkje å skifte til katalog «%s» (%s)"
+msgstr "فشل التغيير الى الدليل '%s' (%s)"
 
 #: glib/gspawn-win32.c:787
 #, c-format
 msgid "Failed to execute child process (%s)"
-msgstr "Klarte ikkje å utføre barnproess (%s)"
+msgstr "فشل تنفيذ العملية الإبنة (%s)"
 
 #: glib/gspawn-win32.c:828 glib/gspawn.c:1245
 #, c-format
 msgid "Failed to create pipe for communicating with child process (%s)"
-msgstr "Klarte ikkje å opprette røyr for å kommuniksere med barneprosess (%s)"
+msgstr "فشل عمل أنبوب للاتصال بالعملية الإبنة (%s)"
 
 #: glib/gspawn.c:166
 #, c-format
 msgid "Failed to read data from child process (%s)"
-msgstr "Klarte ikkje å lese data frå barneprosess (%s)"
+msgstr "فشلت قراءة البيانات من العملية الإبنة (%s)"
 
 #: glib/gspawn.c:298
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
-msgstr "Uventa feil i select() ved lesing av data frå barneprosess (%s)"
+msgstr "خطأ غير متوقع في select() أثناء قراءة البيانات من العملية الإبنة (%s)"
 
 #: glib/gspawn.c:381
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
-msgstr "Uventa feil i waitpid() (%s)"
+msgstr "خطأ غير متوقع في waitpid() (%s)"
 
 #: glib/gspawn.c:994
 #, c-format
 msgid "Failed to fork (%s)"
-msgstr "Kunne ikkje starta barneprosess (%s)"
+msgstr "فشل تفريق (%s)"
 
 #: glib/gspawn.c:1144
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
-msgstr "Klarte ikkje å utføre barnprosess «%s» (%s)"
+msgstr "فشل تنفيذ العملية الإبنة \"%s\" (%s)"
 
 #: glib/gspawn.c:1154
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
-msgstr "Klarte ikkje å redirigere utdata eller inndata frå barneprosess (%s)"
+msgstr "فشل اعادة توجيه الإخراج أو الإدخال للعملية الإبنة (%s)"
 
 #: glib/gspawn.c:1163
 #, c-format
 msgid "Failed to fork child process (%s)"
-msgstr "Kunne ikkje starte barneprosess (%s)"
+msgstr "فشل تفريق العملية الإبنة (%s)"
 
 #: glib/gspawn.c:1171
 #, c-format
 msgid "Unknown error executing child process \"%s\""
-msgstr "Ukjend feil ved køyring av barneprosess «%s»"
+msgstr "خطأ غير معروف أثناء تنفيذ العملية الإبنة \"%s\""
 
 #: glib/gspawn.c:1193
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
-msgstr "Klarte ikkje å lese nok data frå pid røyr frå barn (%s)"
+msgstr "فشلت قراءة بيانات كافية  من أنبوب child pid (%s)"
 
 #: glib/gutf8.c:950
 msgid "Character out of range for UTF-8"
-msgstr "Teikn ikkje gyldig for UTF-8"
+msgstr "الحرف خارج حدود UTF-8"
 
 #: glib/gutf8.c:1039 glib/gutf8.c:1048 glib/gutf8.c:1180 glib/gutf8.c:1189
 #: glib/gutf8.c:1330 glib/gutf8.c:1426
 msgid "Invalid sequence in conversion input"
-msgstr "Ugyldig sekvens i inndata konvertering"
+msgstr "تتابع غير موجود في مدخلات التحويل"
 
 #: glib/gutf8.c:1341 glib/gutf8.c:1437
 msgid "Character out of range for UTF-16"
-msgstr "Teikn ikkje gyldig for UTF-16"
+msgstr "الحرف خارج حدود UTF-16"
