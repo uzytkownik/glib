@@ -1,3 +1,69 @@
+Overview of Changes from GLib 2.4.7 to GLib 2.4.8
+=================================================
+* Reduce signal connection complexity from O(n) to O(1) 
+  [Sven Neumann]
+* GChildWatch
+  - Use sigaction instead of signal [Jonas Jonnson, 
+    Archana Shah]
+  - Make the very first SIGCHLD work [Gustavo Carneiro]
+* Win32 bug fixes [Tor Lillqvist, Bruce Hochstetler]
+* Other bug fixes [Andrea Campi, Dave MacLachlan]
+
+Overview of Changes from GLib 2.4.6 to GLib 2.4.7
+=================================================
+* Win32 bug fixes 
+ - Fix Unicode collation [Tor Lillqvist]
+ - Fix a thread leak [Peter Zelezny]
+ - Fix build with newer mingw headers [Tor]
+ - Convert messages to UTF-8 [Kazuki Iwamoto]
+ - Don't open console windows [Tor]
+* Other bug fixes [Manish Singh, Matthias Clasen, Morten Welinder,
+ Tim Janik, Tor]
+* Documentation improvements [Morten, Stephan Kasal, Philippe Blain, 
+ Nickolay V. Shmyrev, Gustavo Carneiro, Kjartan Maraas, Stefan Kost]
+* New and updated translations (bs,da,es,gl,ne,nn,or,ro,sq,tr)
+
+Overview of Changes from GLib 2.4.5 to GLib 2.4.6
+=================================================
+
+* Bug fixes [Matthias Clasen, Ray Strode]
+* New and updated translations (mn,nb)
+
+Overview of Changes from GLib 2.4.4 to GLib 2.4.5
+=================================================
+
+* Fix g_filename_from_uri() to work with non-UTF-8 
+  filenames  [Robert Ögren, Matthias Clasen]
+* Make GMarkup parser handle of whitespace inside tags 
+  according to XML 1.1  [Hiroyuki Ikezoe, Matthias]
+* Documentation improvements [Soeren Sandmann, Christophe Fergeau,
+  Danek Duvall]
+* Other bug fixes [Oliver Guntermann, Sven Neumann, 
+  James Henstridge, Murray Cumming, Matthias, Tommi Komulainen]
+* New and updated translations (bg,hi,sq)
+
+Overview of Changes from GLib 2.4.2 to GLib 2.4.4
+=================================================
+
+* Win32 bug fixes (John Ehresman)
+* Other bug fixes (Manish Singh, Matthias Clasen, Federico
+  Mena Quintero, Philippe Blain, Sven Neumann, Julio M. Merino
+  Vidal, Kaz Sasayama, Morten Welinder, Mariano Suarez-Alvarez)
+* Documentation updates (Crispin Flowerday, Ed Griffiths, 
+  Federico)
+* New and updated translations (az,ne,sq)
+
+Overview of Changes from GLib 2.4.1 to GLib 2.4.2
+=================================================
+
+* Win32 bug fixes 
+ - make printf accept ll format modifier [Tor Lillqvist]
+ - only believe HOME if it is an absolute path an exists [Tor]
+* Other bug fixes (Steve Lhomme, Tor, Hans Breuer, Manish Singh, 
+  Owen Taylor, Matthias Clasen, Nikolai Weibull, Benoît Carpentier, 
+  Morten Welinder)
+* New and updated translations (de,it,ja,ko,no,pt_BR,sq,wa,zh_CN)
+
 Overview of Changes from GLib 2.4.0 to GLib 2.4.1
 =================================================
 
