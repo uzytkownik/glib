@@ -60,18 +60,17 @@
 
 #if defined(ENABLE_MEM_PROFILE) && defined(ENABLE_MEM_PROFILE_EXCLUDES_MEM_CHUNKS)
 #define ENTER_MEM_CHUNK_ROUTINE() \
-  g_static_set (allocating_for_mem_chunk, \
-		g_static_get (allocating_for_mem_chunk) + 1)
-#define ENTER_MEM_CHUNK_ROUTINE() \
-  g_static_set (allocating_for_mem_chunk, \
-		g_static_get (allocating_for_mem_chunk) - 1) 
+  g_private_set (allocating_for_mem_chunk, \
+		g_private_get (allocating_for_mem_chunk) + 1)
+#define LEAVE_MEM_CHUNK_ROUTINE() \
+  g_private_set (allocating_for_mem_chunk, \
+		g_private_get (allocating_for_mem_chunk) - 1) 
 #else
 #define ENTER_MEM_CHUNK_ROUTINE()
 #define LEAVE_MEM_CHUNK_ROUTINE()
 #endif
 
 
-#define MAX_MEM_AREA  65536L
 #define MEM_AREA_SIZE 4L
 
 #if SIZEOF_VOID_P > SIZEOF_LONG
@@ -125,7 +124,8 @@ struct _GRealMemChunk
 };
 
 
-static gulong g_mem_chunk_compute_size (gulong    size);
+static gulong g_mem_chunk_compute_size (gulong    size,
+					gulong    min_size);
 static gint   g_mem_chunk_area_compare (GMemArea *a,
 					GMemArea *b);
 static gint   g_mem_chunk_area_search  (GMemArea *a,
@@ -144,7 +144,7 @@ static gulong allocated_mem = 0;
 static gulong freed_mem = 0;
 static GPrivate* allocating_for_mem_chunk = NULL;
 #define IS_IN_MEM_CHUNK_ROUTINE() \
-  GPOINTER_TO_UINT (g_static_get (allocating_for_mem_chunk))
+  GPOINTER_TO_UINT (g_private_get (allocating_for_mem_chunk))
 #endif /* ENABLE_MEM_PROFILE */
 
 
@@ -309,7 +309,13 @@ g_realloc (gpointer mem,
   
   
   if (!mem)
-    p = (gpointer) realloc (NULL, size);
+    {
+#ifdef REALLOC_0_WORKS
+      p = (gpointer) realloc (NULL, size);
+#else /* !REALLOC_0_WORKS */
+      p = (gpointer) malloc (size);
+#endif /* !REALLOC_0_WORKS */
+    }
   else
     {
 #if defined(ENABLE_MEM_PROFILE) || defined(ENABLE_MEM_CHECK)
@@ -429,15 +435,15 @@ g_mem_profile (void)
   for (i = 0; i < (MEM_PROFILE_TABLE_SIZE - 1); i++)
     if (local_allocations[i] > 0)
       g_log (g_log_domain_glib, G_LOG_LEVEL_INFO,
-	     "%lu allocations of %d bytes\n", local_allocations[i], i + 1);
+	     "%lu allocations of %d bytes", local_allocations[i], i + 1);
   
   if (local_allocations[MEM_PROFILE_TABLE_SIZE - 1] > 0)
     g_log (g_log_domain_glib, G_LOG_LEVEL_INFO,
-	   "%lu allocations of greater than %d bytes\n",
+	   "%lu allocations of greater than %d bytes",
 	   local_allocations[MEM_PROFILE_TABLE_SIZE - 1], MEM_PROFILE_TABLE_SIZE - 1);
-  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes allocated\n", local_allocated_mem);
-  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes freed\n", local_freed_mem);
-  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes in use\n", local_allocated_mem - local_freed_mem);
+  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes allocated", local_allocated_mem);
+  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes freed", local_freed_mem);
+  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes in use", local_allocated_mem - local_freed_mem);
 #endif /* ENABLE_MEM_PROFILE */
 }
 
@@ -463,7 +469,13 @@ g_mem_chunk_new (gchar  *name,
   GRealMemChunk *mem_chunk;
   gulong rarea_size;
 
+  g_return_val_if_fail (atom_size > 0, NULL);
+  g_return_val_if_fail (area_size >= atom_size, NULL);
+
   ENTER_MEM_CHUNK_ROUTINE();
+
+  area_size = (area_size + atom_size - 1) / atom_size;
+  area_size *= atom_size;
 
   mem_chunk = g_new (struct _GRealMemChunk, 1);
   mem_chunk->name = name;
@@ -482,29 +494,11 @@ g_mem_chunk_new (gchar  *name,
   
   if (mem_chunk->atom_size % MEM_ALIGN)
     mem_chunk->atom_size += MEM_ALIGN - (mem_chunk->atom_size % MEM_ALIGN);
-  
-  mem_chunk->area_size = area_size;
-  if (mem_chunk->area_size > MAX_MEM_AREA)
-    mem_chunk->area_size = MAX_MEM_AREA;
-  while (mem_chunk->area_size < mem_chunk->atom_size)
-    mem_chunk->area_size *= 2;
-  
-  rarea_size = mem_chunk->area_size + sizeof (GMemArea) - MEM_AREA_SIZE;
-  rarea_size = g_mem_chunk_compute_size (rarea_size);
+
+  rarea_size = area_size + sizeof (GMemArea) - MEM_AREA_SIZE;
+  rarea_size = g_mem_chunk_compute_size (rarea_size, atom_size + sizeof (GMemArea) - MEM_AREA_SIZE);
   mem_chunk->area_size = rarea_size - (sizeof (GMemArea) - MEM_AREA_SIZE);
-  
-  /*
-    mem_chunk->area_size -= (sizeof (GMemArea) - MEM_AREA_SIZE);
-    if (mem_chunk->area_size < mem_chunk->atom_size)
-    {
-    mem_chunk->area_size = (mem_chunk->area_size + sizeof (GMemArea) - MEM_AREA_SIZE) * 2;
-    mem_chunk->area_size -= (sizeof (GMemArea) - MEM_AREA_SIZE);
-    }
-    
-    if (mem_chunk->area_size % mem_chunk->atom_size)
-    mem_chunk->area_size += mem_chunk->atom_size - (mem_chunk->area_size % mem_chunk->atom_size);
-  */
-  
+
   g_mutex_lock (mem_chunks_lock);
   mem_chunk->next = mem_chunks;
   mem_chunk->prev = NULL;
@@ -525,7 +519,7 @@ g_mem_chunk_destroy (GMemChunk *mem_chunk)
   GMemArea *mem_areas;
   GMemArea *temp_area;
   
-  g_assert (mem_chunk != NULL);
+  g_return_if_fail (mem_chunk != NULL);
 
   ENTER_MEM_CHUNK_ROUTINE();
 
@@ -566,7 +560,7 @@ g_mem_chunk_alloc (GMemChunk *mem_chunk)
 
   ENTER_MEM_CHUNK_ROUTINE();
 
-  g_assert (mem_chunk != NULL);
+  g_return_val_if_fail (mem_chunk != NULL, NULL);
   
   rmem_chunk = (GRealMemChunk*) mem_chunk;
   
@@ -714,8 +708,8 @@ g_mem_chunk_free (GMemChunk *mem_chunk,
   GMemArea *temp_area;
   GFreeAtom *free_atom;
   
-  g_assert (mem_chunk != NULL);
-  g_assert (mem != NULL);
+  g_return_if_fail (mem_chunk != NULL);
+  g_return_if_fail (mem != NULL);
 
   ENTER_MEM_CHUNK_ROUTINE();
 
@@ -757,7 +751,7 @@ g_mem_chunk_clean (GMemChunk *mem_chunk)
   GFreeAtom *temp_free_atom;
   gpointer mem;
   
-  g_assert (mem_chunk != NULL);
+  g_return_if_fail (mem_chunk != NULL);
   
   rmem_chunk = (GRealMemChunk*) mem_chunk;
   
@@ -821,7 +815,7 @@ g_mem_chunk_reset (GMemChunk *mem_chunk)
   GMemArea *mem_areas;
   GMemArea *temp_area;
   
-  g_assert (mem_chunk != NULL);
+  g_return_if_fail (mem_chunk != NULL);
   
   rmem_chunk = (GRealMemChunk*) mem_chunk;
   
@@ -851,7 +845,7 @@ g_mem_chunk_print (GMemChunk *mem_chunk)
   GMemArea *mem_areas;
   gulong mem;
   
-  g_assert (mem_chunk != NULL);
+  g_return_if_fail (mem_chunk != NULL);
   
   rmem_chunk = (GRealMemChunk*) mem_chunk;
   mem_areas = rmem_chunk->mem_areas;
@@ -864,7 +858,7 @@ g_mem_chunk_print (GMemChunk *mem_chunk)
     }
   
   g_log (g_log_domain_glib, G_LOG_LEVEL_INFO,
-	 "%s: %ld bytes using %d mem areas\n",
+	 "%s: %ld bytes using %d mem areas",
 	 rmem_chunk->name, mem, rmem_chunk->num_mem_areas);
 }
 
@@ -884,7 +878,7 @@ g_mem_chunk_info (void)
     }
   g_mutex_unlock (mem_chunks_lock);
   
-  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%d mem chunks\n", count);
+  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%d mem chunks", count);
   
   g_mutex_lock (mem_chunks_lock);
   mem_chunk = mem_chunks;
@@ -914,7 +908,8 @@ g_blow_chunks (void)
 
 
 static gulong
-g_mem_chunk_compute_size (gulong size)
+g_mem_chunk_compute_size (gulong size,
+			  gulong min_size)
 {
   gulong power_of_2;
   gulong lower, upper;
@@ -926,9 +921,10 @@ g_mem_chunk_compute_size (gulong size)
   lower = power_of_2 >> 1;
   upper = power_of_2;
   
-  if ((size - lower) < (upper - size))
+  if (size - lower < upper - size && lower >= min_size)
     return lower;
-  return upper;
+  else
+    return upper;
 }
 
 static gint
