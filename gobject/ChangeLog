@@ -1,3 +1,64 @@
+2004-10-08  Matthias Clasen  <clasen@redhat.com>
+
+	* === Released 2.4.7 ===
+
+Wed Oct  6 02:12:44 2004    <timj@birnet.org>
+
+        * gtype.c (g_type_instance_get_private): applied patch from Jean-Yves 
+        Lefort <jylefort@brutele.be> to not access the instance_real_class_bsa
+        pointer without holding the instance_real_class lock.
+
+2004-09-22  Tor Lillqvist  <tml@iki.fi>
+
+	* Makefile.am (install-libtool-import-lib): [Win32] Add code to
+	remove the bug-compatibility entries (see #134813, and related
+	comments below) from the import library. The PRIVATE keyword in
+	the .def file is supposed to mean that, but it isn't implemented
+	yet by GNU ld.
+
+2004-08-13  Matthias Clasen  <clasen@redhat.com>
+
+	* === Released 2.4.6 ===
+
+2004-07-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.5 ===
+
+2004-07-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtype.c (g_type_instance_get_private): Catch cases of 
+	forgotten g_type_add_private().  (#148368, Tommi Komulainen) 
+
+2004-07-21  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib-genmarshal.c (put_marshal_value_getters): Use the 
+	correct fields for enums and flags.  (#145015, Tommi Komulainen) 
+
+2004-07-12  Matthias Clasen  <mclasen@redhat.com>
+
+	* gsignal.c (g_signal_handler_is_connected): Don't choke
+	on a zero handler_id.
+
+2004-07-09  Matthias Clasen  <mclasen@redhat.com>
+
+ 	* === Released 2.4.4 ===
+
+Wed Jun 23 12:57:38 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtype.h (G_DEFINE_TYPE_EXTENDED): Add an initializer for
+	the g_define_type_info.value_table.  (#144678,Mariano 
+	Suárez-Alvarez) 
+
+Fri Jun 18 22:55:36 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gsourceclosure.h (__G_SOURCECLOSURE_H__): Actually
+	define the guard after checking for it.  (#108038, 
+	Morten Welinder)
+
+2004-06-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.2 ===
+
 2004-04-30  Matthias Clasen  <mclasen@redhat.com>
 
 	* === Released 2.4.1 ===

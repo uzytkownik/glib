@@ -867,7 +867,13 @@ g_get_any_init (void)
       /* We check $HOME first for Win32, though it is a last resort for Unix
        * where we prefer the results of getpwuid().
        */
-      g_home_dir = g_strdup (g_getenv ("HOME"));
+      {
+	gchar *home = g_getenv ("HOME");
+      
+	/* Only believe HOME if it is an absolute path and exists */
+	if (home && g_path_is_absolute (home) && g_file_test (home, G_FILE_TEST_IS_DIR))
+	  g_home_dir = g_strdup (home);
+      }
       
       /* In case HOME is Unix-style (it happens), convert it to
        * Windows style.
@@ -1230,18 +1236,11 @@ g_nullify_pointer (gpointer *nullify_location)
 gchar *
 g_get_codeset (void)
 {
-#ifdef HAVE_CODESET  
-  char *result = nl_langinfo (CODESET);
-  return g_strdup (result);
-#else
-#ifdef G_PLATFORM_WIN32
-  return g_strdup_printf ("CP%d", GetACP ());
-#else
-  /* FIXME: Do something more intelligent based on setlocale (LC_CTYPE, NULL)
-   */
-  return g_strdup ("ISO-8859-1");
-#endif
-#endif
+  const gchar *charset;
+
+  g_get_charset (&charset);
+
+  return strdup (charset);
 }
 
 #ifdef ENABLE_NLS
