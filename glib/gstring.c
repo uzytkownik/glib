@@ -67,25 +67,19 @@ g_str_equal (gconstpointer v, gconstpointer v2)
   return strcmp ((const gchar*) v, (const gchar*)v2) == 0;
 }
 
-/* a char* hash function from ASU */
+/* 31 bit hash function */
 guint
-g_str_hash (gconstpointer v)
+g_str_hash (gconstpointer key)
 {
-  const char *s = (char*)v;
-  const char *p;
-  guint h=0, g;
-
-  for(p = s; *p != '\0'; p += 1) {
-    h = ( h << 4 ) + *p;
-    if ( ( g = h & 0xf0000000 ) ) {
-      h = h ^ (g >> 24);
-      h = h ^ g;
-    }
-  }
-
-  return h /* % M */;
+  const char *p = key;
+  guint h = *p;
+  
+  if (h)
+    for (p += 1; *p != '\0'; p++)
+      h = (h << 5) - h + *p;
+  
+  return h;
 }
-
 
 /* String Chunks.
  */
@@ -441,7 +435,7 @@ GString*
 g_string_down (GString *fstring)
 {
   GRealString *string = (GRealString*)fstring;
-  gchar *s;
+  guchar *s;
 
   g_return_val_if_fail (string != NULL, NULL);
 
@@ -460,7 +454,7 @@ GString*
 g_string_up (GString *fstring)
 {
   GRealString *string = (GRealString*)fstring;
-  gchar *s;
+  guchar *s;
 
   g_return_val_if_fail (string != NULL, NULL);
 

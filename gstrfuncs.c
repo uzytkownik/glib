@@ -200,9 +200,11 @@ g_strtod (const gchar *nptr,
     {
       gchar *old_locale;
 
-      old_locale = setlocale (LC_NUMERIC, "C");
+      old_locale = g_strdup (setlocale (LC_NUMERIC, NULL));
+      setlocale (LC_NUMERIC, "C");
       val_2 = strtod (nptr, &fail_pos_2);
       setlocale (LC_NUMERIC, old_locale);
+      g_free (old_locale);
     }
 
   if (!fail_pos_1 || fail_pos_1[0] == 0 || fail_pos_1 >= fail_pos_2)
@@ -927,9 +929,9 @@ g_printf_string_upper_bound (const gchar* format,
 }
 
 void
-g_strdown (gchar  *string)
+g_strdown (gchar *string)
 {
-  register gchar *s;
+  register guchar *s;
 
   g_return_if_fail (string != NULL);
 
@@ -943,9 +945,9 @@ g_strdown (gchar  *string)
 }
 
 void
-g_strup (gchar	*string)
+g_strup (gchar *string)
 {
-  register gchar *s;
+  register guchar *s;
 
   g_return_if_fail (string != NULL);
 
@@ -959,7 +961,7 @@ g_strup (gchar	*string)
 }
 
 void
-g_strreverse (gchar	  *string)
+g_strreverse (gchar *string)
 {
   g_return_if_fail (string != NULL);
 
@@ -988,6 +990,9 @@ g_strcasecmp (const gchar *s1,
 	      const gchar *s2)
 {
 #ifdef HAVE_STRCASECMP
+  g_return_val_if_fail (s1 != NULL, 0);
+  g_return_val_if_fail (s2 != NULL, 0);
+
   return strcasecmp (s1, s2);
 #else
   gint c1, c2;
@@ -1100,14 +1105,14 @@ g_strescape (gchar *string)
 gchar*
 g_strchug (gchar *string)
 {
-  gchar *start;
+  guchar *start;
 
   g_return_val_if_fail (string != NULL, NULL);
 
   for (start = string; *start && isspace (*start); start++)
     ;
 
-  strcpy (string, start);
+  g_memmove(string, start, strlen(start) + 1);
 
   return string;
 }
@@ -1122,7 +1127,8 @@ g_strchomp (gchar *string)
   if (!*string)
     return string;
 
-  for (s = string + strlen (string) - 1; s >= string && isspace (*s); s--)
+  for (s = string + strlen (string) - 1; s >= string && isspace ((guchar)*s); 
+       s--)
     *s = '\0';
 
   return string;
@@ -1205,7 +1211,7 @@ g_strjoinv (const gchar  *separator,
 
   g_return_val_if_fail (str_array != NULL, NULL);
 
-  if(separator == NULL)
+  if (separator == NULL)
     separator = "";
 
   if (*str_array)
@@ -1242,42 +1248,47 @@ g_strjoin (const gchar  *separator,
   guint len;
   guint separator_len;
 
-  if(separator == NULL)
+  if (separator == NULL)
     separator = "";
 
   separator_len = strlen (separator);
 
-  va_start(args, separator);
+  va_start (args, separator);
 
-  s = va_arg(args, gchar *);
+  s = va_arg (args, gchar*);
 
-  if(s) {
-    len = strlen(s) + 1;
-
-    while((s = va_arg(args, gchar*)))
-      {
-	len += separator_len + strlen(s);
-      }
-    va_end(args);
-
-    string = g_new (gchar, len);
-
-    va_start(args, separator);
-
-    *string = 0;
-    s = va_arg(args, gchar*);
-    strcat (string, s);
-
-    while((s = va_arg(args, gchar*)))
-      {
-	strcat(string, separator);
-	strcat(string, s);
-      }
-
-  } else
-    string = g_strdup("");
-
-  va_end(args);
+  if (s)
+    {
+      len = strlen (s);
+      
+      s = va_arg (args, gchar*);
+      while (s)
+	{
+	  len += separator_len + strlen (s);
+	  s = va_arg (args, gchar*);
+	}
+      va_end (args);
+      
+      string = g_new (gchar, len + 1);
+      *string = 0;
+      
+      va_start (args, separator);
+      
+      s = va_arg (args, gchar*);
+      strcat (string, s);
+      
+      s = va_arg (args, gchar*);
+      while (s)
+	{
+	  strcat (string, separator);
+	  strcat (string, s);
+	  s = va_arg (args, gchar*);
+	}
+    }
+  else
+    string = g_strdup ("");
+  
+  va_end (args);
 
   return string;
 }
