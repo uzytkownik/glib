@@ -1,3 +1,6 @@
+#undef G_DISABLE_ASSERT
+#undef G_LOG_DOMAIN
+
 #include <stdio.h>
 #include <glib.h>
 
@@ -61,7 +64,7 @@ text_handler           (GMarkupParseContext *context,
                         GError             **error)
 {
   indent (0);
-  printf ("TEXT '%s'\n", text);
+  printf ("TEXT '%.*s'\n", (int)text_len, text);
 }
 
 
@@ -74,7 +77,7 @@ passthrough_handler    (GMarkupParseContext *context,
 {
   indent (0);
 
-  printf ("PASS '%s'\n", passthrough_text);
+  printf ("PASS '%.*s'\n", (int)text_len, passthrough_text);
 }
 
 static void

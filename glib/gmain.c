@@ -153,7 +153,7 @@ struct _GTimeoutSource
 {
   GSource     source;
   GTimeVal    expiration;
-  gint        interval;
+  guint       interval;
 };
 
 struct _GPollRec
@@ -2937,11 +2937,11 @@ g_timeout_prepare  (GSource  *source,
 	   * this at least avoids hanging for long periods of time.
 	   */
 	  g_timeout_set_expiration (timeout_source, &current_time);
-	  msec = timeout_source->interval;
+	  msec = MIN (G_MAXINT, timeout_source->interval);
 	}
       else
 	{
-	  msec += sec * 1000;
+	  msec = MIN (G_MAXINT, (guint)msec + 1000 * (guint)sec);
 	}
     }
 
@@ -3076,8 +3076,7 @@ g_timeout_add_full (gint           priority,
  * Sets a function to be called at regular intervals, with the default
  * priority, #G_PRIORITY_DEFAULT.  The function is called repeatedly
  * until it returns %FALSE, at which point the timeout is automatically
- * destroyed and the function will not be called again.  The @notify
- * function is called when the timeout is destroyed.  The first call
+ * destroyed and the function will not be called again.  The first call
  * to the function will be at the end of the first @interval.
  *
  * Note that timeout functions may be delayed, due to the processing of other

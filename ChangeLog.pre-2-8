@@ -1,3 +1,365 @@
+Fri Jul 26 18:01:44 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* Released 2.0.6
+
+	* configure.in: 2.0.6, binary, interface age 6
+	
+	* NEWS: Updated.
+
+Thu Jul 25 14:23:15 2002  Owen Taylor  <otaylor@redhat.com>
+
+ 	* glib/gfileutils.c: Clarify the behavior of g_build_path()
+ 	for empty elements and for leading and trailing copies
+ 	of the separator in the docs.
+ 
+ 	* glib/gfileutils.c: Fix problems with leading elements
+ 	consisting only of "/" characters. (#85928, Guillaume Chazarain)
+ 
+ 	* tests/strfunc-test.c (main): Add more test cases
+ 	for g_build_filename().
+ 
+Thu Jul 25 20:57:20 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/giochannel.c (g_io_channel_read_line): Fix 
+	docs for @str_return to conform to the main docs
+	and the implementation as to whether the terminator
+	is included. (#87964, Jacob Berkman)
+
+Thu Jul 25 19:52:41 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/guniprop.c (real_tolower): Handle the 
+	end of the string properly when max_len is set.
+	(#88545, Morten Welinder.) Rename the next_t
+	variable to next_type to make cc-mode happy.
+
+	* glib/gconvert.c (g_iconv_open): Fix missing
+	label from previous commit.
+
+Thu Jul 25 19:41:03 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/giochannel.c (g_io_channel_get_flags): Fix 
+	incorrect return value in g_return_val_if_fail 
+	(#85545, David L. Cooper II)
+
+Thu Jul 25 19:12:43 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/giochannel.c (g_io_channel_set_encoding): Clarify
+	that only one of the conditions listed in the docs
+	need to be true, not all of them. (#87176,
+	Sebastian Rittau)
+
+	* glib/giochannel.c (g_io_channel_read_line): Fix 
+	description of the return value. (#87754, Manuel Clos)
+
+Thu Jul 25 19:02:53 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/gmain.c (g_timeout_add): Remove reference
+	in the docs to @notify parameter. (#87768,
+	Manuel Clos)
+
+Thu Jul 25 17:57:07 2002  Owen Taylor  <otaylor@redhat.com>
+ 
+ 	* glib/gconvert.c (g_iconv_open): Document the
+ 	(GIConv)-1 return value on failure. (#87559, 
+ 	Jarek Dukat)
+ 
+ 	* glib/gconvert.c (g_iconv_open): Fix potential
+ 	problems with the assumption that (GIConv)(iconv_t)-1
+ 	is the same as (GIConv)-1.
+ 	
+2002-07-04  Sebastian Wilhelmi  <wilhelmi@ira.uka.de>
+
+	* tests/*.c: Added #undef G_DISABLE_ASSERT and #undef G_LOG_DOMAIN
+	throughout the files, which didn't already have
+	them. (#87312). Merged from HEAD.
+
+2002-07-03  Sebastian Wilhelmi  <wilhelmi@ira.uka.de>
+
+	* configure.in: Fixed bugs in posix thread priority
+	resolution. Also added AIX priorities. Fix from Laurent Vivier
+	<Laurent.Vivier@bull.net>. (#82599). Merged from HEAD.
+
+	* gthread/gthread-solaris.c: Use thr_min_stack() instead of
+	sysconf (_SC_THREAD_STACK_MIN). if stack_size is 0 on entry to
+	g_thread_create_solaris_impl, also pass 0 to thr_create. Otherwise
+	the stack might be to small for any nontrivial thread. Discovered
+	on intel-solaris by Rajkumar Sivasamy
+	<rajkumar.siva@wipro.com>. Merged from HEAD.
+
+2002-07-02  Sebastian Wilhelmi  <wilhelmi@ira.uka.de>
+
+	* configure.in: Improve checks for dce/posix threads to also do
+	the right thing, if the thread functions are not declared in
+	pthread.h. Idea from Miroslaw Dobrzanski-Neumann
+	<mne@mosaic-ag.com> in #77981. Merged from HEAD.
+
+2002-07-01  Sebastian Wilhelmi  <wilhelmi@ira.uka.de>
+
+	* glib/garray.h: Add parenthesis to protect macro
+	argument. Spotted by Sam Couter <sam@topic.com.au>. Merged from
+	HEAD. (#86826)
+
+
+2002-06-28  Sebastian Wilhelmi  <wilhelmi@ira.uka.de>
+
+	* glib/gmessages.h (g_assert, g_assert_not_reached,
+	g_return_if_fail, g_return_val_if_fail): In case of
+	G_DISABLE_ASSERT replace "G_STMT_START{ }G_STMT_END" with
+	"G_STMT_START{ (void)0; }G_STMT_END", because the former chokes
+	gcc prior to 3.0. (#86664). Merged from HEAD.
+
+2002-06-26  Yanko Kaneti <yaneti@declera.com>
+
+	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
+
+2002-06-18  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+        * configure.in: Added Vietnamese (vi) to ALL_LINGUAS.
+
+Thu Jun 13 16:19:23 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* Released 2.0.4
+
+	* configure.in: Version 2.0.4, binary, interface age 4.
+
+	* NEWS: Updates.
+
+Thu Jun 13 16:12:04 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/gmain.c (struct _GTimeoutSource): Make 
+	interval unsigned to match g_timeout_source_new().
+	(#82624, Tim Janik.)
+
+	* glib/gmain.c (g_timeout_prepare): Add some
+	extra gymnastics to avoid signed/unisgned integer
+	overflows.
+
+Thu Jun 13 15:57:46 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* INSTALL.in: Add a note about the deficiency
+	of Tru64 iconv. (#81699, Manuel Op de Coul)
+
+Tue Jun 11 17:03:39 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* tests/patterntest.c (test_compilation)
+	* glib/gmem.c (profiler_try_realloc): A couple
+	of 64-bit printf format fix from George Lebl.
+	(#82817)
+
+	* glib/gconvert.c (open_converter): Fix gsize/gint
+	mixup for g_iconv() arguments. (#83270,
+	David L. Cooper II)
+
+Thu May 23 14:15:40 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* Released 2.0.3
+
+2002-05-23  Havoc Pennington  <hp@redhat.com>
+
+	* glib/gspawn.c (fork_exec_with_pipes): on success, close the
+	pipes from the child. Fix from Tim.
+
+2002-05-22  jacob berkman  <jacob@ximian.com>
+
+	* m4macros/glib-gettext.m4 (AM_GLIB_WITH_NLS): fix tyop
+
+Wed May 22 15:28:55 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* configure.in: Version 2.0.3, micro, binary age 3.
+
+	* NEWS: updated.
+
+Wed May 22 15:40:47 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* README.in: Remove notes about now-fixed-bugs.
+
+	* m4macros/glib-gettext.m4 acinclude.m4: Get rid
+	of AC_MSG_NOTICE() usage, since some broken systems
+	(Hi Debian!) might not be using autoconf-2.5x for
+	downstream packages even though we require it for
+	glib itself.
+
+	* INSTALL.in: Add a note about installing extra
+	converters for Solaris.
+
+	* glib/gutils.h (g_bit_nth_msf): Fix termination
+	condition. (#82582, Paolo Molaro)
+
+Tue May 21 15:51:17 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* configure.in: $with_libiconv, not $with_iconv.
+
+Mon May 20 18:02:46 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* configure.in: Move iconv tests before gettext
+	checks. (#81999)
+
+	* m4macros/glib-gettext.m4 acinclude.m4: If we can't
+	link to gettext, try adding in -liconv. (#80076,
+	Boyd Lynn Gerber)
+
+	* m4macros/glib-gettext.m4 acinclude.m4: Suppress
+	warnings about xgettext not being GNU gettext when
+	libintl wasn't found at all. 
+	(#79016, Andrew P. Lentvorski, Jr.)
+	 
+2002-05-21  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gmarkup.c (g_markup_parse_context_parse): Add my gmarkup
+	fixes again - this time I've even compiled them! Also added
+	proper support for CDATA sections.
+
+2002-05-20  jacob berkman  <jacob@ximian.com>
+
+	* glib/gdir.c: include sys/types.h before dirent to fix build on
+	darwin (fixes #72859)
+
+Mon May 20 15:35:59 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/gfileutils.c (get_contents_regfile): Fix double
+	close of file descriptor on error. (#82139, Wayne Schuller)
+
+	* glib/gspawn.c (close_and_invalidate): Don't close
+	fd's that have already been closed. (Fix from Michael
+	Meeks, #81959)
+
+	* glib/giochannel.c (g_io_channel_close): If not flushing,
+	dump the contents of the write buffers, so we won't try
+	to write them to an invalid fd later. (Patch from Ron Steinke,
+	fixing #78290, Andreas Persenius.)
+
+2002-05-19  Jacob Berkman  <jacob@ximian.com>
+
+	* glib/gmarkup.c (g_markup_parse_context_parse): revert previous
+	commit - uses APIs from glib 2.1
+
+2002-05-19  Matthias Clasen  <maclas@gmx.de>
+
+	* tests/markups/fail-36.gmarkup: 
+	* tests/markups/fail-35.gmarkup: 
+	* tests/markups/valid-8.gmarkup: 
+	* tests/markups/valid-7.gmarkup: 
+	* tests/markups/valid-6.gmarkup: 
+	* tests/markups/valid-5.gmarkup: New testcases.
+
+	* tests/markup-test.c (passthrough_handler): 
+	(text_handler): Don't ignore the text_len parameter.
+
+	* glib/gmarkup.c (find_current_text_end): Don't hang on embedded
+	nuls.  (#81977)
+	(g_markup_parse_context_parse): Fix passthrough handling to
+	correctly skip processing instructions, comments, doctype
+	declarations and CDATA marked sections.  (#81977)
+
+Sat May 18 00:21:51 2002  Tim Janik  <timj@gtk.org>
+
+	* glib/gscanner.c (g_scanner_unexp_token): fix missing cases for
+	expected_token.
+
+2002-05-17  Tor Lillqvist  <tml@iki.fi>
+
+	* config.h.win32.in: Match new additions to a configure-produced
+	config.h.
+
+	* glibconfig.h.win32.in: gssize and gsize as in a
+	configure-produced glibconfig.h.
+
+Thu May 16 12:24:00 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* acinclude.m4 m4macros/glib-gettext.m4: Incorporate 
+	AM_LC_MESSAGES, AM_PATH_PROG_WITH_TEST as AM_GLIB_* to avoid 
+	dependencies on gettext m4 files.
+
+	* autogen.sh: Remove check for GNU gettext, since it
+	was causing problems for Solaris CVS builds.
+	(#81885, Hidetoshi Tajima.)
+
+Mon May 13 23:20:00 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* autogen.sh (have_gettext): Add a check for GNU gettext.
+	(Pointed out by Dan Winship in #59386.)
+
+Mon May 13 11:55:33 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* configure.in acglib.m4: If sizeof(int) == sizeof(long)
+	run compilation tests to determine which way gsize should
+	be defined. (#74413, reported by Miroslaw Dobrzanski-Neumann)
+
+Mon May 13 11:42:23 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/libcharset/*: Update from libcharset CVS.
+	Includes additional encodings for Solaris (#80396,
+	Qingjiang Yuan)
+
+	* configure.in: Add getc_unlocked to CHECK_FUNCS().
+
+	* glib/gmessages.c (strdup_convert): If
+	g_convert_with_fallback() fails, print the error
+	message to stderr the first time, then return
+	the original string. (#78197)
+
+2002-05-08  Michael Natterer  <mitch@gimp.org>
+
+	* configure.in: fixed yesterdays fix for cross compiling: simply
+	check the variable "cross_compiling" which gets set by autoconf.
+
+2002-05-07  Matthias Clasen  <maclas@gmx.de>
+
+	* glib/gmarkup.c (unescape_text): Report unfinished entity
+	references as errors rather than running into an assert.  (#80441)
+
+2002-05-07  Michael Natterer  <mitch@gimp.org>
+
+	* configure.in: added a new conditional CROSS_COMPILING which
+	indicates ($build != $host). If it is set, look for
+	glib-genmarshal in PATH. Error out if it was not found.
+
+Tue May  7 11:24:22 2002  Owen Taylor  <otaylor@redhat.com>
+
+	Fixes for #79347, Ron Arts.
+
+	* glib/gqsort.c (g_qsort_with_data): Handle 0 elements,
+	don't g_return_if_fail().
+
+	* tests/qsort-test.c (main): Add a 0 element test.
+
+	* glib/garray.c (g_[ptr_]array_sort_with[_data]): 
+	Remove invalid assertions that array->pdata != NULL ..
+	it's NULL for 0 elements which is a valid case.
+
+Mon May  6 16:00:41 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* glib/gbacktrace.h: Exclude OSF from alpha definition
+	of G_BREAKPOINT(), since the assembler apparently
+	doesn't support bpt. (#77852, Gareth Pierce)
+
+Mon May  6 11:48:08 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* Makefile.am (EXTRA_DIST): Add ChangeLog.pre-2-0 (#78641)
+
+	* m4macros/glib-2.0.m4: save CFLAGS/LIBS properly when
+	compiling "what went wrong" test case. (#79330)
+
+	* m4macros/glib-2.0.m4: Remove reference to editing
+	pkg-config script. (From Jim Gettys)
+
+	* configure.in: (Look for dyld interfaces before dlopen()
+	since OS X can have both. Patch from Jacob Berkman, 
+	#80438)
+
+2002-04-18  Sebastian Wilhelmi  <wilhelmi@ira.uka.de>
+
+        * gthread/gthread-impl.c (g_thread_init): Fixed
+	typo. (#78985). Merged from HEAD.
+	
+2002-04-19  Tor Lillqvist  <tml@iki.fi>
+
+	* glib/gspawn.c (g_spawn_command_line_sync): Add Windows-specific
+	note to the gtk-doc comment.
+
+	* glib/gspawn-win32.c: Remove the copy-pasted gtk-doc comment
+	blocks. It's enough to have them in gspawn.c.
+
 2002-04-13  Sebastian Wilhelmi  <wilhelmi@ira.uka.de>
 
 	* glib/gthreadpool.c (g_thread_pool_thread_proxy): Unlock the pool

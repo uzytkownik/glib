@@ -119,8 +119,13 @@ close_and_invalidate (gint *fd)
 {
   gint ret;
 
-  ret = close (*fd);
-  *fd = -1;
+  if (*fd < 0)
+    return -1;
+  else
+    {
+      ret = close (*fd);
+      *fd = -1;
+    }
 
   return ret;
 }
@@ -545,6 +550,14 @@ g_spawn_async_with_pipes (const gchar          *working_directory,
  * appropriate. Possible errors are those from g_spawn_sync() and those
  * from g_shell_parse_argv().
  * 
+ * On Windows, please note the implications of g_shell_parse_argv()
+ * parsing @command_line. Space is a separator, and backslashes are
+ * special. Thus you cannot simply pass a @command_line consisting of
+ * a canonical Windows path, like "c:\\program files\\app\\app.exe",
+ * as the backslashes will be eaten, and the space will act as a
+ * separator. You need to enclose the path with single quotes, like
+ * "'c:\\program files\\app\\app.exe'".
+ *
  * Return value: %TRUE on success, %FALSE if an error was set
  **/
 gboolean
@@ -592,6 +605,8 @@ g_spawn_command_line_sync (const gchar  *command_line,
  * consider using g_spawn_async() directly if appropriate. Possible
  * errors are those from g_shell_parse_argv() and g_spawn_async().
  * 
+ * The same concerns on Windows apply as for g_spawn_command_line_sync().
+ *
  * Return value: %TRUE on success, %FALSE if error is set.
  **/
 gboolean
@@ -1187,7 +1202,9 @@ fork_exec_with_pipes (gboolean              intermediate_child,
         }
       
       /* Success against all odds! return the information */
-      
+      close_and_invalidate (&child_err_report_pipe[0]);
+      close_and_invalidate (&child_pid_report_pipe[0]);
+ 
       if (child_pid)
         *child_pid = pid;
 
