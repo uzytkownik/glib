@@ -1,3 +1,33 @@
+Overview of Changes in GLib 1.2.6:
+
+* One very small automake fix.
+
+Overview of Changes in GLib 1.2.5:
+
+* Fixes to g_mem_chunk_*  (also no more 65536 bytes restriction)
+* Better libtool 1.3.3 usage
+
+Overview of Changes in GLib 1.2.4:
+
+* Upgrade to libtool 1.3.3.
+* Minor portability fixes.
+
+Overview of Changes in GLib 1.2.3:
+
+* Minor fixes.
+
+Overview of Changes in GLib 1.2.2:
+
+* Minor fixes.
+
+Overview of Changes in GLib 1.2.1:
+
+* g_realloc() fix for SunOS (please report further problems).
+* Continued the never ending fix vendetta regarding getpwuid(),
+  this time AIX has been the culprit.
+* Upgrade to libtool 1.2f
+* Miscellaneous other buglets fixed.
+
 What's new in GLib 1.2.0 (since GLib 1.0.x):
 
 * GLib is distributed seperatedly from Gtk+
@@ -10,7 +40,7 @@ What's new in GLib 1.2.0 (since GLib 1.0.x):
 * GRelations for n-way mapping of certain data
 * An n-way tree implementation
 * GDate functionality for calendar date manipulations
-* GAllocator type and assocated functions
+* GAllocator type and associated functions
 * Added generic callback maintenance functions (ghook)
 * Generic functions for TAB completions
 * Endian defines (G_*_ENDIAN)

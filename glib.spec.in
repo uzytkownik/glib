@@ -1,6 +1,7 @@
 # Note that this is NOT a relocatable package
 %define ver      @VERSION@
-%define rel      SNAP
+%define  RELEASE 1
+%define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix   /usr
 
 Summary: Handy library of utility functions
@@ -74,9 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 
 %doc AUTHORS COPYING ChangeLog NEWS README
-%{prefix}/lib/libglib-1.1.so.*
-%{prefix}/lib/libgthread-1.1.so.*
-%{prefix}/lib/libgmodule-1.1.so.*
+%{prefix}/lib/libglib-1.2.so.*
+%{prefix}/lib/libgthread-1.2.so.*
+%{prefix}/lib/libgmodule-1.2.so.*
 
 %files devel
 %defattr(-, root, root)

@@ -1,5 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
+# require automake 1.4
 AUTOMAKE_OPTIONS = 1.4
 
 SUBDIRS = . gmodule gthread docs tests
@@ -19,10 +20,13 @@ EXTRA_DIST = \
 	sanity_check		\
 	README.win32		\
 	glib.def		\
+	makefile.msc.in		\
 	makefile.msc		\
 	giowin32.c		\
 	glibconfig.h.win32	\
-	config.h.win32
+	glibconfig.h.win32.in	\
+	config.h.win32		\
+	config.h.win32.in
 
 lib_LTLIBRARIES = libglib.la
 
@@ -59,7 +63,7 @@ include_HEADERS = \
 configinclude_DATA = \
 	glibconfig.h
 
-configure: configure.in acglib.m4		
+CONFIGURE_DEPENDENCIES = acglib.m4		
 
 BUILT_SOURCES = stamp-gc-h #note: not glibconfig.h
 glibconfig.h: stamp-gc-h
@@ -70,7 +74,8 @@ stamp-gc-h: config.status
 
 libglib_la_LDFLAGS = \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
-	-release $(LT_RELEASE)
+	-release $(LT_RELEASE) \
+	-export-dynamic
 
 noinst_PROGRAMS = testglib testgdate testgdateparser
 testglib_LDADD = libglib.la
@@ -79,6 +84,15 @@ testgdateparser_LDADD = libglib.la
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = glib.m4
+
+glibconfig.h.win32: $(top_builddir)/config.status $(top_srcdir)/glibconfig.h.win32.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+config.h.win32: $(top_builddir)/config.status $(top_srcdir)/config.h.win32.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+makefile.msc: $(top_builddir)/config.status $(top_srcdir)/makefile.msc.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 .PHONY: files release sanity snapshot
 
@@ -98,5 +112,11 @@ sanity:
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)`date +"%y%m%d"`
 
-dist-hook:
-	cp glib.spec $(distdir)
+dist-hook: glib.spec
+	if test -e $(srcdir)/INSTALL.in && test -e $(srcdir)/README.in ; then \
+	     CONFIG_FILES="INSTALL:$(srcdir)/INSTALL.in README:$(srcdir)/README.in" \
+	     CONFIG_HEADERS= \
+	     $(SHELL) config.status \
+	     && cp INSTALL README $(distdir) ; \
+	fi \
+	&& cp glib.spec $(distdir)
