@@ -1,0 +1,46 @@
+## Makefile for building the GLib test programs with egcs on cygwin.
+## Use: make -f makefile.cygwin check
+
+OPTIMIZE = -g -O
+
+################################################################
+
+# Nothing much configurable below
+
+CC = gcc -mno-cygwin -mpentium
+
+GLIB_VER = @GLIB_MAJOR_VERSION@.@GLIB_MINOR_VERSION@
+
+CFLAGS = $(OPTIMIZE) -I.. -DHAVE_CONFIG_H
+
+TESTS = \
+	array-test.exe	\
+	date-test.exe	\
+	dirname-test.exe\
+	hash-test.exe	\
+	list-test.exe	\
+	node-test.exe	\
+	queue-test.exe	\
+	rand-test.exe	\
+	relation-test.exe\
+	slist-test.exe	\
+	stack-test.exe	\
+	string-test.exe	\
+	strfunc-test.exe\
+	thread-test.exe	\
+	tree-test.exe	\
+	type-test.exe
+
+all :	$(TESTS)
+
+.SUFFIXES: .c .exe
+
+.c.exe :
+	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -o $@ $< -L.. -lglib-$(GLIB_VER).gcc -lgthread-$(GLIB_VER).gcc
+
+check:	all
+	@for P in $(TESTS) ; do echo $$P; ./$$P; done
+
+clean:
+	-rm *.exe *.o
