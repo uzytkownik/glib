@@ -33,9 +33,9 @@ AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
 #
 GLIB_MAJOR_VERSION=1
 GLIB_MINOR_VERSION=2
-GLIB_MICRO_VERSION=9
-GLIB_INTERFACE_AGE=9
-GLIB_BINARY_AGE=9
+GLIB_MICRO_VERSION=10
+GLIB_INTERFACE_AGE=10
+GLIB_BINARY_AGE=10
 GLIB_VERSION=$GLIB_MAJOR_VERSION.$GLIB_MINOR_VERSION.$GLIB_MICRO_VERSION
 dnl
 AC_DIVERT_POP()dnl
@@ -656,7 +656,7 @@ THREAD_NO_IMPLEMENTATION="You do not have any known thread system on your
                 computer. glib will not be thread safe on your computer."
 
 FLAG_DOES_NOT_WORK="I can't find the MACRO, that enables thread safety on your
-                platform (normaly it's "_REENTRANT"). I'll not use any flag on
+                platform (normally it's "_REENTRANT"). I'll not use any flag on
                 compilation now, but then your programs might not work.
                 Please provide information on how it is done on your system."
 
