@@ -155,8 +155,6 @@ g_win32_print_gioflags (GIOFlags flags)
     g_print ("%sREADABLE", bar), bar = "|";
   if (flags & G_IO_FLAG_IS_WRITEABLE)
     g_print ("%sWRITEABLE", bar), bar = "|";
-  if (flags & G_IO_FLAG_IS_WRITEABLE)
-    g_print ("%sWRITEABLE", bar), bar = "|";
   if (flags & G_IO_FLAG_IS_SEEKABLE)
     g_print ("%sSEEKABLE", bar), bar = "|";
 }
@@ -185,6 +183,8 @@ g_io_channel_win32_init (GIOWin32Channel *channel)
   channel->data_avail_event = NULL;
   channel->revents = 0;
   channel->space_avail_event = NULL;
+  channel->reset_send = INVALID_SOCKET;
+  channel->reset_recv = INVALID_SOCKET;
   channel->data_avail_noticed_event = NULL;
   channel->watches = NULL;
   InitializeCriticalSection (&channel->mutex);
@@ -863,9 +863,9 @@ g_io_win32_free (GIOChannel *channel)
 	     win32_channel->thread_id,
 	     win32_channel->fd);
 
-  if (win32_channel->reset_send)
+  if (win32_channel->reset_send && win32_channel->reset_send != INVALID_SOCKET)
     closesocket (win32_channel->reset_send);
-  if (win32_channel->reset_recv)
+  if (win32_channel->reset_recv && win32_channel->reset_recv != INVALID_SOCKET)
     closesocket (win32_channel->reset_recv);
   if (win32_channel->data_avail_event)
     CloseHandle (win32_channel->data_avail_event);

@@ -27,8 +27,8 @@ m4_include(m4macros/glib-gettext.m4)dnl
 #
 m4_define([glib_major_version], [2])
 m4_define([glib_minor_version], [4])
-m4_define([glib_micro_version], [1])
-m4_define([glib_interface_age], [1])
+m4_define([glib_micro_version], [4])
+m4_define([glib_interface_age], [4])
 m4_define([glib_binary_age],
           [m4_eval(100 * glib_minor_version + glib_micro_version)])
 m4_define([glib_version],
@@ -380,7 +380,7 @@ dnl
 dnl gettext support
 dnl
 
-ALL_LINGUAS="am ar az be bg bn ca cs cy da de el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr id is it ja ko lt lv mk mn ms nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@ije sr@Latn sv ta tr uk vi wa yi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bn ca cs cy da de el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr id is it ja ko lt lv mk mn ms ne nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@ije sr@Latn sv ta tr uk vi wa yi zh_CN zh_TW"
 GLIB_GNU_GETTEXT
 
 if test "$gt_cv_have_gettext" != "yes" ; then
@@ -1061,6 +1061,9 @@ if test "$G_MODULE_IMPL" = "G_MODULE_IMPL_DL"; then
 	LIBS="$G_MODULE_LIBS $LIBS"
 	LDFLAGS="$LDFLAGS $G_MODULE_LDFLAGS"
 dnl *** check for OSF1/5.0 RTLD_GLOBAL brokenness
+	echo "void glib_plugin_test(void) { }" > plugin.c
+	${SHELL} ./libtool --mode=compile ${CC} -shared \
+		-export-dynamic -o plugin.o plugin.c 2>&1 >/dev/null
 	AC_CACHE_CHECK([for RTLD_GLOBAL brokenness],
 		glib_cv_rtldglobal_broken,[
 		AC_TRY_RUN([
@@ -1071,19 +1074,20 @@ dnl *** check for OSF1/5.0 RTLD_GLOBAL brokenness
 #ifndef RTLD_LAZY
 #  define RTLD_LAZY 0
 #endif
-int pthread_create;
+int glib_plugin_test;
 int main () {
     void *handle, *global, *local;
-    global = &pthread_create;
-    handle = dlopen ("libpthread.so", RTLD_GLOBAL | RTLD_LAZY);
+    global = &glib_plugin_test;
+    handle = dlopen ("./.libs/plugin.o", RTLD_GLOBAL | RTLD_LAZY);
     if (!handle) return 0;
-    local = dlsym (handle, "pthread_create");
+    local = dlsym (handle, "glib_plugin_test");
     return global == local;
 }                       ],
 			[glib_cv_rtldglobal_broken=no],
 			[glib_cv_rtldglobal_broken=yes],
 			[glib_cv_rtldglobal_broken=no])
-		rm -f plugin.c plugin.o plugin.lo
+		rm -f plugin.c plugin.o plugin.lo .libs/plugin.o
+		rmdir .libs 2>/dev/null
 	])
 	if test "x$glib_cv_rtldglobal_broken" = "xyes"; then
   		G_MODULE_BROKEN_RTLD_GLOBAL=1
