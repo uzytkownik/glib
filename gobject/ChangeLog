@@ -1,3 +1,58 @@
+2005-04-06  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.6.4 ===
+
+2005-03-21  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib-mkenums.in: Avoid forcing extra newlines when using
+	template files.  (#171005)
+
+2005-03-14  Matthias Clasen  <mclasen@redhat.com>
+
+	* abicheck.sh: Make work again.
+
+	* gsourceclosure.c: Fix a typo.
+
+	Make PLT-reduction work with gcc4, and don't include
+	everything in gobjectalias.h:
+	
+	* gobject.symbols: Group symbols by header and source 
+	file.
+	* makegobjectalias.pl: Protect definitions by the same 
+	preprocessor symbols used to guard the headers. Move
+	the alias declarations to a separate file which is 
+	produced when calling makegalias.pl -def
+	* Makefile.am (gobjectaliasdef.c): Add a rule to 
+	build this file.
+	* *.c: Include gobjectalias.h after the other 
+	GLib headers, include gobjectaliasdef.c at the bottom.
+
+2005-02-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.6.3 ===
+
+2005-02-24  Tor Lillqvist  <tml@novell.com>
+
+	* Makefile.am (EXTRA_DIST): Don't distribute
+	gobject.def. (#167496, J. Ali Harlow)
+
+2005-02-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* Makefile.am (TESTS): Only check the abi if
+	the compiler supports visibility, otherwise we
+	know there will be (harmless) extra symbols.  
+	(#166181, Ed Avis)
+
+Sun Feb  6 22:00:46 2005  Manish Singh  <yosh@gimp.org>
+
+	* abicheck.sh: feed the contents of config.h and glibconfig.h
+	into the preprocessor, since glib.symbols could need #defines
+	from them.
+
+2005-02-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.6.2 ===
+
 2005-01-07  Matthias Clasen  <mclasen@redhat.com>
 
 	* === Released 2.6.1 ===

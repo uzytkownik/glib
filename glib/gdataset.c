@@ -34,8 +34,9 @@
 #include "config.h"
 
 #include <string.h>
-#include "galias.h"
+
 #include "glib.h"
+#include "galias.h"
 
 
 /* --- defines --- */
@@ -631,3 +632,6 @@ g_quark_new (gchar *string)
   
   return quark;
 }
+
+#define __G_DATASET_C__
+#include "galiasdef.c"

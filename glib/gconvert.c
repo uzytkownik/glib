@@ -28,7 +28,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "galias.h"
 #include "glib.h"
 #include "gprintfint.h"
 #include "gthreadinit.h"
@@ -47,6 +46,8 @@
 #if !defined(USE_LIBICONV_GNU) && defined (_LIBICONV_H)
 #error GNU libiconv not in use but included iconv.h is from libiconv
 #endif
+
+#include "galias.h"
 
 GQuark 
 g_convert_error_quark (void)
@@ -463,7 +464,14 @@ close_converter (GIConv converter)
 /**
  * g_convert:
  * @str:           the string to convert
- * @len:           the length of the string
+ * @len:           the length of the string, or -1 if the string is 
+ *                 nul-terminated<footnote id="nul-unsafe">
+                     <para>
+                       Note that some encodings may allow nul bytes to 
+                       occur inside strings. In that case, using -1 for 
+                       the @len parameter is unsafe.
+                     </para>
+                   </footnote>. 
  * @to_codeset:    name of character set into which to convert @str
  * @from_codeset:  character set of @str.
  * @bytes_read:    location to store the number of bytes in the
@@ -526,7 +534,8 @@ g_convert (const gchar *str,
 /**
  * g_convert_with_iconv:
  * @str:           the string to convert
- * @len:           the length of the string
+ * @len:           the length of the string, or -1 if the string is 
+ *                 nul-terminated<footnoteref linkend="nul-unsafe"/>. 
  * @converter:     conversion descriptor from g_iconv_open()
  * @bytes_read:    location to store the number of bytes in the
  *                 input string that were successfully converted, or %NULL.
@@ -646,14 +655,15 @@ g_convert_with_iconv (const gchar *str,
 /**
  * g_convert_with_fallback:
  * @str:          the string to convert
- * @len:          the length of the string
+ * @len:          the length of the string, or -1 if the string is 
+ *                nul-terminated<footnoteref linkend="nul-unsafe"/>. 
  * @to_codeset:   name of character set into which to convert @str
  * @from_codeset: character set of @str.
  * @fallback:     UTF-8 string to use in place of character not
- *                present in the target encoding. (This must be
- *                in the target encoding), if %NULL, characters
- *                not in the target encoding will be represented
- *                as Unicode escapes \uxxxx or \Uxxxxyyyy.
+ *                present in the target encoding. (The string must be
+ *                representable in the target encoding). 
+                  If %NULL, characters not in the target encoding will 
+                  be represented as Unicode escapes \uxxxx or \Uxxxxyyyy.
  * @bytes_read:   location to store the number of bytes in the
  *                input string that were successfully converted, or %NULL.
  *                Even if the conversion was successful, this may be 
@@ -916,7 +926,7 @@ strdup_len (const gchar *string,
  * @opsysstring:   a string in the encoding of the current locale. On Windows
  *                 this means the system codepage.
  * @len:           the length of the string, or -1 if the string is
- *                 nul-terminated.
+ *                 nul-terminated<footnoteref linkend="nul-unsafe"/>. 
  * @bytes_read:    location to store the number of bytes in the
  *                 input string that were successfully converted, or %NULL.
  *                 Even if the conversion was successful, this may be 
@@ -956,7 +966,7 @@ g_locale_to_utf8 (const gchar  *opsysstring,
  * g_locale_from_utf8:
  * @utf8string:    a UTF-8 encoded string 
  * @len:           the length of the string, or -1 if the string is
- *                 nul-terminated.
+ *                 nul-terminated<footnoteref linkend="nul-unsafe"/>. 
  * @bytes_read:    location to store the number of bytes in the
  *                 input string that were successfully converted, or %NULL.
  *                 Even if the conversion was successful, this may be 
@@ -1070,7 +1080,7 @@ g_get_filename_charsets (G_CONST_RETURN gchar ***filename_charsets)
       cache->charset = g_strdup (charset);
       
       p = getenv ("G_FILENAME_ENCODING");
-      if (p != NULL) 
+      if (p != NULL && p[0] != '\0') 
 	{
 	  cache->filename_charsets = g_strsplit (p, ",", 0);
 	  cache->is_utf8 = (strcmp (cache->filename_charsets[0], "UTF-8") == 0);
@@ -1166,7 +1176,7 @@ _g_convert_thread_init (void)
  * g_filename_to_utf8:
  * @opsysstring:   a string in the encoding for filenames
  * @len:           the length of the string, or -1 if the string is
- *                 nul-terminated.
+ *                 nul-terminated<footnoteref linkend="nul-unsafe"/>. 
  * @bytes_read:    location to store the number of bytes in the
  *                 input string that were successfully converted, or %NULL.
  *                 Even if the conversion was successful, this may be 
@@ -2003,3 +2013,5 @@ g_filename_display_name (const gchar *filename)
   return display_name;
 }
 
+#define __G_CONVERT_C__
+#include "galiasdef.c"

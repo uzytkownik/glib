@@ -41,11 +41,11 @@
 #include <locale.h>
 #include <errno.h>
 
-#include "galias.h"
 #include "glib.h"
 #include "gdebug.h"
 #include "gprintfint.h"
 #include "gthreadinit.h"
+#include "galias.h"
 
 #ifdef G_OS_WIN32
 #include <io.h>
@@ -478,15 +478,20 @@ g_logv (const gchar   *log_domain,
 	      
 	      MessageBox (NULL, locale_msg, NULL,
 			  MB_ICONERROR|MB_SETFOREGROUND);
-#endif
-#if defined (G_ENABLE_DEBUG) && (defined (SIGTRAP) || defined (G_OS_WIN32))
+	      if (IsDebuggerPresent () && !(test_level & G_LOG_FLAG_RECURSION))
+		G_BREAKPOINT ();
+
+	      abort ();
+#else
+#if defined (G_ENABLE_DEBUG) && defined (SIGTRAP)
 	      if (!(test_level & G_LOG_FLAG_RECURSION))
 		G_BREAKPOINT ();
 	      else
 		abort ();
-#else /* !G_ENABLE_DEBUG || !(SIGTRAP || G_OS_WIN32) */
+#else /* !G_ENABLE_DEBUG || !SIGTRAP */
 	      abort ();
-#endif /* !G_ENABLE_DEBUG || !(SIGTRAP || G_OS_WIN32) */
+#endif /* !G_ENABLE_DEBUG || !SIGTRAP */
+#endif /* !G_OS_WIN32 */
 	    }
 	  
 	  depth--;
@@ -874,53 +879,10 @@ g_log_default_handler (const gchar   *log_domain,
     {
       const gchar *prg_name = g_get_prgname ();
       
-#ifdef G_OS_WIN32
-      if (prg_name)
-	prg_name = g_strdup (prg_name);
-      else
-	{
-	  if (G_WIN32_HAVE_WIDECHAR_API ())
-	    {
-	      wchar_t buf[MAX_PATH+1];
-	      if (GetModuleFileNameW (GetModuleHandle (NULL),
-				      buf, G_N_ELEMENTS (buf)) > 0)
-		{
-		  gchar *utf8_buf = g_utf16_to_utf8 (buf, -1,
-						     NULL, NULL, NULL);
-		  if (utf8_buf)
-		    {
-		      prg_name = g_path_get_basename (utf8_buf);
-		      g_free (utf8_buf);
-		    }
-		}
-	    }
-	  else
-	    {
-	      gchar buf[MAX_PATH+1];
-	      if (GetModuleFileNameA (GetModuleHandle (NULL),
-				      buf, G_N_ELEMENTS (buf)) > 0)
-		{
-		  gchar *locale_buf = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
-		  if (locale_buf)
-		    {
-		      prg_name = g_path_get_basename (locale_buf);
-		      g_free (locale_buf);
-		    }
-		}
-	    }
-	}
-
-      if (prg_name)
-	{
-	  g_string_append_printf (gstring, "(%s): ", prg_name);
-	  g_free ((gchar *) prg_name);
-	}
-#else
       if (!prg_name)
 	g_string_append_printf (gstring, "(process:%lu): ", (gulong)getpid ());
       else
 	g_string_append_printf (gstring, "(%s:%lu): ", prg_name, (gulong)getpid ());
-#endif
     }
 
   if (log_domain)
@@ -1117,3 +1079,6 @@ _g_debug_init (void)
       g_log_set_always_fatal (fatal_mask);
     }
 }
+
+#define __G_MESSAGES_C__
+#include "galiasdef.c"

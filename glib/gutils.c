@@ -51,10 +51,10 @@
  */
 #define	G_IMPLEMENT_INLINES 1
 #define	__G_UTILS_C__
-#include "galias.h"
 #include "glib.h"
 #include "gprintfint.h"
 #include "gthreadinit.h"
+#include "galias.h"
 
 #ifdef	MAXPATHLEN
 #define	G_PATH_LENGTH	MAXPATHLEN
@@ -931,6 +931,8 @@ g_getenv (const gchar *variable)
 	  g_free (wname);
 	  return NULL;
 	}
+      else if (len == 1)
+	len = 2;
 
       wvalue = g_new (wchar_t, len);
 
@@ -982,6 +984,8 @@ g_getenv (const gchar *variable)
 	  g_free (cpname);
 	  return NULL;
 	}
+      else if (len == 1)
+	len = 2;
 
       cpvalue = g_new (gchar, len);
 
@@ -1599,6 +1603,38 @@ g_get_prgname (void)
   gchar* retval;
 
   G_LOCK (g_prgname);
+#ifdef G_OS_WIN32
+  if (g_prgname == NULL)
+    {
+      static gboolean beenhere = FALSE;
+
+      if (!beenhere)
+	{
+	  gchar *utf8_buf = NULL;
+
+	  beenhere = TRUE;
+	  if (G_WIN32_HAVE_WIDECHAR_API ())
+	    {
+	      wchar_t buf[MAX_PATH+1];
+	      if (GetModuleFileNameW (GetModuleHandle (NULL),
+				      buf, G_N_ELEMENTS (buf)) > 0)
+		utf8_buf = g_utf16_to_utf8 (buf, -1, NULL, NULL, NULL);
+	    }
+	  else
+	    {
+	      gchar buf[MAX_PATH+1];
+	      if (GetModuleFileNameA (GetModuleHandle (NULL),
+				      buf, G_N_ELEMENTS (buf)) > 0)
+		utf8_buf = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	    }
+	  if (utf8_buf)
+	    {
+	      g_prgname = g_path_get_basename (utf8_buf);
+	      g_free (utf8_buf);
+	    }
+	}
+    }
+#endif
   retval = g_prgname;
   G_UNLOCK (g_prgname);
 
@@ -1707,17 +1743,21 @@ g_get_user_data_dir (void)
       data_dir = get_special_folder (CSIDL_PERSONAL);
 #else
       data_dir = (gchar *) g_getenv ("XDG_DATA_HOME");
-#endif
 
       if (data_dir && data_dir[0])
         data_dir = g_strdup (data_dir);
-      else
+#endif
+      if (!data_dir || !data_dir[0])
 	{
 	  if (!g_tmp_dir)
 	    g_get_any_init ();
 
-	  data_dir = g_build_filename (g_home_dir, ".local", 
-				       "share", NULL);
+	  if (g_home_dir)
+	    data_dir = g_build_filename (g_home_dir, ".local", 
+					 "share", NULL);
+	  else
+	    data_dir = g_build_filename (g_tmp_dir, g_user_name, ".local",
+					 "share", NULL);
 	}
 
       g_user_data_dir = data_dir;
@@ -1757,16 +1797,19 @@ g_get_user_config_dir (void)
       config_dir = get_special_folder (CSIDL_APPDATA);
 #else
       config_dir = (gchar *) g_getenv ("XDG_CONFIG_HOME");
-#endif
 
       if (config_dir && config_dir[0])
 	config_dir = g_strdup (config_dir);
-      else
+#endif
+      if (!config_dir || !config_dir[0])
 	{
 	  if (!g_tmp_dir)
 	    g_get_any_init ();
 	  
-	  config_dir = g_build_filename (g_home_dir, ".config", NULL);
+	  if (g_home_dir)
+	    config_dir = g_build_filename (g_home_dir, ".config", NULL);
+	  else
+	    config_dir = g_build_filename (g_tmp_dir, g_user_name, ".config", NULL);
 	}
       g_user_config_dir = config_dir;
     }
@@ -1805,15 +1848,19 @@ g_get_user_cache_dir (void)
       cache_dir = get_special_folder (CSIDL_INTERNET_CACHE); /* XXX correct? */
 #else
       cache_dir = (gchar *) g_getenv ("XDG_CACHE_HOME");
-#endif
+
       if (cache_dir && cache_dir[0])
           cache_dir = g_strdup (cache_dir);
-      else
+#endif
+      if (!cache_dir || !cache_dir[0])
 	{
 	  if (!g_tmp_dir)
 	    g_get_any_init ();
 
-          cache_dir = g_build_filename (g_home_dir, ".cache", NULL);
+	  if (g_home_dir)
+	    cache_dir = g_build_filename (g_home_dir, ".cache", NULL);
+	  else
+	    cache_dir = g_build_filename (g_tmp_dir, g_user_name, ".cache", NULL);
 	}
       g_user_cache_dir = cache_dir;
     }
@@ -1849,17 +1896,43 @@ g_get_system_data_dirs (void)
   if (!g_system_data_dirs)
     {
 #ifdef G_OS_WIN32
-      data_dirs = g_strconcat (get_special_folder (CSIDL_COMMON_APPDATA),
-			       G_SEARCHPATH_SEPARATOR_S,
-			       get_special_folder (CSIDL_COMMON_DOCUMENTS),
-			       NULL);
+      char *appdata = get_special_folder (CSIDL_COMMON_APPDATA);
+      char *docs = get_special_folder (CSIDL_COMMON_DOCUMENTS);
+      
+      if (appdata && docs)
+	{
+	  data_dirs = g_strconcat (appdata,
+				   G_SEARCHPATH_SEPARATOR_S,
+				   docs,
+				   NULL);
+	  g_free (appdata);
+	  g_free (docs);
+	}
+      else if (appdata)
+	data_dirs = appdata;
+      else if (docs)
+	data_dirs = docs;
+      else
+	data_dirs = NULL;
+
+      if (data_dirs)
+	{
+	  data_dir_vector = g_strsplit (data_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+	  g_free (data_dirs);
+	}
+      else
+	{
+	  /* Punt, return empty list */
+	  data_dir_vector = g_strsplit ("", G_SEARCHPATH_SEPARATOR_S, 0);
+	}
 #else
       data_dirs = (gchar *) g_getenv ("XDG_DATA_DIRS");
 
       if (!data_dirs || !data_dirs[0])
           data_dirs = "/usr/local/share/:/usr/share/";
-#endif
+
       data_dir_vector = g_strsplit (data_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+#endif
 
       g_system_data_dirs = data_dir_vector;
     }
@@ -1896,13 +1969,24 @@ g_get_system_config_dirs (void)
     {
 #ifdef G_OS_WIN32
       conf_dirs = get_special_folder (CSIDL_COMMON_APPDATA);
+      if (conf_dirs)
+	{
+	  conf_dir_vector = g_strsplit (conf_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+	  g_free (conf_dirs);
+	}
+      else
+	{
+	  /* Return empty list */
+	  conf_dir_vector = g_strsplit ("", G_SEARCHPATH_SEPARATOR_S, 0);
+	}
 #else
       conf_dirs = (gchar *) g_getenv ("XDG_CONFIG_DIRS");
 
       if (!conf_dirs || !conf_dirs[0])
           conf_dirs = "/etc/xdg";
-#endif
+
       conf_dir_vector = g_strsplit (conf_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+#endif
 
       g_system_config_dirs = conf_dir_vector;
     }
@@ -2484,3 +2568,6 @@ g_get_tmp_dir (void)
 }
 
 #endif
+
+#define __G_UTILS_C__
+#include "galiasdef.c"

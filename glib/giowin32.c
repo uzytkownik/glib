@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#include "galias.h"
 #include "glib.h"
 
 #include <stdlib.h>
@@ -48,6 +47,8 @@
 
 #include "gstdio.h"
 #include "glibintl.h"
+
+#include "galias.h"
 
 typedef struct _GIOWin32Channel GIOWin32Channel;
 typedef struct _GIOWin32Watch GIOWin32Watch;
@@ -1449,9 +1450,9 @@ g_io_win32_fd_get_flags_internal (GIOChannel  *channel,
     {
       /* XXX Seems there is no way to find out the readability of file
        * handles to device files (consoles, mostly) without doing a
-       * blocking read. So punt, use st->st_mode.
+       * blocking read. So punt, say it's readable.
        */
-      channel->is_readable  = !!(st->st_mode & _S_IREAD);
+      channel->is_readable = TRUE;
 
       channel->is_writeable =
 	(WriteFile ((HANDLE) _get_osfhandle (win32_channel->fd), &c, 0, &count, NULL) != 0);
@@ -1713,3 +1714,6 @@ g_io_channel_win32_new_stream_socket (int socket)
 {
   return g_io_channel_win32_new_socket (socket);
 }
+
+#define __G_IO_WIN32_C__
+#include "galiasdef.c"
