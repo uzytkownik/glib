@@ -262,11 +262,11 @@ extern "C" {
  * macros, so we can refer to them as strings unconditionally.
  */
 #ifdef	__GNUC__
-#define	G_GNUC_FUNCTION		(__FUNCTION__)
-#define	G_GNUC_PRETTY_FUNCTION	(__PRETTY_FUNCTION__)
+#define	G_GNUC_FUNCTION		__FUNCTION__
+#define	G_GNUC_PRETTY_FUNCTION	__PRETTY_FUNCTION__
 #else	/* !__GNUC__ */
-#define	G_GNUC_FUNCTION		("")
-#define	G_GNUC_PRETTY_FUNCTION	("")
+#define	G_GNUC_FUNCTION		""
+#define	G_GNUC_PRETTY_FUNCTION	""
 #endif	/* !__GNUC__ */
 
 /* we try to provide a usefull equivalent for ATEXIT if it is
@@ -668,6 +668,11 @@ GUTILS_C_VAR const guint glib_micro_version;
 GUTILS_C_VAR const guint glib_interface_age;
 GUTILS_C_VAR const guint glib_binary_age;
 
+#define GLIB_CHECK_VERSION(major,minor,micro)    \
+    (GLIB_MAJOR_VERSION > (major) || \
+     (GLIB_MAJOR_VERSION == (major) && GLIB_MINOR_VERSION > (minor)) || \
+     (GLIB_MAJOR_VERSION == (major) && GLIB_MINOR_VERSION == (minor) && \
+      GLIB_MICRO_VERSION >= (micro)))
 
 /* Forward declarations of glib types.
  */
@@ -697,6 +702,7 @@ typedef struct _GTuples		GTuples;
 typedef union  _GTokenValue	GTokenValue;
 typedef struct _GIOChannel	GIOChannel;
 
+/* Tree traverse flags */
 typedef enum
 {
   G_TRAVERSE_LEAFS	= 1 << 0,
@@ -705,6 +711,7 @@ typedef enum
   G_TRAVERSE_MASK	= 0x03
 } GTraverseFlags;
 
+/* Tree traverse orders */
 typedef enum
 {
   G_IN_ORDER,
@@ -2395,9 +2402,11 @@ struct _GSourceFuncs
 {
   gboolean (*prepare)  (gpointer  source_data, 
 			GTimeVal *current_time,
-			gint     *timeout);
+			gint     *timeout,
+			gpointer  user_data);
   gboolean (*check)    (gpointer  source_data,
-			GTimeVal *current_time);
+			GTimeVal *current_time,
+			gpointer  user_data);
   gboolean (*dispatch) (gpointer  source_data, 
 			GTimeVal *current_time,
 			gpointer  user_data);

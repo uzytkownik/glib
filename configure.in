@@ -6,7 +6,7 @@ builtin(include, acglib.m4)dnl
 # require autoconf 2.13
 AC_PREREQ(2.13)
 
-# Process this file with autoconf to produce a configure script.
+# init autoconf (and check for presence of glist.c)
 AC_INIT(glist.c)
 
 # Save this value here, since automake will set cflags later
@@ -15,12 +15,12 @@ cflags_set=${CFLAGS+set}
 # we rewrite this file
 rm -f glibconfig-sysdefs.h
 
-dnl we to AC_DIVERT_PUSH/AC_DIVERT_POP these variable definitions so they
+dnl we need to AC_DIVERT_PUSH/AC_DIVERT_POP these variable definitions so they
 dnl are available for $ac_help expansion (don't we all *love* autoconf?)
 AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
 #
-# The following version number definitions apply to GLib and GModule
-# as a whole, so if changes occoured in either of them, they are both
+# The following version number definitions apply to GLib, GModule and GThread
+# as a whole, so if changes occoured in any of them, they are all
 # treated with the same interface and binary age.
 #
 # Making releases:
@@ -29,18 +29,23 @@ AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
 #   GLIB_BINARY_AGE += 1;
 # if any functions have been added, set GLIB_INTERFACE_AGE to 0.
 # if backwards compatibility has been broken,
-# set GLIB_BINARY_AGE and GLIB_INTERFACE_AGE to 0.
+# set GLIB_BINARY_AGE _and_ GLIB_INTERFACE_AGE to 0.
 #
 GLIB_MAJOR_VERSION=1
 GLIB_MINOR_VERSION=2
-GLIB_MICRO_VERSION=0
-GLIB_INTERFACE_AGE=0
-GLIB_BINARY_AGE=0
+GLIB_MICRO_VERSION=3
+GLIB_INTERFACE_AGE=3
+GLIB_BINARY_AGE=3
 GLIB_VERSION=$GLIB_MAJOR_VERSION.$GLIB_MINOR_VERSION.$GLIB_MICRO_VERSION
 dnl
 AC_DIVERT_POP()dnl
 
+AC_SUBST(GLIB_MAJOR_VERSION)
+AC_SUBST(GLIB_MINOR_VERSION)
+AC_SUBST(GLIB_MICRO_VERSION)
 AC_SUBST(GLIB_VERSION)
+AC_SUBST(GLIB_INTERFACE_AGE)
+AC_SUBST(GLIB_BINARY_AGE)
 
 # libtool versioning
 LT_RELEASE=$GLIB_MAJOR_VERSION.$GLIB_MINOR_VERSION
@@ -369,6 +374,22 @@ if test $glib_working_wctype = no; then
    AC_DEFINE(HAVE_BROKEN_WCTYPE)
 fi
 AC_MSG_RESULT($glib_working_wctype)
+
+dnl *** check for sane realloc() ***
+AC_MSG_CHECKING(whether realloc (NULL,) will work)
+AC_CACHE_VAL(glib_cv_sane_realloc,[
+	AC_TRY_RUN([
+	#include <stdlib.h>
+	int main() {
+	  return realloc (0, sizeof (int)) == 0;
+	}],
+	glib_cv_sane_realloc=yes
+	AC_DEFINE(REALLOC_0_WORKS)
+	,
+	glib_cv_sane_realloc=no
+	,)
+])
+AC_MSG_RESULT($glib_cv_sane_realloc)
 
 
 dnl **********************
@@ -726,9 +747,10 @@ G_THREAD_CFLAGS="$G_THREAD_CFLAGS -D_REENTRANT" # good default guess
 
     # if we are not finding the ctime_r function, then we probably are
     # not using the proper multithread flag
+    # Note: Digital UNIX 4.0d #defines ctime_r to _Pctime_r for gcc.
     old_CPPFLAGS=$CPPFLAGS
     CPPFLAGS="$CPPFLAGS $G_THREAD_CFLAGS"
-    AC_EGREP_HEADER([[^a-zA-Z_]ctime_r[^a-zA-Z_]], time.h, ,
+    AC_EGREP_HEADER([[^a-zA-Z_](_P)?ctime_r[^a-zA-Z_]], time.h, ,
     G_THREAD_CFLAGS=
     AC_MSG_WARN($FLAG_DOES_NOT_WORK))
     CPPFLAGS=$old_CPPFLAGS
@@ -758,10 +780,11 @@ if test x"$have_threads" != xnone; then
 				int main () { char buffer[10000], *pointer; 
 				char getpwuid_r (long, void*, void*,
 					int, void*);
+				int error;
 				errno = 0;
-				getpwuid_r (0, &buffer, &buffer, 
+				error = getpwuid_r (0, &buffer, &buffer, 
 					sizeof (buffer), &pointer);
-				return errno == ENOSYS;}],
+				return errno == ENOSYS || error == ENOSYS;}],
 				[ac_cv_func_getpwuid_r=yes],
 				[ac_cv_func_getpwuid_r=no])])
 		if test "$ac_cv_func_getpwuid_r" = yes; then
@@ -784,6 +807,7 @@ if test x"$have_threads" != xnone; then
 		fi
 	fi
 	if test x"$have_threads" = xposix; then
+		LIBS="$LIBS $G_THREAD_LIBS"
 		AC_MSG_CHECKING(whether pthread_getspecific is posix like)
 		# PCThreads has pthread_getspecific(pthread_key_t, void **);
 		AC_TRY_COMPILE([#include <pthread.h>],
@@ -791,6 +815,31 @@ if test x"$have_threads" != xnone; then
 			[AC_MSG_RESULT(no)],
 			[AC_MSG_RESULT(yes)
 			AC_DEFINE(HAVE_PTHREAD_GETSPECIFIC_POSIX)])
+		AC_MSG_CHECKING(whether pthread_mutex_trylock is posix like)
+		# DCE Threads return 1 as success, posix 0. what a mess.
+		AC_TRY_RUN([#include <pthread.h>
+			int main () { 
+			pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+			return !pthread_mutex_trylock (&mutex); }],
+			[AC_MSG_RESULT(no)],
+			[AC_MSG_RESULT(yes)
+			AC_DEFINE(HAVE_PTHREAD_MUTEX_TRYLOCK_POSIX)])
+		AC_MSG_CHECKING(whether pthread_cond_timedwait is posix like)
+		# DCE Threads return -1 as failure, posix ETIMEDOUT.
+		AC_TRY_RUN([#include <pthread.h>
+			int main () { 
+			pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+			pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+			struct timeval tval;
+			struct timespec tspec;
+			gettimeofday (&tval, NULL);
+			tspec.tv_sec = tval.tv_sec;
+			tspec.tv_nsec = 0;
+			return pthread_cond_timedwait (&cond,&mutex,&tspec) 
+				!= -1;}],
+			[AC_MSG_RESULT(no)],
+			[AC_MSG_RESULT(yes)
+			AC_DEFINE(HAVE_PTHREAD_COND_TIMEDWAIT_POSIX)])
 	fi
 	LIBS="$glib_save_LIBS"
 	CFLAGS="$glib_save_CFLAGS"
@@ -1251,6 +1300,7 @@ gmodule/gmoduleconf.h
 gmodule/Makefile
 gthread/Makefile
 docs/Makefile
+docs/glib-config.1
 tests/Makefile
 ],[case "$CONFIG_FILES" in
 *glib-config*)chmod +x glib-config;;

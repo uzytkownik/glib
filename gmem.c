@@ -60,11 +60,11 @@
 
 #if defined(ENABLE_MEM_PROFILE) && defined(ENABLE_MEM_PROFILE_EXCLUDES_MEM_CHUNKS)
 #define ENTER_MEM_CHUNK_ROUTINE() \
-  g_static_set (allocating_for_mem_chunk, \
-		g_static_get (allocating_for_mem_chunk) + 1)
-#define ENTER_MEM_CHUNK_ROUTINE() \
-  g_static_set (allocating_for_mem_chunk, \
-		g_static_get (allocating_for_mem_chunk) - 1) 
+  g_private_set (allocating_for_mem_chunk, \
+		g_private_get (allocating_for_mem_chunk) + 1)
+#define LEAVE_MEM_CHUNK_ROUTINE() \
+  g_private_set (allocating_for_mem_chunk, \
+		g_private_get (allocating_for_mem_chunk) - 1) 
 #else
 #define ENTER_MEM_CHUNK_ROUTINE()
 #define LEAVE_MEM_CHUNK_ROUTINE()
@@ -144,7 +144,7 @@ static gulong allocated_mem = 0;
 static gulong freed_mem = 0;
 static GPrivate* allocating_for_mem_chunk = NULL;
 #define IS_IN_MEM_CHUNK_ROUTINE() \
-  GPOINTER_TO_UINT (g_static_get (allocating_for_mem_chunk))
+  GPOINTER_TO_UINT (g_private_get (allocating_for_mem_chunk))
 #endif /* ENABLE_MEM_PROFILE */
 
 
@@ -309,7 +309,13 @@ g_realloc (gpointer mem,
   
   
   if (!mem)
-    p = (gpointer) realloc (NULL, size);
+    {
+#ifdef REALLOC_0_WORKS
+      p = (gpointer) realloc (NULL, size);
+#else /* !REALLOC_0_WORKS */
+      p = (gpointer) malloc (size);
+#endif /* !REALLOC_0_WORKS */
+    }
   else
     {
 #if defined(ENABLE_MEM_PROFILE) || defined(ENABLE_MEM_CHECK)
@@ -429,15 +435,15 @@ g_mem_profile (void)
   for (i = 0; i < (MEM_PROFILE_TABLE_SIZE - 1); i++)
     if (local_allocations[i] > 0)
       g_log (g_log_domain_glib, G_LOG_LEVEL_INFO,
-	     "%lu allocations of %d bytes\n", local_allocations[i], i + 1);
+	     "%lu allocations of %d bytes", local_allocations[i], i + 1);
   
   if (local_allocations[MEM_PROFILE_TABLE_SIZE - 1] > 0)
     g_log (g_log_domain_glib, G_LOG_LEVEL_INFO,
-	   "%lu allocations of greater than %d bytes\n",
+	   "%lu allocations of greater than %d bytes",
 	   local_allocations[MEM_PROFILE_TABLE_SIZE - 1], MEM_PROFILE_TABLE_SIZE - 1);
-  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes allocated\n", local_allocated_mem);
-  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes freed\n", local_freed_mem);
-  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes in use\n", local_allocated_mem - local_freed_mem);
+  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes allocated", local_allocated_mem);
+  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes freed", local_freed_mem);
+  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%lu bytes in use", local_allocated_mem - local_freed_mem);
 #endif /* ENABLE_MEM_PROFILE */
 }
 
@@ -525,7 +531,7 @@ g_mem_chunk_destroy (GMemChunk *mem_chunk)
   GMemArea *mem_areas;
   GMemArea *temp_area;
   
-  g_assert (mem_chunk != NULL);
+  g_return_if_fail (mem_chunk != NULL);
 
   ENTER_MEM_CHUNK_ROUTINE();
 
@@ -566,7 +572,7 @@ g_mem_chunk_alloc (GMemChunk *mem_chunk)
 
   ENTER_MEM_CHUNK_ROUTINE();
 
-  g_assert (mem_chunk != NULL);
+  g_return_val_if_fail (mem_chunk != NULL, NULL);
   
   rmem_chunk = (GRealMemChunk*) mem_chunk;
   
@@ -714,8 +720,8 @@ g_mem_chunk_free (GMemChunk *mem_chunk,
   GMemArea *temp_area;
   GFreeAtom *free_atom;
   
-  g_assert (mem_chunk != NULL);
-  g_assert (mem != NULL);
+  g_return_if_fail (mem_chunk != NULL);
+  g_return_if_fail (mem != NULL);
 
   ENTER_MEM_CHUNK_ROUTINE();
 
@@ -757,7 +763,7 @@ g_mem_chunk_clean (GMemChunk *mem_chunk)
   GFreeAtom *temp_free_atom;
   gpointer mem;
   
-  g_assert (mem_chunk != NULL);
+  g_return_if_fail (mem_chunk != NULL);
   
   rmem_chunk = (GRealMemChunk*) mem_chunk;
   
@@ -821,7 +827,7 @@ g_mem_chunk_reset (GMemChunk *mem_chunk)
   GMemArea *mem_areas;
   GMemArea *temp_area;
   
-  g_assert (mem_chunk != NULL);
+  g_return_if_fail (mem_chunk != NULL);
   
   rmem_chunk = (GRealMemChunk*) mem_chunk;
   
@@ -851,7 +857,7 @@ g_mem_chunk_print (GMemChunk *mem_chunk)
   GMemArea *mem_areas;
   gulong mem;
   
-  g_assert (mem_chunk != NULL);
+  g_return_if_fail (mem_chunk != NULL);
   
   rmem_chunk = (GRealMemChunk*) mem_chunk;
   mem_areas = rmem_chunk->mem_areas;
@@ -864,7 +870,7 @@ g_mem_chunk_print (GMemChunk *mem_chunk)
     }
   
   g_log (g_log_domain_glib, G_LOG_LEVEL_INFO,
-	 "%s: %ld bytes using %d mem areas\n",
+	 "%s: %ld bytes using %d mem areas",
 	 rmem_chunk->name, mem, rmem_chunk->num_mem_areas);
 }
 
@@ -884,7 +890,7 @@ g_mem_chunk_info (void)
     }
   g_mutex_unlock (mem_chunks_lock);
   
-  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%d mem chunks\n", count);
+  g_log (g_log_domain_glib, G_LOG_LEVEL_INFO, "%d mem chunks", count);
   
   g_mutex_lock (mem_chunks_lock);
   mem_chunk = mem_chunks;
