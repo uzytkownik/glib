@@ -74,6 +74,7 @@ test_programs =					\
 	gio-test				\
 	hash-test				\
 	iochannel-test				\
+	keyfile-test				\
 	list-test				\
 	mainloop-test				\
 	markup-escape-test			\
@@ -110,7 +111,8 @@ check_PROGRAMS = $(test_programs) $(test_script_support_programs)
 
 TESTS = $(test_programs) $(test_scripts)
 TESTS_ENVIRONMENT = srcdir=$(srcdir) \
-	LIBCHARSET_ALIAS_DIR=$(top_builddir)/glib/libcharset
+	LIBCHARSET_ALIAS_DIR=$(top_builddir)/glib/libcharset \
+	MALLOC_CHECK_=2
 
 progs_ldadd = $(EFENCE) $(libglib) $(EFENCE)
 thread_ldadd = $(libgthread) $(G_THREAD_LIBS) $(progs_ldadd)
@@ -127,6 +129,7 @@ env_test_LDADD = $(progs_ldadd)
 gio_test_LDADD = $(progs_ldadd)
 hash_test_LDADD = $(progs_ldadd)
 iochannel_test_LDADD = $(progs_ldadd)
+keyfile_test_LDADD = $(progs_ldadd)
 list_test_LDADD = $(progs_ldadd)
 mainloop_test_LDADD = $(thread_ldadd)
 markup_test_LDADD = $(progs_ldadd)

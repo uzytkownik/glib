@@ -846,6 +846,12 @@ in any UNIX manual.
 </para>
 
 
+<!-- ##### TYPEDEF pid_t ##### -->
+<para>
+Provided for UNIX emulation on Windows; process ID type.
+</para>
+
+
 <!-- ##### MACRO popen ##### -->
 <para>
 

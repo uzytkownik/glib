@@ -478,15 +478,20 @@ g_logv (const gchar   *log_domain,
 	      
 	      MessageBox (NULL, locale_msg, NULL,
 			  MB_ICONERROR|MB_SETFOREGROUND);
-#endif
-#if defined (G_ENABLE_DEBUG) && (defined (SIGTRAP) || defined (G_OS_WIN32))
+	      if (IsDebuggerPresent () && !(test_level & G_LOG_FLAG_RECURSION))
+		G_BREAKPOINT ();
+
+	      abort ();
+#else
+#if defined (G_ENABLE_DEBUG) && defined (SIGTRAP)
 	      if (!(test_level & G_LOG_FLAG_RECURSION))
 		G_BREAKPOINT ();
 	      else
 		abort ();
-#else /* !G_ENABLE_DEBUG || !(SIGTRAP || G_OS_WIN32) */
+#else /* !G_ENABLE_DEBUG || !SIGTRAP */
 	      abort ();
-#endif /* !G_ENABLE_DEBUG || !(SIGTRAP || G_OS_WIN32) */
+#endif /* !G_ENABLE_DEBUG || !SIGTRAP */
+#endif /* !G_OS_WIN32 */
 	    }
 	  
 	  depth--;

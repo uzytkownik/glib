@@ -20,7 +20,9 @@ gobjectalias.h: gobject.symbols
 	$(PERL) $(srcdir)/makegobjectalias.pl < $(srcdir)/gobject.symbols > gobjectalias.h
 
 if OS_LINUX
+if HAVE_GNUC_VISIBILITY
 TESTS = abicheck.sh
+endif
 endif
 
 libglib = $(top_builddir)/glib/libglib-2.0.la
@@ -218,7 +220,6 @@ testgobject_LDADD = $(progs_LDADD)
 #
 EXTRA_DIST += 			\
 	makefile.msc.in 	\
-	gobject.def		\
 	gobject.rc.in		\
 	glib-genmarshal.1	\
 	glib-mkenums.in		\

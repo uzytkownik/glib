@@ -27,8 +27,8 @@ m4_include(m4macros/glib-gettext.m4)dnl
 #
 m4_define([glib_major_version], [2])
 m4_define([glib_minor_version], [6])
-m4_define([glib_micro_version], [2])
-m4_define([glib_interface_age], [2])
+m4_define([glib_micro_version], [3])
+m4_define([glib_interface_age], [3])
 m4_define([glib_binary_age],
           [m4_eval(100 * glib_minor_version + glib_micro_version)])
 m4_define([glib_version],
@@ -170,7 +170,7 @@ AC_SUBST(TESTGMODULE_EXP)
 
 if test "$glib_native_win32" = "yes"; then
   AC_CHECK_TOOL(NM, nm, no)
-  if [ "$NM" = no ]; then
+  if test "$NM" = no; then
     AC_MSG_ERROR([*** Could not find an implementation of nm in your PATH.])
   fi
   AC_CHECK_TOOL(RANLIB, ranlib, :)
@@ -412,7 +412,7 @@ dnl
 dnl gettext support
 dnl
 
-ALL_LINGUAS="am ar az be bg bn bs ca cs cy da de el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr id is it ja ko lt lv mk mn ms nb ne nl nn no or pa pl pt pt_BR ro ru sk sl sq sr sr@ije sr@Latn sv ta tr uk vi wa yi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bn bs ca cs cy da de el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr id is it ja ko lt lv mk mn ms nb ne nl nn no or pa pl pt pt_BR ro ru sk sl sq sr sr@ije sr@Latn sv ta tl tr uk vi wa xh yi zh_CN zh_TW"
 GLIB_GNU_GETTEXT
 
 if test "$gt_cv_have_gettext" != "yes" ; then
@@ -760,6 +760,7 @@ int main (int argc, char **argv)
 }
 ],g_have_gnuc_visibility=yes,g_have_gnuc_visibility=no)
 AC_MSG_RESULT($g_have_gnuc_visibility)
+AM_CONDITIONAL(HAVE_GNUC_VISIBILITY, [test x$g_have_gnuc_visibility = xyes])
 
 # check for bytesex stuff
 AC_C_BIGENDIAN
@@ -1881,6 +1882,9 @@ fi
 case $host in
   *-*-linux*)
     G_THREAD_LIBS_FOR_GTHREAD="`echo $G_THREAD_LIBS | sed s/-pthread/-lpthread/`"
+    ;;
+  *) 	 
+    G_THREAD_LIBS_FOR_GTHREAD="$G_THREAD_LIBS" 	 
     ;;
 esac
 
