@@ -33,8 +33,8 @@ GLIB_AC_DIVERT_BEFORE_HELP([
 #
 GLIB_MAJOR_VERSION=2
 GLIB_MINOR_VERSION=2
-GLIB_MICRO_VERSION=0
-GLIB_INTERFACE_AGE=0
+GLIB_MICRO_VERSION=1
+GLIB_INTERFACE_AGE=1
 GLIB_BINARY_AGE=`expr 100 '*' $GLIB_MINOR_VERSION + $GLIB_MICRO_VERSION`
 GLIB_VERSION=$GLIB_MAJOR_VERSION.$GLIB_MINOR_VERSION.$GLIB_MICRO_VERSION
 ])dnl
@@ -332,7 +332,7 @@ dnl
 dnl gettext support
 dnl
 
-ALL_LINGUAS="az be bg ca cs da de el es et eu fi fr gl hi ja ko ms nl nn no pl pt pt_BR ro ru sk sl sq sv ta tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am az be bg bn ca cs da de el es et eu fi fr gl hi ja ko mn ms nl nn no pl pt pt_BR ro ru sk sl sq sv ta tr uk vi zh_CN zh_TW"
 GLIB_GNU_GETTEXT
 
 if test "$gt_cv_have_gettext" != "yes" ; then
@@ -542,7 +542,7 @@ dnl AC_C_INLINE is useless to us since it bails out too early, we need to
 dnl truely know which ones of `inline', `__inline' and `__inline__' are
 dnl actually supported.
 AC_CACHE_CHECK([for __inline],glib_cv_has__inline,[
-        AC_TRY_COMPILE([
+        AC_COMPILE_IFELSE([
 	__inline int foo () { return 0; }
 	int main () { return foo (); }
        	],
@@ -555,7 +555,7 @@ case x$glib_cv_has__inline in
 xyes) AC_DEFINE(G_HAVE___INLINE,1,[Have __inline keyword])
 esac
 AC_CACHE_CHECK([for __inline__],glib_cv_has__inline__,[
-        AC_TRY_COMPILE([
+        AC_COMPILE_IFELSE([
 	__inline__ int foo () { return 0; }
 	int main () { return foo (); }
        	],
@@ -568,7 +568,7 @@ case x$glib_cv_has__inline__ in
 xyes) AC_DEFINE(G_HAVE___INLINE__,1,[Have __inline__ keyword])
 esac
 AC_CACHE_CHECK([for inline], glib_cv_hasinline,[
-        AC_TRY_COMPILE([
+        AC_COMPILE_IFELSE([
 	#undef inline
 	inline int foo () { return 0; }
 	int main () { return foo (); }
@@ -734,7 +734,9 @@ else
   AC_DEFINE(HAVE_VASPRINTF,1)
   AC_DEFINE(HAVE_C99_VSNPRINTF,1)
   AC_DEFINE(HAVE_UNIX98_PRINTF,1)
-  TRIO_LIBS=-lm
+  if test "$glib_native_win32" != "yes" ; then
+    TRIO_LIBS=-lm
+  fi
 fi
 AC_SUBST(TRIO_LIBS)
 

@@ -46,6 +46,7 @@
 #include "gprintfint.h"
 
 #ifdef G_OS_WIN32
+#include <io.h>
 typedef FILE* GFileDescriptor;
 #else
 typedef gint GFileDescriptor;
@@ -87,7 +88,6 @@ static GLogLevelFlags g_log_msg_prefix = G_LOG_LEVEL_ERROR | G_LOG_LEVEL_WARNING
 #  include <windows.h>
 #  undef STRICT
 #  include <process.h>          /* For _getpid() */
-static gboolean alloc_console_called = FALSE;
 static gboolean win32_keep_fatal_message = FALSE;
 
 /* This default message will usually be overwritten. */
@@ -122,6 +122,7 @@ dowrite (GFileDescriptor fd,
 static void
 ensure_stdout_valid (void)
 {
+  static gboolean alloc_console_called = FALSE;
   HANDLE handle;
 
   if (win32_keep_fatal_message)
@@ -129,7 +130,7 @@ ensure_stdout_valid (void)
 
   if (!alloc_console_called)
     {
-      handle = GetStdHandle (STD_OUTPUT_HANDLE);
+      handle = (HANDLE) _get_osfhandle (fileno (stdout)); 
   
       if (handle == INVALID_HANDLE_VALUE)
 	{
@@ -139,8 +140,32 @@ ensure_stdout_valid (void)
 	}
     }
 }
+
+static void
+ensure_stderr_valid (void)
+{
+  static gboolean alloc_console_called = FALSE;
+  HANDLE handle;
+
+  if (win32_keep_fatal_message)
+    return;
+
+  if (!alloc_console_called)
+    {
+      handle = (HANDLE) _get_osfhandle (fileno (stderr)); 
+
+      if (handle == INVALID_HANDLE_VALUE)
+	{
+	  AllocConsole ();
+	  alloc_console_called = TRUE;
+	  freopen ("CONOUT$", "w", stderr);
+	}
+    }
+}
+
 #else
 #define ensure_stdout_valid()	/* Define as empty */
+#define ensure_stderr_valid()
 #endif
 
 static void
@@ -470,7 +495,9 @@ g_logv (const gchar   *log_domain,
 	  if (test_level & G_LOG_FLAG_FATAL)
 	    {
 #ifdef G_OS_WIN32
-	      MessageBox (NULL, fatal_msg_buf, NULL, MB_OK);
+	      gchar *locale_msg = g_locale_from_utf8 (fatal_msg_buf, -1, NULL, NULL, NULL);
+	      
+	      MessageBox (NULL, locale_msg, NULL, MB_OK);
 #endif
 #if defined (G_ENABLE_DEBUG) && (defined (SIGTRAP) || defined (G_OS_WIN32))
 	      if (!(test_level & G_LOG_FLAG_RECURSION))
@@ -522,6 +549,7 @@ strdup_convert (const gchar *string,
 	  if (!warned)
 	    {
 	      warned = TRUE;
+	      ensure_stderr_valid ();
 	      _g_fprintf (stderr, "GLib: Cannot convert message: %s\n", err->message);
 	    }
 	  g_error_free (err);
@@ -654,11 +682,19 @@ mklevel_prefix (gchar level_prefix[STRING_BUFFER_SIZE],
   if (log_level & ALERT_LEVELS)
     strcat (level_prefix, " **");
 
-  ensure_stdout_valid ();
 #ifdef G_OS_WIN32
   win32_keep_fatal_message = (log_level & G_LOG_FLAG_FATAL) != 0;
-  /* Use just stdout as stderr is hard to get redirected from the DOS prompt. */
-  return stdout;
+
+  if (to_stdout)
+    {
+      ensure_stdout_valid ();
+      return stdout;
+    }
+  else
+    {
+      ensure_stderr_valid ();
+      return stderr;
+    }
 #else
   return to_stdout ? 1 : 2;
 #endif
@@ -869,6 +905,7 @@ g_printerr (const gchar *format,
     {
       const gchar *charset;
 
+      ensure_stderr_valid ();
       if (g_get_charset (&charset))
 	fputs (string, stderr); /* charset is UTF-8 already */
       else

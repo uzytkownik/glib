@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: glib\n"
-"POT-Creation-Date: 2002-12-20 10:12-0500\n"
-"PO-Revision-Date: 2002-12-11 10:57+0300\n"
+"Project-Id-Version: glib 2.2\n"
+"POT-Creation-Date: 2003-01-28 17:15-0500\n"
+"PO-Revision-Date: 2003-01-06 15:06+0300\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgstr ""
 #, c-format
 msgid "The local file URI '%s' may not include a '#'"
 msgstr ""
-"Идентификатор URI \"%s\" локального файла не может включать символ \"#\""
+"Идентификатор URI локального файла \"%s\" не может включать символ \"#\""
 
 # glib/gconvert.c:1620
 #: glib/gconvert.c:1660
@@ -186,7 +186,7 @@ msgstr ""
 # glib/giochannel.c:1507 glib/giochannel.c:1761 glib/giochannel.c:1847
 #: glib/giochannel.c:1519 glib/giochannel.c:1776 glib/giochannel.c:1862
 msgid "Leftover unconverted data in read buffer"
-msgstr "В буфере чтения остались непреобразованные данные"
+msgstr "Непреобразованные данные остались в буфере чтения "
 
 # glib/giochannel.c:1587 glib/giochannel.c:1661
 #: glib/giochannel.c:1599 glib/giochannel.c:1676
@@ -203,7 +203,7 @@ msgstr ""
 # glib/giowin32.c:704 glib/giowin32.c:733
 #: glib/giowin32.c:712 glib/giowin32.c:741
 msgid "Incorrect message size"
-msgstr "Размер сообщения является неправильным"
+msgstr "Размер сообщения не является правильным"
 
 # glib/giowin32.c:1037 glib/giowin32.c:1090
 #: glib/giowin32.c:1034 glib/giowin32.c:1087
@@ -227,7 +227,7 @@ msgstr "Произошла ошибка в строке %d: %s"
 msgid ""
 "Empty entity '&;' seen; valid entities are: &amp; &quot; &lt; &gt; &apos;"
 msgstr ""
-"Пустая сущность \"&;\" найдена; допустимыми сущностями являются: &amp; "
+"Обнаружена пустая сущность \"&;\"; допустимыми сущностями являются: &amp; "
 "&quot; &lt; &gt; &apos;"
 
 # glib/gmarkup.c:392
@@ -306,7 +306,7 @@ msgstr "Ссылка на символ не закончена"
 # glib/gmarkup.c:837 glib/gmarkup.c:865 glib/gmarkup.c:896
 #: glib/gmarkup.c:860 glib/gmarkup.c:888 glib/gmarkup.c:919
 msgid "Invalid UTF-8 encoded text"
-msgstr "Текст кодирован как UTF-8 недопустимым образом"
+msgstr "Текст закодирован как UTF-8 недопустимым образом"
 
 # glib/gmarkup.c:932
 #: glib/gmarkup.c:955
@@ -320,8 +320,8 @@ msgid ""
 "'%s' is not a valid character following a '<' character; it may not begin an "
 "element name"
 msgstr ""
-"\"%s\" является недопустим символом, следующим за символом \"<\"; этот "
-"символ не может начинать имя элемента"
+"Символ \"%s\" является недопустим символом, следующим за символом \"<\"; "
+"этот символ не может начинать имя элемента"
 
 # glib/gmarkup.c:1033
 #: glib/gmarkup.c:1057
@@ -330,8 +330,8 @@ msgid ""
 "Odd character '%s', expected a '>' character to end the start tag of element "
 "'%s'"
 msgstr ""
-"Странный символ \"%s\", ожидался символ \">\" для закрытия начального тэга "
-"элемента \"%s\""
+"Встретился лишний символ \"%s\", ожидался символ \">\" для закрытия "
+"начального тэга элемента \"%s\""
 
 # glib/gmarkup.c:1120
 #: glib/gmarkup.c:1144
@@ -350,7 +350,7 @@ msgid ""
 "element '%s', or optionally an attribute; perhaps you used an invalid "
 "character in an attribute name"
 msgstr ""
-"Встретился лишний символ \"%s\", ожидались символы \">\" или \"/\" для "
+"Встретлся лишний символ \"%s\", ожидались символы \">\" или \"/\" для "
 "закрытия начального тэга элемента \"%s\" или дополнительный атрибут; "
 "возможно, был использован недопустимый символ в имени атрибута"
 
@@ -371,8 +371,8 @@ msgid ""
 "'%s' is not a valid character following the characters '</'; '%s' may not "
 "begin an element name"
 msgstr ""
-"\"%s\" является недопустимым символом при следовании за символами \"</\"; "
-"символ \"%s\" не может начинать имя элемента"
+"Символ \"%s\" является недопустимым символом при следовании за символами \"</"
+"\"; символ \"%s\" не может начинать имя элемента"
 
 # glib/gmarkup.c:1422
 #: glib/gmarkup.c:1446
@@ -381,8 +381,8 @@ msgid ""
 "'%s' is not a valid character following the close element name '%s'; the "
 "allowed character is '>'"
 msgstr ""
-"\"%s\" является недопустимым символом при закрытии имени элемента \"%s\"; "
-"допутимым символом является \">\""
+"Символ \"%s\" является недопустимым символом при закрытии имени элемента \"%s"
+"\"; допутимым символом является \">\""
 
 # glib/gmarkup.c:1433
 #: glib/gmarkup.c:1457
@@ -481,7 +481,9 @@ msgstr "Текст в кавычках не начинается с символ
 # glib/gshell.c:161
 #: glib/gshell.c:162
 msgid "Unmatched quotation mark in command line or other shell-quoted text"
-msgstr "Несоответствующая кавычка в командной строке или ином тексте оболочки"
+msgstr ""
+"Обнаружена несоответствующая кавычка в командной строке или ином тексте "
+"оболочки"
 
 # glib/gshell.c:529
 #: glib/gshell.c:530
@@ -502,12 +504,12 @@ msgid "Text was empty (or contained only whitespace)"
 msgstr "Текст был пуст (или содержал только пробелы)"
 
 # glib/gspawn-win32.c:214
-#: glib/gspawn-win32.c:208
+#: glib/gspawn-win32.c:286
 msgid "Failed to read data from child process"
 msgstr "Произошёл сбой при чтении данных из процесса-потомка"
 
 # glib/gspawn-win32.c:365
-#: glib/gspawn-win32.c:336
+#: glib/gspawn-win32.c:414
 msgid ""
 "Unexpected error in g_io_channel_win32_poll() reading data from a child "
 "process"
@@ -516,30 +518,30 @@ msgstr ""
 "чтении данных из процесса-потомка"
 
 # glib/gspawn-win32.c:843 glib/gspawn.c:914
-#: glib/gspawn-win32.c:706 glib/gspawn.c:961
+#: glib/gspawn-win32.c:784 glib/gspawn.c:979
 #, c-format
 msgid "Failed to read from child pipe (%s)"
 msgstr "Произошёл сбой при чтении данных из канала потомка (%s)"
 
 # glib/gspawn-win32.c:940
-#: glib/gspawn-win32.c:784
+#: glib/gspawn-win32.c:871
 msgid "Failed to execute helper program"
 msgstr "Произошёл сбой при выполнении вспомогательной программы"
 
 # glib/gspawn-win32.c:931 glib/gspawn.c:1119
-#: glib/gspawn-win32.c:817 glib/gspawn.c:1166
+#: glib/gspawn-win32.c:904 glib/gspawn.c:1184
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
 msgstr "Произошёл сбой при смене каталога \"%s\" (%s)"
 
 # glib/gspawn-win32.c:940
-#: glib/gspawn-win32.c:826
+#: glib/gspawn-win32.c:913
 #, c-format
 msgid "Failed to execute child process (%s)"
 msgstr "Произошёл сбой при выполнении процесса-потомка (%s)"
 
 # glib/gspawn-win32.c:981 glib/gspawn.c:1228
-#: glib/gspawn-win32.c:869 glib/gspawn.c:1297
+#: glib/gspawn-win32.c:956 glib/gspawn.c:1315
 #, c-format
 msgid "Failed to create pipe for communicating with child process (%s)"
 msgstr ""
@@ -566,38 +568,38 @@ msgid "Unexpected error in waitpid() (%s)"
 msgstr "Произошла непредвиденная ошибка в функции waitpid() (%s)"
 
 # glib/gspawn.c:979
-#: glib/gspawn.c:1026
+#: glib/gspawn.c:1044
 #, c-format
 msgid "Failed to fork (%s)"
 msgstr "Произошёл сбой при ответвлении (%s)"
 
 # glib/gspawn.c:1129
-#: glib/gspawn.c:1176
+#: glib/gspawn.c:1194
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
 msgstr "Произошёл сбой при выполнении процесса-потомка \"%s\" (%s)"
 
 # glib/gspawn.c:1139
-#: glib/gspawn.c:1186
+#: glib/gspawn.c:1204
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
 msgstr ""
 "Произошёл сбой при перенаправлении вывода или ввода процесса-потомка (%s)"
 
 # glib/gspawn.c:1148
-#: glib/gspawn.c:1195
+#: glib/gspawn.c:1213
 #, c-format
 msgid "Failed to fork child process (%s)"
 msgstr "Произошёл сбой при ответвлении процесса-потомка (%s)"
 
 # glib/gspawn.c:1156
-#: glib/gspawn.c:1203
+#: glib/gspawn.c:1221
 #, c-format
 msgid "Unknown error executing child process \"%s\""
 msgstr "Произошла неизвестная ошибка при выполнении процесса-потомка \"%s\""
 
 # glib/gspawn.c:1178
-#: glib/gspawn.c:1225
+#: glib/gspawn.c:1243
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
 msgstr ""
@@ -615,7 +617,7 @@ msgstr "Символ находится вне диапазона для UTF-8"
 #: glib/gutf8.c:1362 glib/gutf8.c:1458
 msgid "Invalid sequence in conversion input"
 msgstr ""
-"Недопустимая последовательность для преобразования находится во входной "
+"Недопустимая последовательность для преобразования обнаружена во входной "
 "строке"
 
 # glib/gutf8.c:1341 glib/gutf8.c:1437
