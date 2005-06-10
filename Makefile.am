@@ -10,6 +10,8 @@ INCLUDES = -DG_LOG_DOMAIN=g_log_domain_glib @GLIB_DEBUG_FLAGS@ \
 	-DG_DISABLE_DEPRECATED -DGLIB_COMPILATION
 
 EXTRA_DIST = 			\
+	ChangeLog.pre-2-6	\
+	ChangeLog.pre-2-4	\
 	ChangeLog.pre-2-2	\
 	ChangeLog.pre-2-0	\
 	ChangeLog.pre-1-2	\
@@ -34,6 +36,7 @@ EXTRA_DIST = 			\
 	glib-2.0-uninstalled.pc.in 	\
 	gobject-2.0-uninstalled.pc.in 	\
 	gmodule-2.0-uninstalled.pc.in	\
+	gmodule-no-export-2.0-uninstalled.pc.in	\
 	gthread-2.0-uninstalled.pc.in
 
 # These may be in the builddir too

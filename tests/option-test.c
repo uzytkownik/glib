@@ -1,5 +1,4 @@
 #include <glib.h>
-#include "goption.h"
 #include <string.h>
 
 int error_test1_int;
@@ -837,6 +836,52 @@ rest_test5 (void)
   g_option_context_free (context);
 }
 
+void
+unknown_short_test (void)
+{
+  GOptionContext *context;
+  gboolean retval;
+  GError *error = NULL;
+  gchar **argv;
+  int argc;
+  GOptionEntry entries [] = { { NULL } };
+
+  context = g_option_context_new (NULL);
+  g_option_context_add_main_entries (context, entries, NULL);
+
+  /* Now try parsing */
+  argv = split_string ("program -0", &argc);
+
+  retval = g_option_context_parse (context, &argc, &argv, &error);
+  g_assert (!retval);
+
+  g_strfreev (argv);
+  g_option_context_free (context);
+}
+
+/* test that lone dashes are treated as non-options */
+void lonely_dash_test (void)
+{
+  GOptionContext *context;
+  gboolean retval;
+  GError *error = NULL;
+  gchar **argv;
+  int argc;
+
+  context = g_option_context_new (NULL);
+
+  /* Now try parsing */
+  argv = split_string ("program -", &argc);
+
+  retval = g_option_context_parse (context, &argc, &argv, &error);
+
+  g_assert (retval);
+
+  g_assert (argv[1] && strcmp (argv[1], "-") == 0);
+
+  g_strfreev (argv);
+  g_option_context_free (context);
+}
 
 int
 main (int argc, char **argv)
@@ -879,6 +924,12 @@ main (int argc, char **argv)
   rest_test3 ();
   rest_test4 ();
   rest_test5 ();
+
+  /* test for bug 166609 */
+  unknown_short_test ();
+
+  /* test for bug 168008 */
+  lonely_dash_test ();
 
   return 0;
 }

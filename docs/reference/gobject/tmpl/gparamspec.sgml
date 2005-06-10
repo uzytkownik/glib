@@ -9,12 +9,20 @@ Metadata for parameter specifications
 #GParamSpec is an object structure that encapsulates the metadata
 required to specify parameters, such as e.g. #GObject properties.
 </para>
+<para>
+Parameter names need to start with a letter (a-z or A-Z). Subsequent
+characters can be letters, numbers or a '-'.
+All other characters are replaced by a '-' during construction.
+</para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
 g_object_class_install_property(), g_object_set(), g_object_get(),
 g_object_set_property(), g_object_get_property(), g_value_register_transform_func()
 </para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
 
 <!-- ##### MACRO G_TYPE_IS_PARAM ##### -->
 <para>

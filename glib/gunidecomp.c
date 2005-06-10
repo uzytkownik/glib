@@ -23,11 +23,11 @@
 
 #include <stdlib.h>
 
-#include "galias.h"
 #include "glib.h"
 #include "gunidecomp.h"
 #include "gunicomp.h"
 #include "gunicodeprivate.h"
+#include "galias.h"
 
 
 #define CC_PART1(Page, Char) \
@@ -267,7 +267,7 @@ combine_hangul (gunichar a,
       return TRUE;
     }
   else if (0 <= SIndex && SIndex < SCount && (SIndex % TCount) == 0
-           && 0 <= TIndex && TIndex <= TCount)
+           && 0 < TIndex && TIndex < TCount)
     {
       *result = a + TIndex;
       return TRUE;
@@ -520,3 +520,6 @@ g_utf8_normalize (const gchar    *str,
 
   return result;
 }
+
+#define __G_UNIDECOMP_C__
+#include "galiasdef.c"

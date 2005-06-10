@@ -60,12 +60,16 @@ To free a pointer array, use g_ptr_array_free().
 
 </para>
 
+<!-- ##### SECTION Stability_Level ##### -->
+
+
 <!-- ##### STRUCT GPtrArray ##### -->
 <para>
 Contains the public fields of a pointer array.
 </para>
 
-@pdata: points to the array of pointers, which may be moved when the array grows.
+@pdata: points to the array of pointers, which may be moved when the 
+        array grows.
 @len: number of pointers in the array.
 
 <!-- ##### FUNCTION g_ptr_array_new ##### -->
@@ -157,7 +161,7 @@ g_ptr_array_remove_index().
 
 <!-- ##### FUNCTION g_ptr_array_remove_range ##### -->
 <para>
-Removes the given number of bytes starting at the given index from a
+Removes the given number of pointers starting at the given index from a
 #GPtrArray.  The following elements are moved to close the gap.
 </para>
 
@@ -222,8 +226,9 @@ Frees all of the memory allocated for the pointer array.
 </para>
 
 @array: a #GPtrArray.
-@free_seg: if %TRUE the actual element data is freed as well.
-@Returns: 
+@free_seg: if %TRUE the array of pointers (@pdata) is freed.
+@Returns: %NULL if @free_seg is %TRUE, otherwise the array of 
+pointers (@pdata) is returned.
 
 
 <!-- ##### FUNCTION g_ptr_array_foreach ##### -->
