@@ -6,13 +6,13 @@
 # Stanislav Visnovsky <visnovsky@kde.org>, 2004.
 # Marcel Telka <marcel@telka.sk>, 2005.
 #
-# $Id: sk.po,v 1.51 2005/07/15 17:28:17 matthiasc Exp $
+# $Id: sk.po,v 1.52 2005/07/22 17:02:04 matthiasc Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: glib\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-15 13:18-0400\n"
+"POT-Creation-Date: 2005-07-22 12:48-0400\n"
 "PO-Revision-Date: 2005-06-25 22:32+0200\n"
 "Last-Translator: Marcel Telka <marcel@telka.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
