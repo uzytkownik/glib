@@ -36,7 +36,6 @@
 /* uncomment the next line to get poll() debugging info */
 /* #define G_MAIN_POLL_DEBUG */
 
-#include "galias.h"
 #include "glib.h"
 #include "gthreadinit.h"
 #include <signal.h>
@@ -69,13 +68,17 @@
 #endif /* G_OS_WIN32 */
 
 #ifdef G_OS_BEOS
-#include <net/socket.h>
+#include <sys/socket.h>
+#include <sys/wait.h>
 #endif /* G_OS_BEOS */
 
 #ifdef G_OS_UNIX
 #include <fcntl.h>
 #include <sys/wait.h>
 #endif
+
+#include "galias.h"
+
 /* Types */
 
 typedef struct _GTimeoutSource GTimeoutSource;
@@ -476,26 +479,17 @@ g_poll (GPollFD *fds,
 		f->revents |= G_IO_IN;
 	  }
     }
-#if 1 /* TEST_WITHOUT_THIS */
   else if (ready >= WAIT_OBJECT_0 && ready < WAIT_OBJECT_0 + nhandles)
     for (f = fds; f < &fds[nfds]; ++f)
       {
-	if ((f->events & (G_IO_IN | G_IO_OUT))
-	    && f->fd == (gint) handles[ready - WAIT_OBJECT_0])
+	if (f->fd == (gint) handles[ready - WAIT_OBJECT_0])
 	  {
-	    if (f->events & G_IO_IN)
-	      f->revents |= G_IO_IN;
-	    else
-	      f->revents |= G_IO_OUT;
+	    f->revents = f->events;
 #ifdef G_MAIN_POLL_DEBUG
 	    g_print ("g_poll: got event %#x\n", f->fd);
 #endif
-#if 0
-	    ResetEvent ((HANDLE) f->fd);
-#endif
 	  }
       }
-#endif
     
   return 1;
 }
@@ -1696,26 +1690,19 @@ g_get_current_time (GTimeVal *result)
   result->tv_sec = r.tv_sec;
   result->tv_usec = r.tv_usec;
 #else
-  /* Avoid calling time() except for the first time.
-   * GetTickCount() should be pretty fast and low-level?
-   * I could also use ftime() but it seems unnecessarily overheady.
+  FILETIME ft;
+  guint64 *time64 = (guint64 *) &ft;
+
+  GetSystemTimeAsFileTime (&ft);
+
+  /* Convert from 100s of nanoseconds since 1601-01-01
+   * to Unix epoch. Yes, this is Y2038 unsafe.
    */
-  static DWORD start_tick = 0;
-  static time_t start_time;
-  DWORD tick;
+  *time64 -= G_GINT64_CONSTANT (116444736000000000);
+  *time64 /= 10;
 
-  g_return_if_fail (result != NULL);
- 
-  if (start_tick == 0)
-    {
-      start_tick = GetTickCount ();
-      time (&start_time);
-    }
-
-  tick = GetTickCount ();
-
-  result->tv_sec = (tick - start_tick) / 1000 + start_time;
-  result->tv_usec = ((tick - start_tick) % 1000) * 1000;
+  result->tv_sec = *time64 / 1000000;
+  result->tv_usec = *time64 % 1000000;
 #endif
 }
 
@@ -3579,7 +3566,7 @@ g_child_watch_source_init_single (void)
 
   action.sa_handler = g_child_watch_signal_handler;
   sigemptyset (&action.sa_mask);
-  action.sa_flags = SA_RESTART | SA_NOCLDSTOP;
+  action.sa_flags = SA_NOCLDSTOP;
   sigaction (SIGCHLD, &action, NULL);
 }
 
@@ -3688,6 +3675,11 @@ g_child_watch_source_init (void)
  * (see g_spawn_close_pid()) @pid must not be closed while the
  * source is still active. Typically, you will want to call
  * g_spawn_close_pid() in the callback function for the source.
+ *
+ * Note further that using g_child_watch_source_new() is not 
+ * compatible with calling <literal>waitpid(-1)</literal> in 
+ * the application. Calling waitpid() for individual pids will
+ * still work fine. 
  * 
  * Return value: the newly-created child watch source
  *
@@ -3916,3 +3908,5 @@ g_idle_remove_by_data (gpointer data)
   return g_source_remove_by_funcs_user_data (&g_idle_funcs, data);
 }
 
+#define __G_MAIN_C__
+#include "galiasdef.c"

@@ -21,11 +21,11 @@
 
 #include "config.h"
 
-#include "galias.h"
-
 #include "goption.h"
 #include "glib.h"
 #include "gi18n.h"
+
+#include "galias.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -312,6 +312,13 @@ g_option_context_set_main_group (GOptionContext *context,
   g_return_if_fail (context != NULL);
   g_return_if_fail (group != NULL);
 
+  if (context->main_group)
+    {
+      g_warning ("This GOptionContext already has a main group");
+
+      return;
+    }
+
   context->main_group = group;
 }
 
@@ -362,6 +369,35 @@ g_option_context_add_main_entries (GOptionContext      *context,
   g_option_group_set_translation_domain (context->main_group, translation_domain);
 }
 
+static gint
+calculate_max_length (GOptionGroup *group)
+{
+  GOptionEntry *entry;
+  gint i, len, max_length;
+
+  max_length = 0;
+
+  for (i = 0; i < group->n_entries; i++)
+    {
+      entry = &group->entries[i];
+
+      if (entry->flags & G_OPTION_FLAG_HIDDEN)
+	continue;
+
+      len = g_utf8_strlen (entry->long_name, -1);
+      
+      if (entry->short_name)
+	len += 4;
+      
+      if (entry->arg != G_OPTION_ARG_NONE && entry->arg_description)
+	len += 1 + g_utf8_strlen (TRANSLATE (group, entry->arg_description), -1);
+      
+      max_length = MAX (max_length, len);
+    }
+
+  return max_length;
+}
+
 static void
 print_entry (GOptionGroup       *group,
 	     gint                max_length,
@@ -393,11 +429,12 @@ print_entry (GOptionGroup       *group,
 static void
 print_help (GOptionContext *context,
 	    gboolean        main_help,
-	    GOptionGroup   *group)
+	    GOptionGroup   *group) 
 {
   GList *list;
   gint max_length, len;
   gint i;
+  GOptionEntry *entry;
   GHashTable *shadow_map;
   gboolean seen[256];
   
@@ -412,14 +449,15 @@ print_help (GOptionContext *context,
     {
       for (i = 0; i < context->main_group->n_entries; i++)
 	{
+	  entry = &context->main_group->entries[i];
 	  g_hash_table_insert (shadow_map, 
-			       (gpointer)context->main_group->entries[i].long_name, 
-			       context->main_group->entries + i);
+			       (gpointer)entry->long_name, 
+			       entry);
 	  
-	  if (seen[(guchar)context->main_group->entries[i].short_name])
-	    context->main_group->entries[i].short_name = 0;
+	  if (seen[(guchar)entry->short_name])
+	    entry->short_name = 0;
 	  else
-	    seen[(guchar)context->main_group->entries[i].short_name] = TRUE;
+	    seen[(guchar)entry->short_name] = TRUE;
 	}
     }
 
@@ -429,15 +467,16 @@ print_help (GOptionContext *context,
       GOptionGroup *group = list->data;
       for (i = 0; i < group->n_entries; i++)
 	{
-	  if (g_hash_table_lookup (shadow_map, group->entries[i].long_name))
-	    group->entries[i].long_name = g_strdup_printf ("%s-%s", group->name, group->entries[i].long_name);
+	  entry = &group->entries[i];
+	  if (g_hash_table_lookup (shadow_map, entry->long_name))
+	    entry->long_name = g_strdup_printf ("%s-%s", group->name, entry->long_name);
 	  else  
-	    g_hash_table_insert (shadow_map, (gpointer)group->entries[i].long_name, group->entries + i);
+	    g_hash_table_insert (shadow_map, (gpointer)entry->long_name, entry);
 
-	  if (seen[(guchar)group->entries[i].short_name])
-	    group->entries[i].short_name = 0;
+	  if (seen[(guchar)entry->short_name])
+	    entry->short_name = 0;
 	  else
-	    seen[(guchar)group->entries[i].short_name] = TRUE;
+	    seen[(guchar)entry->short_name] = TRUE;
 	}
       list = list->next;
     }
@@ -446,11 +485,17 @@ print_help (GOptionContext *context,
 
   list = context->groups;
 
-  max_length = g_utf8_strlen ("--help, -?", -1);
+  max_length = g_utf8_strlen ("-?, --help", -1);
 
   if (list)
     {
       len = g_utf8_strlen ("--help-all", -1);
+      max_length = MAX (max_length, len);
+    }
+
+  if (context->main_group)
+    {
+      len = calculate_max_length (context->main_group);
       max_length = MAX (max_length, len);
     }
 
@@ -463,22 +508,8 @@ print_help (GOptionContext *context,
       max_length = MAX (max_length, len);
 
       /* Then we go through the entries */
-      for (i = 0; i < group->n_entries; i++)
-	{
-	  if (group->entries[i].flags & G_OPTION_FLAG_HIDDEN)
-	    continue;
-
-	  len = g_utf8_strlen (group->entries[i].long_name, -1);
-
-	  if (group->entries[i].short_name)
-	    len += 4;
-
-	  if (group->entries[i].arg != G_OPTION_ARG_NONE &&
-	      group->entries[i].arg_description)
-	    len += 1 + g_utf8_strlen (TRANSLATE (group, group->entries[i].arg_description), -1);
-
-	  max_length = MAX (max_length, len);
-	}
+      len = calculate_max_length (group);
+      max_length = MAX (max_length, len);
       
       list = list->next;
     }
@@ -490,18 +521,21 @@ print_help (GOptionContext *context,
     {
       list = context->groups;
       
-      g_print ("%s\n  --%-*s %s\n", 
-	       _("Help Options:"), max_length, "help", _("Show help options"));
+      g_print ("%s\n  -%c, --%-*s %s\n", 
+	       _("Help Options:"), '?', max_length - 4, "help", 
+	       _("Show help options"));
       
       /* We only want --help-all when there are groups */
       if (list)
-	g_print ("  --%-*s %s\n", max_length, "help-all", _("Show all help options"));
-
+	g_print ("  --%-*s %s\n", max_length, "help-all", 
+		 _("Show all help options"));
+      
       while (list)
 	{
 	  GOptionGroup *group = list->data;
 	  
-	  g_print ("  --help-%-*s %s\n", max_length - 5, group->name, TRANSLATE (group, group->help_description));
+	  g_print ("  --help-%-*s %s\n", max_length - 5, group->name, 
+		   TRANSLATE (group, group->help_description));
 	  
 	  list = list->next;
 	}
@@ -548,7 +582,8 @@ print_help (GOptionContext *context,
 
       if (context->main_group)
 	for (i = 0; i < context->main_group->n_entries; i++) 
-	  print_entry (context->main_group, max_length, &context->main_group->entries[i]);
+	  print_entry (context->main_group, max_length, 
+		       &context->main_group->entries[i]);
 
       while (list != NULL)
 	{
@@ -575,10 +610,11 @@ parse_int (const gchar *arg_name,
 	   GError     **error)
 {
   gchar *end;
-  glong tmp = strtol (arg, &end, 0);
+  glong tmp; 
 
   errno = 0;
-  
+  tmp = strtol (arg, &end, 0);
+
   if (*arg == '\0' || *end != '\0')
     {
       g_set_error (error,
@@ -696,7 +732,7 @@ parse_arg (GOptionContext *context,
 
 	if (change->allocated.array.len == 0)
 	  {
-	    change->prev.array = entry->arg_data;
+	    change->prev.array = *(gchar ***)entry->arg_data;
 	    change->allocated.array.data = g_new (gchar *, 2);
 	  }
 	else
@@ -754,7 +790,7 @@ parse_arg (GOptionContext *context,
 
 	if (change->allocated.array.len == 0)
 	  {
-	    change->prev.array = entry->arg_data;
+	    change->prev.array = *(gchar ***)entry->arg_data;
 	    change->allocated.array.data = g_new (gchar *, 2);
 	  }
 	else
@@ -1133,7 +1169,7 @@ g_option_context_parse (GOptionContext   *context,
 	  gchar *arg, *dash;
 	  gboolean parsed = FALSE;
 
-	  if ((*argv)[i][0] == '-' && !stop_parsing)
+	  if ((*argv)[i][0] == '-' && (*argv)[i][1] != '\0' && !stop_parsing)
 	    {
 	      if ((*argv)[i][1] == '-')
 		{
@@ -1244,6 +1280,9 @@ g_option_context_parse (GOptionContext   *context,
 		  
 		  for (j = 0; j < strlen (arg); j++)
 		    {
+		      if (context->help_enabled && arg[j] == '?')
+			print_help (context, TRUE, NULL);
+		      
 		      parsed = FALSE;
 		      
 		      if (context->main_group &&
@@ -1297,7 +1336,7 @@ g_option_context_parse (GOptionContext   *context,
 			  if (!nulled_out[j])
 			    {
 			      if (!new_arg)
-				new_arg = g_malloc (strlen (arg));
+				new_arg = g_malloc (strlen (arg) + 1);
 			      new_arg[arg_index++] = arg[j];
 			    }
 			}
@@ -1626,3 +1665,5 @@ g_option_group_set_translation_domain (GOptionGroup *group,
 				     g_free);
 } 
 
+#define __G_OPTION_C__
+#include "galiasdef.c"

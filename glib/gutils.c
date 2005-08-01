@@ -51,10 +51,10 @@
  */
 #define	G_IMPLEMENT_INLINES 1
 #define	__G_UTILS_C__
-#include "galias.h"
 #include "glib.h"
 #include "gprintfint.h"
 #include "gthreadinit.h"
+#include "galias.h"
 
 #ifdef	MAXPATHLEN
 #define	G_PATH_LENGTH	MAXPATHLEN
@@ -104,6 +104,8 @@ const guint glib_minor_version = GLIB_MINOR_VERSION;
 const guint glib_micro_version = GLIB_MICRO_VERSION;
 const guint glib_interface_age = GLIB_INTERFACE_AGE;
 const guint glib_binary_age = GLIB_BINARY_AGE;
+
+G_WIN32_DLLMAIN_FOR_DLL_NAME (static, dll_name)
 
 /**
  * glib_check_version:
@@ -340,7 +342,7 @@ g_find_program_in_path (const gchar *program)
     }
   
   path = g_getenv ("PATH");
-#ifdef G_OS_UNIX
+#if defined(G_OS_UNIX) || defined(G_OS_BEOS)
   if (path == NULL)
     {
       /* There is no `PATH' in the environment.  The default
@@ -931,6 +933,8 @@ g_getenv (const gchar *variable)
 	  g_free (wname);
 	  return NULL;
 	}
+      else if (len == 1)
+	len = 2;
 
       wvalue = g_new (wchar_t, len);
 
@@ -982,6 +986,8 @@ g_getenv (const gchar *variable)
 	  g_free (cpname);
 	  return NULL;
 	}
+      else if (len == 1)
+	len = 2;
 
       cpvalue = g_new (gchar, len);
 
@@ -1291,6 +1297,26 @@ get_special_folder (int csidl)
   return retval;
 }
 
+static char *
+get_windows_directory_root (void)
+{
+  char windowsdir[MAX_PATH];
+
+  if (GetWindowsDirectory (windowsdir, sizeof (windowsdir)))
+    {
+      /* Usually X:\Windows, but in terminal server environments
+       * might be an UNC path, AFAIK.
+       */
+      char *p = (char *) g_path_skip_root (windowsdir);
+      if (G_IS_DIR_SEPARATOR (p[-1]) && p[-2] != ':')
+	p--;
+      *p = '\0';
+      return g_strdup (windowsdir);
+    }
+  else
+    return g_strdup ("C:\\");
+}
+
 #endif
 
 /* HOLDS: g_utils_global_lock */
@@ -1305,6 +1331,10 @@ g_get_any_init (void)
       if (!g_tmp_dir)
 	g_tmp_dir = g_strdup (g_getenv ("TEMP"));
       
+#ifdef G_OS_WIN32
+      if (!g_tmp_dir)
+	g_tmp_dir = get_windows_directory_root ();
+#else
 #ifdef P_tmpdir
       if (!g_tmp_dir)
 	{
@@ -1318,12 +1348,9 @@ g_get_any_init (void)
       
       if (!g_tmp_dir)
 	{
-#ifndef G_OS_WIN32
 	  g_tmp_dir = g_strdup ("/tmp");
-#else /* G_OS_WIN32 */
-	  g_tmp_dir = g_strdup ("\\");
-#endif /* G_OS_WIN32 */
 	}
+#endif	/* !G_OS_WIN32 */
       
 #ifdef G_OS_WIN32
       /* We check $HOME first for Win32, though it is a last resort for Unix
@@ -1363,17 +1390,7 @@ g_get_any_init (void)
 	g_home_dir = get_special_folder (CSIDL_PROFILE);
       
       if (!g_home_dir)
-	{
-	  /* At least at some time, HOMEDRIVE and HOMEPATH were used
-	   * to point to the home directory, I think. But on Windows
-	   * 2000 HOMEDRIVE seems to be equal to SYSTEMDRIVE, and
-	   * HOMEPATH is its root "\"?
-	   */
-	  if (g_getenv ("HOMEDRIVE") != NULL && g_getenv ("HOMEPATH") != NULL)
-	    g_home_dir = g_strconcat (g_getenv ("HOMEDRIVE"),
-				      g_getenv ("HOMEPATH"),
-				      NULL);
-	}
+	g_home_dir = get_windows_directory_root ();
 #endif /* G_OS_WIN32 */
       
 #ifdef HAVE_PWD_H
@@ -1599,6 +1616,38 @@ g_get_prgname (void)
   gchar* retval;
 
   G_LOCK (g_prgname);
+#ifdef G_OS_WIN32
+  if (g_prgname == NULL)
+    {
+      static gboolean beenhere = FALSE;
+
+      if (!beenhere)
+	{
+	  gchar *utf8_buf = NULL;
+
+	  beenhere = TRUE;
+	  if (G_WIN32_HAVE_WIDECHAR_API ())
+	    {
+	      wchar_t buf[MAX_PATH+1];
+	      if (GetModuleFileNameW (GetModuleHandle (NULL),
+				      buf, G_N_ELEMENTS (buf)) > 0)
+		utf8_buf = g_utf16_to_utf8 (buf, -1, NULL, NULL, NULL);
+	    }
+	  else
+	    {
+	      gchar buf[MAX_PATH+1];
+	      if (GetModuleFileNameA (GetModuleHandle (NULL),
+				      buf, G_N_ELEMENTS (buf)) > 0)
+		utf8_buf = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	    }
+	  if (utf8_buf)
+	    {
+	      g_prgname = g_path_get_basename (utf8_buf);
+	      g_free (utf8_buf);
+	    }
+	}
+    }
+#endif
   retval = g_prgname;
   G_UNLOCK (g_prgname);
 
@@ -1707,17 +1756,21 @@ g_get_user_data_dir (void)
       data_dir = get_special_folder (CSIDL_PERSONAL);
 #else
       data_dir = (gchar *) g_getenv ("XDG_DATA_HOME");
-#endif
 
       if (data_dir && data_dir[0])
         data_dir = g_strdup (data_dir);
-      else
+#endif
+      if (!data_dir || !data_dir[0])
 	{
 	  if (!g_tmp_dir)
 	    g_get_any_init ();
 
-	  data_dir = g_build_filename (g_home_dir, ".local", 
-				       "share", NULL);
+	  if (g_home_dir)
+	    data_dir = g_build_filename (g_home_dir, ".local", 
+					 "share", NULL);
+	  else
+	    data_dir = g_build_filename (g_tmp_dir, g_user_name, ".local",
+					 "share", NULL);
 	}
 
       g_user_data_dir = data_dir;
@@ -1757,16 +1810,19 @@ g_get_user_config_dir (void)
       config_dir = get_special_folder (CSIDL_APPDATA);
 #else
       config_dir = (gchar *) g_getenv ("XDG_CONFIG_HOME");
-#endif
 
       if (config_dir && config_dir[0])
 	config_dir = g_strdup (config_dir);
-      else
+#endif
+      if (!config_dir || !config_dir[0])
 	{
 	  if (!g_tmp_dir)
 	    g_get_any_init ();
 	  
-	  config_dir = g_build_filename (g_home_dir, ".config", NULL);
+	  if (g_home_dir)
+	    config_dir = g_build_filename (g_home_dir, ".config", NULL);
+	  else
+	    config_dir = g_build_filename (g_tmp_dir, g_user_name, ".config", NULL);
 	}
       g_user_config_dir = config_dir;
     }
@@ -1805,15 +1861,19 @@ g_get_user_cache_dir (void)
       cache_dir = get_special_folder (CSIDL_INTERNET_CACHE); /* XXX correct? */
 #else
       cache_dir = (gchar *) g_getenv ("XDG_CACHE_HOME");
-#endif
+
       if (cache_dir && cache_dir[0])
           cache_dir = g_strdup (cache_dir);
-      else
+#endif
+      if (!cache_dir || !cache_dir[0])
 	{
 	  if (!g_tmp_dir)
 	    g_get_any_init ();
 
-          cache_dir = g_build_filename (g_home_dir, ".cache", NULL);
+	  if (g_home_dir)
+	    cache_dir = g_build_filename (g_home_dir, ".cache", NULL);
+	  else
+	    cache_dir = g_build_filename (g_tmp_dir, g_user_name, ".cache", NULL);
 	}
       g_user_cache_dir = cache_dir;
     }
@@ -1849,17 +1909,77 @@ g_get_system_data_dirs (void)
   if (!g_system_data_dirs)
     {
 #ifdef G_OS_WIN32
-      data_dirs = g_strconcat (get_special_folder (CSIDL_COMMON_APPDATA),
-			       G_SEARCHPATH_SEPARATOR_S,
-			       get_special_folder (CSIDL_COMMON_DOCUMENTS),
-			       NULL);
+      gchar *glib_top_share_dir, *exe_top_share_dir;
+
+      /* Documents and Settings\All Users\Application Data */
+      char *appdata = get_special_folder (CSIDL_COMMON_APPDATA);
+      /* Documents and Settings\All Users\Documents */
+      char *docs = get_special_folder (CSIDL_COMMON_DOCUMENTS);
+      
+      if (appdata && docs)
+	{
+	  data_dirs = g_strconcat (appdata,
+				   G_SEARCHPATH_SEPARATOR_S,
+				   docs,
+				   NULL);
+	  g_free (appdata);
+	  g_free (docs);
+	}
+      else if (appdata)
+	data_dirs = appdata;
+      else if (docs)
+	data_dirs = docs;
+      else
+	data_dirs = g_strdup ("");
+
+      /* Using the above subfolders of Documents and Settings perhaps
+       * makes sense from a Windows perspective.
+       *
+       * But looking at the actual use cases of this function in GTK+
+       * and GNOME software, what we really want is the "share"
+       * subdirectory of the installation directory for the package
+       * our caller is a part of.
+       *
+       * As we don't know who calls us, punt, and use the installation
+       * location of GLib, and of the .exe file being run. To guard
+       * against neither of those being what we really want, callers
+       * of this function should have Win32-specific code to look up
+       * their installation folder themselves, and handle a subfolder
+       * "share" of it in the same way as the folders returned from
+       * this function.
+       */
+      glib_top_share_dir = g_win32_get_package_installation_subdirectory (NULL, dll_name, "share");
+
+      if (glib_top_share_dir)
+	{
+	  gchar *tem = data_dirs;
+	  data_dirs = g_strconcat (data_dirs, G_SEARCHPATH_SEPARATOR_S,
+				   glib_top_share_dir, NULL);
+	  g_free (tem);
+	  g_free (glib_top_share_dir);
+	}
+
+      exe_top_share_dir = g_win32_get_package_installation_subdirectory (NULL, NULL, "share");
+
+      if (exe_top_share_dir)
+	{
+	  gchar *tem = data_dirs;
+	  data_dirs = g_strconcat (data_dirs, G_SEARCHPATH_SEPARATOR_S,
+				   exe_top_share_dir, NULL);
+	  g_free (tem);
+	  g_free (exe_top_share_dir);
+	}
+
+      data_dir_vector = g_strsplit (data_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+      g_free (data_dirs);
 #else
       data_dirs = (gchar *) g_getenv ("XDG_DATA_DIRS");
 
       if (!data_dirs || !data_dirs[0])
           data_dirs = "/usr/local/share/:/usr/share/";
-#endif
+
       data_dir_vector = g_strsplit (data_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+#endif
 
       g_system_data_dirs = data_dir_vector;
     }
@@ -1896,13 +2016,24 @@ g_get_system_config_dirs (void)
     {
 #ifdef G_OS_WIN32
       conf_dirs = get_special_folder (CSIDL_COMMON_APPDATA);
+      if (conf_dirs)
+	{
+	  conf_dir_vector = g_strsplit (conf_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+	  g_free (conf_dirs);
+	}
+      else
+	{
+	  /* Return empty list */
+	  conf_dir_vector = g_strsplit ("", G_SEARCHPATH_SEPARATOR_S, 0);
+	}
 #else
       conf_dirs = (gchar *) g_getenv ("XDG_CONFIG_DIRS");
 
       if (!conf_dirs || !conf_dirs[0])
           conf_dirs = "/etc/xdg";
-#endif
+
       conf_dir_vector = g_strsplit (conf_dirs, G_SEARCHPATH_SEPARATOR_S, 0);
+#endif
 
       g_system_config_dirs = conf_dir_vector;
     }
@@ -1912,6 +2043,8 @@ g_get_system_config_dirs (void)
 
   return (G_CONST_RETURN gchar * G_CONST_RETURN *) conf_dir_vector;
 }
+
+#ifndef G_OS_WIN32
 
 static GHashTable *alias_table = NULL;
 
@@ -1968,9 +2101,12 @@ read_aliases (gchar *file)
   fclose (fp);
 }
 
+#endif
+
 static char *
 unalias_lang (char *lang)
 {
+#ifndef G_OS_WIN32
   char *p;
   int i;
 
@@ -1991,6 +2127,7 @@ unalias_lang (char *lang)
 	  return lang;
 	}
     }
+#endif
   return lang;
 }
 
@@ -2310,25 +2447,72 @@ _g_utils_thread_init (void)
 
 #include <libintl.h>
 
-#ifdef G_PLATFORM_WIN32
+#ifdef G_OS_WIN32
 
-G_WIN32_DLLMAIN_FOR_DLL_NAME (static, dll_name)
-
+/**
+ * _glib_get_locale_dir:
+ *
+ * Return the path to the lib\locale subfolder of the GLib
+ * installation folder. The path is in the system codepage. We have to
+ * use system codepage as bindtextdomain() doesn't have a UTF-8
+ * interface.
+ */
 static const gchar *
 _glib_get_locale_dir (void)
 {
-  static const gchar *cache = NULL;
-  if (cache == NULL)
-    cache = g_win32_get_package_installation_subdirectory
-      (GETTEXT_PACKAGE, dll_name, "lib\\locale");
+  gchar *dir;
+  gchar *cp_dir;
+  gchar *retval = NULL;
 
-  return cache;
+  dir = g_win32_get_package_installation_directory (GETTEXT_PACKAGE, dll_name);
+  if (dir != NULL)
+    {
+      /* Convert to system codepage. We *must* pass a NULL error
+       * pointer so that the functions that g_locale_from_utf8() calls
+       * don't attempt to store a translated error message into the
+       * error in case of failure. Note that these functions have been
+       * specially modified to not call g_set_error() if the error
+       * pointer is NULL. The translation would cause a recursive
+       * invocation of _glib_gettext(), and infinite recursion.
+       */
+      cp_dir = g_locale_from_utf8 (dir, -1, NULL, NULL, NULL);
+
+      if (cp_dir == NULL && G_WIN32_HAVE_WIDECHAR_API ())
+	{
+	  /* It failed, so convert to wide chars, check if there is a
+	   * 8.3 version and use that.
+	   */
+	  wchar_t *wdir = g_utf8_to_utf16 (dir, -1, NULL, NULL, NULL);
+	  if (wdir != NULL)
+	    {
+	      wchar_t wshortdir[MAX_PATH + 1];
+	      if (GetShortPathNameW (wdir, wshortdir, G_N_ELEMENTS (wshortdir)))
+		{
+		  g_free (dir);
+		  dir = g_utf16_to_utf8 (wshortdir, -1, NULL, NULL, NULL);
+		  cp_dir = g_locale_from_utf8 (dir, -1, NULL, NULL, NULL);
+		}
+	      g_free (wdir);
+	    }
+	}
+
+      if (cp_dir != NULL)
+	retval = g_strconcat (cp_dir, "\\lib\\locale", NULL);
+      
+      g_free (dir);
+      g_free (cp_dir);
+    }
+
+  if (retval)
+    return retval;
+  else
+    return g_strdup ("");
 }
 
 #undef GLIB_LOCALE_DIR
 #define GLIB_LOCALE_DIR _glib_get_locale_dir ()
 
-#endif /* G_PLATFORM_WIN32 */
+#endif /* G_OS_WIN32 */
 
 G_CONST_RETURN gchar *
 _glib_gettext (const gchar *str)
@@ -2484,3 +2668,6 @@ g_get_tmp_dir (void)
 }
 
 #endif
+
+#define __G_UTILS_C__
+#include "galiasdef.c"

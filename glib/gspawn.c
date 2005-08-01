@@ -35,8 +35,8 @@
 #include <sys/select.h>
 #endif /* HAVE_SYS_SELECT_H */
 
-#include "galias.h"
 #include "glib.h"
+#include "galias.h"
 
 #include "glibintl.h"
 
@@ -195,7 +195,7 @@ read_data (GString *str,
  * @user_data: user data for @child_setup
  * @standard_output: return location for child output 
  * @standard_error: return location for child error messages
- * @exit_status: child exit status, as returned by waitpid()
+ * @exit_status: return location for child exit status, as returned by waitpid()
  * @error: return location for error
  *
  * Executes a child synchronously (waits for the child to exit before returning).
@@ -600,7 +600,7 @@ g_spawn_async_with_pipes (const gchar          *working_directory,
  * @command_line: a command line 
  * @standard_output: return location for child output
  * @standard_error: return location for child errors
- * @exit_status: return location for child exit status
+ * @exit_status: return location for child exit status, as returned by waitpid()
  * @error: return location for errors
  *
  * A simple version of g_spawn_sync() with little-used parameters
@@ -611,6 +611,10 @@ g_spawn_async_with_pipes (const gchar          *working_directory,
  * implications, so consider using g_spawn_sync() directly if
  * appropriate. Possible errors are those from g_spawn_sync() and those
  * from g_shell_parse_argv().
+ *
+ * If @exit_status is non-%NULL, the exit status of the child is stored there as
+ * it would be returned by waitpid(); standard UNIX macros such as WIFEXITED()
+ * and WEXITSTATUS() must be used to evaluate the exit status.
  * 
  * On Windows, please note the implications of g_shell_parse_argv()
  * parsing @command_line. Space is a separator, and backslashes are
@@ -1547,3 +1551,6 @@ void
 g_spawn_close_pid (GPid pid)
 {
 }
+
+#define __G_SPAWN_C__
+#include "galiasdef.c"

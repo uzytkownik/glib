@@ -39,10 +39,10 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "galias.h"
 #include "glib.h"
 #include "gprintf.h"
 
+#include "galias.h"
 
 struct _GStringChunk
 {
@@ -73,8 +73,8 @@ g_str_equal (gconstpointer v1,
 guint
 g_str_hash (gconstpointer key)
 {
-  const char *p = key;
-  guint h = *p;
+  const signed char *p = key;
+  guint32 h = *p;
 
   if (h)
     for (p += 1; *p != '\0'; p++)
@@ -858,3 +858,6 @@ g_string_append_printf (GString *string,
   g_string_append_printf_internal (string, fmt, args);
   va_end (args);
 }
+
+#define __G_STRING_C__
+#include "galiasdef.c"

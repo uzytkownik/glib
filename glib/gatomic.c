@@ -22,9 +22,9 @@
  
 #include "config.h"
 
-#include "galias.h"
 #include "glib.h"
 #include "gthreadinit.h"
+#include "galias.h"
 
 #if defined (__GNUC__)
 # if defined (G_ATOMIC_I486)
@@ -121,7 +121,7 @@ g_atomic_pointer_compare_and_exchange (gpointer *atomic,
 			: "=r" (result), "=m" (*a)
 			: "r" (oldval), "m" (*a), "r" (a),
 			"0" (newval));
-  return result != 0;
+  return result == oldval;
 }
 #  else /* What's that */
 #    error "Your system has an unsupported pointer size"
@@ -264,9 +264,9 @@ g_atomic_pointer_compare_and_exchange (gpointer *atomic,
 }
 
 # elif defined (G_ATOMIC_POWERPC)
-/* Adapted from CVS version 1.12 of glibc's sysdeps/powerpc/bits/atomic.h 
- * and CVS version 1.3 of glibc's sysdeps/powerpc/powerpc32/bits/atomic.h 
- * and CVS version 1.2 of glibc's sysdeps/powerpc/powerpc64/bits/atomic.h 
+/* Adapted from CVS version 1.16 of glibc's sysdeps/powerpc/bits/atomic.h 
+ * and CVS version 1.4 of glibc's sysdeps/powerpc/powerpc32/bits/atomic.h 
+ * and CVS version 1.7 of glibc's sysdeps/powerpc/powerpc64/bits/atomic.h 
  */
 #   ifdef __OPTIMIZE__
 /* Non-optimizing compile bails on the following two asm statements
@@ -281,7 +281,7 @@ g_atomic_int_exchange_and_add (gint *atomic,
 			"         stwcx.  %1,0,%3\n"
 			"         bne-    1b"
 			: "=&b" (result), "=&r" (temp), "=m" (*atomic)
-			: "b" (atomic), "r" (val), "2" (*atomic)
+			: "b" (atomic), "r" (val), "m" (*atomic)
 			: "cr0", "memory");
   return result;
 }
@@ -297,7 +297,7 @@ g_atomic_int_add (gint *atomic,
 			"         stwcx.  %1,0,%3\n"
 			"         bne-    1b"
 			: "=&b" (result), "=&r" (temp), "=m" (*atomic)
-			: "b" (atomic), "r" (val), "2" (*atomic)
+			: "b" (atomic), "r" (val), "m" (*atomic)
 			: "cr0", "memory");
 }
 #   else /* !__OPTIMIZE__ */
@@ -646,3 +646,6 @@ _g_atomic_thread_init (void)
   g_atomic_mutex = g_mutex_new ();
 #endif /* DEFINE_WITH_MUTEXES */
 }
+
+#define __G_ATOMIC_C__
+#include "galiasdef.c"

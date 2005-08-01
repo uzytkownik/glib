@@ -35,13 +35,14 @@
 /* #define DEBUG_MSG(args)	g_message args ; */
 #endif
 
-#include "galias.h"
 #include "glib.h"
 
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
 #include <locale.h>
+
+#include "galias.h"
 
 GDate*
 g_date_new (void)
@@ -411,7 +412,6 @@ g_date_get_iso8601_week_of_year (const GDate *d)
 {
   guint j, d4, L, d1, w;
 
-  g_return_val_if_fail (d != NULL, 0);
   g_return_val_if_fail (g_date_valid (d), 0);
   
   if (!d->julian)
@@ -422,7 +422,7 @@ g_date_get_iso8601_week_of_year (const GDate *d)
    * Julian Period which starts on 1 January 4713 BC, so we add
    * 1,721,425 to the number of days before doing the formula. 
    */
-  j  = d->julian + 1721425;
+  j  = d->julian_days + 1721425;
   d4 = (j + 31741 - (j % 7)) % 146097 % 36524 % 1461;
   L  = d4 / 1460;
   d1 = ((d4 - L) % 365) + L;
@@ -884,8 +884,22 @@ g_date_set_time (GDate *d,
 #else
   {
     struct tm *ptm = localtime (&t);
-    g_assert (ptm);
-    memcpy ((void *) &tm, (void *) ptm, sizeof(struct tm));
+
+    if (ptm == NULL)
+      {
+	/* Happens at least in Microsoft's C library if you pass a
+	 * negative time_t. Use 2000-01-01 as default date.
+	 */
+#ifndef G_DISABLE_CHECKS
+	g_return_if_fail_warning (G_LOG_DOMAIN, "g_date_set_time", "ptm != NULL");
+#endif
+
+	tm.tm_mon = 0;
+	tm.tm_mday = 1;
+	tm.tm_year = 100;
+      }
+    else
+      memcpy ((void *) &tm, (void *) ptm, sizeof(struct tm));
   }
 #endif
   
@@ -1476,4 +1490,7 @@ g_date_strftime (gchar       *s,
 
   return retval;
 }
+
+#define __G_DATE_C__
+#include "galiasdef.c"
 
