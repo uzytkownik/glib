@@ -6,14 +6,14 @@
 # Stanislav Visnovsky <visnovsky@kde.org>, 2004.
 # Marcel Telka <marcel@telka.sk>, 2005.
 #
-# $Id: sk.po,v 1.57 2005/08/23 04:35:33 matthiasc Exp $
+# $Id: sk.po,v 1.57.2.2 2005/09/26 17:25:19 matthiasc Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: glib\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-23 00:30-0400\n"
-"PO-Revision-Date: 2005-06-25 22:32+0200\n"
+"POT-Creation-Date: 2005-09-26 12:42-0400\n"
+"PO-Revision-Date: 2005-09-03 00:03+0200\n"
 "Last-Translator: Marcel Telka <marcel@telka.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
@@ -33,6 +33,7 @@ msgstr "Nepodarilo sa otvoriť program na prevod z '%s' do '%s'"
 #: glib/gconvert.c:606 glib/gconvert.c:995 glib/giochannel.c:1322
 #: glib/giochannel.c:1364 glib/giochannel.c:2206 glib/gutf8.c:912
 #: glib/gutf8.c:1362
+#, c-format
 msgid "Invalid byte sequence in conversion input"
 msgstr "Neplatná sekvencia bajtov na vstupe prevodu"
 
@@ -44,6 +45,7 @@ msgstr "Chyba počas prevodu: %s"
 
 #: glib/gconvert.c:647 glib/gutf8.c:908 glib/gutf8.c:1113 glib/gutf8.c:1254
 #: glib/gutf8.c:1358
+#, c-format
 msgid "Partial character sequence at end of input"
 msgstr "Čiastočná sekvencia znakov na konci vstupu"
 
@@ -83,6 +85,7 @@ msgid "The pathname '%s' is not an absolute path"
 msgstr "Cesta '%s' nie je absolútna"
 
 #: glib/gconvert.c:1865
+#, c-format
 msgid "Invalid hostname"
 msgstr "Neplatné meno hostiteľa"
 
@@ -148,6 +151,7 @@ msgid "Could not change file mode: Child terminated by signal: %s"
 msgstr "Nepodarilo sa zmeniť režim súboru: Potomok bol ukončený signálom: %s"
 
 #: glib/gfileutils.c:1024
+#, c-format
 msgid "Could not change file mode: Child terminated abnormally"
 msgstr "Nepodarilo sa zmeniť režim súboru: Potomok bol ukončený nenormálne"
 
@@ -194,6 +198,7 @@ msgid "Failed to read the symbolic link '%s': %s"
 msgstr "Nepodarilo sa prečítať symbolický odkaz '%s': %s"
 
 #: glib/gfileutils.c:1995
+#, c-format
 msgid "Symbolic links not supported"
 msgstr "Symbolické odkazy nepodporované"
 
@@ -208,18 +213,22 @@ msgid "Could not open converter from `%s' to `%s': %s"
 msgstr "Nepodarilo sa otvoriť program na prevod z `%s' do `%s': %s"
 
 #: glib/giochannel.c:1499
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_line_string"
 msgstr "Nepodarilo sa 'raw' čítanie v g_io_channel_read_line_string"
 
 #: glib/giochannel.c:1546 glib/giochannel.c:1803 glib/giochannel.c:1889
+#, c-format
 msgid "Leftover unconverted data in read buffer"
 msgstr "Zanechané neprevedené dáta vo vstupnom bufferi"
 
 #: glib/giochannel.c:1626 glib/giochannel.c:1703
+#, c-format
 msgid "Channel terminates in a partial character"
 msgstr "Kanál končí čiastočným znakom"
 
 #: glib/giochannel.c:1689
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_to_end"
 msgstr "Nepodarilo sa 'raw' čítanie v g_io_channel_read_to_end"
 
@@ -228,7 +237,7 @@ msgstr "Nepodarilo sa 'raw' čítanie v g_io_channel_read_to_end"
 msgid "Failed to open file '%s': open() failed: %s"
 msgstr "Nepodarilo sa otvoriť súbor '%s': open() zlyhala: %s"
 
-#: glib/gmappedfile.c:178
+#: glib/gmappedfile.c:185
 #, c-format
 msgid "Failed to map file '%s': mmap() failed: %s"
 msgstr "Nepodarilo sa namapovať súbor '%s': mmap() zlyhala: %s"
@@ -450,10 +459,12 @@ msgstr ""
 "Dokument neočakávane skončil v komentári alebo inštrukcii pre spracovanie"
 
 #: glib/gshell.c:73
+#, c-format
 msgid "Quoted text doesn't begin with a quotation mark"
 msgstr "Text v úvodzovkách nezačína úvodzovkami"
 
 #: glib/gshell.c:163
+#, c-format
 msgid "Unmatched quotation mark in command line or other shell-quoted text"
 msgstr "Prebytočné úvodzovky v príkazovom riadku alebo v inom texte shellu"
 
@@ -469,38 +480,42 @@ msgstr ""
 "Text skončil pred nájdením zodpovedajúcej úvodzovky pre %c. (Text bol '%s')"
 
 #: glib/gshell.c:560
+#, c-format
 msgid "Text was empty (or contained only whitespace)"
 msgstr "Text bol prázdny (alebo obsahoval iba medzery)"
 
-#: glib/gspawn-win32.c:264
+#: glib/gspawn-win32.c:276
+#, c-format
 msgid "Failed to read data from child process"
 msgstr "Nepodarilo sa čítať dáta z procesu potomka"
 
-#: glib/gspawn-win32.c:281 glib/gspawn.c:1354
+#: glib/gspawn-win32.c:291 glib/gspawn.c:1375
 #, c-format
 msgid "Failed to create pipe for communicating with child process (%s)"
 msgstr "Nepodarilo sa vytvoriť rúru pre komunikáciu s procesom potomka (%s)"
 
-#: glib/gspawn-win32.c:321 glib/gspawn.c:1018
+#: glib/gspawn-win32.c:329 glib/gspawn.c:1039
 #, c-format
 msgid "Failed to read from child pipe (%s)"
 msgstr "Nepodarilo sa čítať z rúry potomka (%s)"
 
-#: glib/gspawn-win32.c:349 glib/gspawn.c:1223
+#: glib/gspawn-win32.c:355 glib/gspawn.c:1244
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
 msgstr "Nepodarilo sa zmeniť priečinok na '%s' (%s)"
 
-#: glib/gspawn-win32.c:357 glib/gspawn-win32.c:442
+#: glib/gspawn-win32.c:361 glib/gspawn-win32.c:581
 #, c-format
 msgid "Failed to execute child process (%s)"
 msgstr "Nepodarilo sa spustiť proces potomka (%s)"
 
-#: glib/gspawn-win32.c:599
-msgid "Failed to execute helper program"
-msgstr "Nepodarilo sa spustiť pomocný program"
+#: glib/gspawn-win32.c:890
+#, c-format
+msgid "Failed to execute helper program (%s)"
+msgstr "Nepodarilo sa spustiť pomocný program (%s)"
 
-#: glib/gspawn-win32.c:797
+#: glib/gspawn-win32.c:1084
+#, c-format
 msgid ""
 "Unexpected error in g_io_channel_win32_poll() reading data from a child "
 "process"
@@ -513,56 +528,59 @@ msgstr ""
 msgid "Failed to read data from child process (%s)"
 msgstr "Nepodarilo sa čítať dáta z procesu potomka (%s)"
 
-#: glib/gspawn.c:310
+#: glib/gspawn.c:311
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr "Neočakávaná chyba v select() pri čítaní dát z procesu potomka (%s)"
 
-#: glib/gspawn.c:393
+#: glib/gspawn.c:394
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Neočakávaná chyba vo waitpid() (%s)"
 
-#: glib/gspawn.c:1083
+#: glib/gspawn.c:1104
 #, c-format
 msgid "Failed to fork (%s)"
 msgstr "Nepodarilo sa zavolať fork (%s)"
 
-#: glib/gspawn.c:1233
+#: glib/gspawn.c:1254
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
 msgstr "Nepodarilo sa spustiť proces potomka \"%s\" (%s)"
 
-#: glib/gspawn.c:1243
+#: glib/gspawn.c:1264
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
 msgstr "Nepodarilo sa presmerovať vstup alebo výstup procesu potomka (%s)"
 
-#: glib/gspawn.c:1252
+#: glib/gspawn.c:1273
 #, c-format
 msgid "Failed to fork child process (%s)"
 msgstr "Nepodarilo sa spustiť proces potomka (%s)"
 
-#: glib/gspawn.c:1260
+#: glib/gspawn.c:1281
 #, c-format
 msgid "Unknown error executing child process \"%s\""
 msgstr "Neznáma chyba počas behu procesu potomka \"%s\""
 
-#: glib/gspawn.c:1282
+#: glib/gspawn.c:1303
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
 msgstr "Nepodarilo sa prečítať dostatok dát z rúry potomka (%s)"
 
 #: glib/gutf8.c:987
+#, c-format
 msgid "Character out of range for UTF-8"
 msgstr "Znak mimo rozsah UTF-8"
 
 #: glib/gutf8.c:1081 glib/gutf8.c:1090 glib/gutf8.c:1222 glib/gutf8.c:1231
 #: glib/gutf8.c:1372 glib/gutf8.c:1468
+#, c-format
 msgid "Invalid sequence in conversion input"
 msgstr "Neplatná sekvencia na vstupe prevodu"
 
 #: glib/gutf8.c:1383 glib/gutf8.c:1479
+#, c-format
 msgid "Character out of range for UTF-16"
 msgstr "Znak mimo rozsah UTF-16"
 
@@ -611,14 +629,17 @@ msgid "Unknown option %s"
 msgstr "Neznáma voľby %s"
 
 #: glib/gkeyfile.c:339
+#, c-format
 msgid "Valid key file could not be found in data dirs"
 msgstr "Nepodarilo sa nájsť platný súbor kľúčov v dátových adresároch"
 
 #: glib/gkeyfile.c:374
+#, c-format
 msgid "Not a regular file"
 msgstr "Nie je obyčajný súbor"
 
 #: glib/gkeyfile.c:382
+#, c-format
 msgid "File is empty"
 msgstr "Súbor je prázdny"
 
@@ -631,6 +652,7 @@ msgstr ""
 "ani komentárom"
 
 #: glib/gkeyfile.c:765
+#, c-format
 msgid "Key file does not start with a group"
 msgstr "Súbor kľúčov nezačína skupinou"
 
@@ -677,26 +699,27 @@ msgstr ""
 msgid "Key file does not have key '%s' in group '%s'"
 msgstr "Súbor kľúčov nemá kľúč '%s' v skupine '%s'"
 
-#: glib/gkeyfile.c:3072
+#: glib/gkeyfile.c:3067
+#, c-format
 msgid "Key file contains escape character at end of line"
 msgstr "Súbor kľúčov obsahuje znak escape na konci riadku"
 
-#: glib/gkeyfile.c:3094
+#: glib/gkeyfile.c:3089
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "Súbor kľúčov obsahuje neplatne zadanú sekvenciu '%s'"
 
-#: glib/gkeyfile.c:3235
+#: glib/gkeyfile.c:3230
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "Hodnota '%s' nemohla byť interpretovaná ako číslo."
 
-#: glib/gkeyfile.c:3245
+#: glib/gkeyfile.c:3240
 #, c-format
 msgid "Integer value '%s' out of range"
 msgstr "Celočíselná hodnota '%s' je mimo rozsah"
 
-#: glib/gkeyfile.c:3275
+#: glib/gkeyfile.c:3270
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "Hodnota '%s' nemohla byť interpretovaná ako boolovská."

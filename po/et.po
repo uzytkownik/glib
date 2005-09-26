@@ -10,11 +10,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Glib\n"
+"Project-Id-Version: Glib 2.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-23 00:30-0400\n"
-"PO-Revision-Date: 2005-07-02 11:42+0300\n"
-"Last-Translator: Priit Laes <amd@store20.com>\n"
+"POT-Creation-Date: 2005-09-26 12:42-0400\n"
+"PO-Revision-Date: 2005-09-01 11:51+0300\n"
+"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,6 +34,7 @@ msgstr "Konverterit '%s'-st '%s'-ks pole võimalik avada"
 #: glib/gconvert.c:606 glib/gconvert.c:995 glib/giochannel.c:1322
 #: glib/giochannel.c:1364 glib/giochannel.c:2206 glib/gutf8.c:912
 #: glib/gutf8.c:1362
+#, c-format
 msgid "Invalid byte sequence in conversion input"
 msgstr "Vigane baidijada sisendi teisendamisel"
 
@@ -45,6 +46,7 @@ msgstr "Viga teisendamisel: %s"
 
 #: glib/gconvert.c:647 glib/gutf8.c:908 glib/gutf8.c:1113 glib/gutf8.c:1254
 #: glib/gutf8.c:1358
+#, c-format
 msgid "Partial character sequence at end of input"
 msgstr "Osaline märgijada sisendi lõpus"
 
@@ -84,6 +86,7 @@ msgid "The pathname '%s' is not an absolute path"
 msgstr "Rajanimi '%s' ei ole absoluutne rada"
 
 #: glib/gconvert.c:1865
+#, c-format
 msgid "Invalid hostname"
 msgstr "Vigane hostinimi"
 
@@ -148,6 +151,7 @@ msgid "Could not change file mode: Child terminated by signal: %s"
 msgstr "Failirežiimi pole võimalik muuta: Lapsprotsess lõpetati signaaliga: %s"
 
 #: glib/gfileutils.c:1024
+#, c-format
 msgid "Could not change file mode: Child terminated abnormally"
 msgstr "Failirežiimi pole võimalik muuta: Lapsprotsess lõpetas ebanormaalselt"
 
@@ -192,6 +196,7 @@ msgid "Failed to read the symbolic link '%s': %s"
 msgstr "Tõrge nimeviite '%s' lugemisel: %s"
 
 #: glib/gfileutils.c:1995
+#, c-format
 msgid "Symbolic links not supported"
 msgstr "Nimeviited ei ole toetatud"
 
@@ -206,18 +211,22 @@ msgid "Could not open converter from `%s' to `%s': %s"
 msgstr "Konverterit `%s'-st `%s'-ks pole võimalik avada: %s"
 
 #: glib/giochannel.c:1499
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_line_string"
 msgstr "Ei saa teostada toorest lugemise g_io_channel_read_line_string'i sees"
 
 #: glib/giochannel.c:1546 glib/giochannel.c:1803 glib/giochannel.c:1889
+#, c-format
 msgid "Leftover unconverted data in read buffer"
 msgstr "Lugemispuhvrisse jäi teisendamata andmeid"
 
 #: glib/giochannel.c:1626 glib/giochannel.c:1703
+#, c-format
 msgid "Channel terminates in a partial character"
 msgstr "Kanali katkestus poole märgi pealt"
 
 #: glib/giochannel.c:1689
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_to_end"
 msgstr "Ei saa teostada toorest lugemise g_io_channel_read_to_end'i sees"
 
@@ -226,7 +235,7 @@ msgstr "Ei saa teostada toorest lugemise g_io_channel_read_to_end'i sees"
 msgid "Failed to open file '%s': open() failed: %s"
 msgstr "Tõrge faili '%s' avamisel: open() nurjus: %s"
 
-#: glib/gmappedfile.c:178
+#: glib/gmappedfile.c:185
 #, c-format
 msgid "Failed to map file '%s': mmap() failed: %s"
 msgstr "Tõrge faili '%s' avamisel: mmap() nurjus: %s"
@@ -450,10 +459,12 @@ msgid "Document ended unexpectedly inside a comment or processing instruction"
 msgstr "Dokument lõppes ootamatult kommentaaride või töötlemis juhiste sees"
 
 #: glib/gshell.c:73
+#, c-format
 msgid "Quoted text doesn't begin with a quotation mark"
 msgstr "Tsiteeritav tekst ei alga jutumärgiga"
 
 #: glib/gshell.c:163
+#, c-format
 msgid "Unmatched quotation mark in command line or other shell-quoted text"
 msgstr "Vastavuseta jutumärk käsureal või kestprogrammi tsiteeritud tekstis"
 
@@ -468,38 +479,42 @@ msgid "Text ended before matching quote was found for %c. (The text was '%s')"
 msgstr "Tekst lõppes enne kui leiti vastav jutumärk %c jaoks. (Tekst oli '%s')"
 
 #: glib/gshell.c:560
+#, c-format
 msgid "Text was empty (or contained only whitespace)"
 msgstr "Tekst puudus (või sisaldas ainult tühja ruumi)"
 
-#: glib/gspawn-win32.c:264
+#: glib/gspawn-win32.c:276
+#, c-format
 msgid "Failed to read data from child process"
 msgstr "Tõrge andmete lugemisel alamprotsessilt"
 
-#: glib/gspawn-win32.c:281 glib/gspawn.c:1354
+#: glib/gspawn-win32.c:291 glib/gspawn.c:1375
 #, c-format
 msgid "Failed to create pipe for communicating with child process (%s)"
 msgstr "Tõrge toru loomisel alamprotsessiga suhtlemiseks (%s)"
 
-#: glib/gspawn-win32.c:321 glib/gspawn.c:1018
+#: glib/gspawn-win32.c:329 glib/gspawn.c:1039
 #, c-format
 msgid "Failed to read from child pipe (%s)"
 msgstr "Tõrge alamprotsessi torust lugemisel (%s)"
 
-#: glib/gspawn-win32.c:349 glib/gspawn.c:1223
+#: glib/gspawn-win32.c:355 glib/gspawn.c:1244
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
 msgstr "Tõrge kataloogi '%s' muutmisel (%s)"
 
-#: glib/gspawn-win32.c:357 glib/gspawn-win32.c:442
+#: glib/gspawn-win32.c:361 glib/gspawn-win32.c:581
 #, c-format
 msgid "Failed to execute child process (%s)"
 msgstr "Tõrge alamprotsessi käivitamisel (%s)"
 
-#: glib/gspawn-win32.c:599
-msgid "Failed to execute helper program"
-msgstr "Tõrge abiprogrammi käivitamisel"
+#: glib/gspawn-win32.c:890
+#, c-format
+msgid "Failed to execute helper program (%s)"
+msgstr "Tõrge abiprogrammi käivitamisel (%s)"
 
-#: glib/gspawn-win32.c:797
+#: glib/gspawn-win32.c:1084
+#, c-format
 msgid ""
 "Unexpected error in g_io_channel_win32_poll() reading data from a child "
 "process"
@@ -512,57 +527,60 @@ msgstr ""
 msgid "Failed to read data from child process (%s)"
 msgstr "Tõrge andmete lugemisel alamprotsessilt (%s)"
 
-#: glib/gspawn.c:310
+#: glib/gspawn.c:311
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr ""
 "Ootamatu funktsiooni select() viga andmete lugemisel alamprotsessilt (%s)"
 
-#: glib/gspawn.c:393
+#: glib/gspawn.c:394
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Ootamatu viga funktsioonis waitpid() (%s)"
 
-#: glib/gspawn.c:1083
+#: glib/gspawn.c:1104
 #, c-format
 msgid "Failed to fork (%s)"
 msgstr "Viga poolitamisel funktsiooniga fork() (%s)"
 
-#: glib/gspawn.c:1233
+#: glib/gspawn.c:1254
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
 msgstr "Tõrge alamprotsessi \"%s\" käivitamisel (%s)"
 
-#: glib/gspawn.c:1243
+#: glib/gspawn.c:1264
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
 msgstr "Tõrge alamprotsessi sisendi või väljundi ümbersuunamisel (%s)"
 
-#: glib/gspawn.c:1252
+#: glib/gspawn.c:1273
 #, c-format
 msgid "Failed to fork child process (%s)"
 msgstr "Tõrge alamprotsessi poolitamisel funktsiooniga fork() (%s)"
 
-#: glib/gspawn.c:1260
+#: glib/gspawn.c:1281
 #, c-format
 msgid "Unknown error executing child process \"%s\""
 msgstr "Tundmatu viga alamprotsessi \"%s\" käivitamisel"
 
-#: glib/gspawn.c:1282
+#: glib/gspawn.c:1303
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
 msgstr "Tõrge piisavate andmete lugemisel lapsprotsessi torust (%s)"
 
 #: glib/gutf8.c:987
+#, c-format
 msgid "Character out of range for UTF-8"
 msgstr "Märk on väljaspool UTF-8 ulatust"
 
 #: glib/gutf8.c:1081 glib/gutf8.c:1090 glib/gutf8.c:1222 glib/gutf8.c:1231
 #: glib/gutf8.c:1372 glib/gutf8.c:1468
+#, c-format
 msgid "Invalid sequence in conversion input"
 msgstr "Vigane jada sisendi teisendamisel"
 
 #: glib/gutf8.c:1383 glib/gutf8.c:1479
+#, c-format
 msgid "Character out of range for UTF-16"
 msgstr "Märk on väljaspool UTF-16 ulatust"
 
@@ -611,14 +629,17 @@ msgid "Unknown option %s"
 msgstr "Tundmatu võti %s"
 
 #: glib/gkeyfile.c:339
+#, c-format
 msgid "Valid key file could not be found in data dirs"
 msgstr "Sobivat võtmefaili ei leitud andmekataloogidest"
 
 #: glib/gkeyfile.c:374
+#, c-format
 msgid "Not a regular file"
 msgstr "Pole tavaline fail"
 
 #: glib/gkeyfile.c:382
+#, c-format
 msgid "File is empty"
 msgstr "Fail on tühi"
 
@@ -631,6 +652,7 @@ msgstr ""
 "kommentaar"
 
 #: glib/gkeyfile.c:765
+#, c-format
 msgid "Key file does not start with a group"
 msgstr "Võtmefail ei alga grupiga"
 
@@ -676,26 +698,27 @@ msgstr ""
 msgid "Key file does not have key '%s' in group '%s'"
 msgstr "Võtmefail ei sisalda võtit '%s' grupis '%s'"
 
-#: glib/gkeyfile.c:3072
+#: glib/gkeyfile.c:3067
+#, c-format
 msgid "Key file contains escape character at end of line"
 msgstr "Võtmefail sisaldab rea lõpus paomärki"
 
-#: glib/gkeyfile.c:3094
+#: glib/gkeyfile.c:3089
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "Võtmefail sisaldab vigast paojada '%s'"
 
-#: glib/gkeyfile.c:3235
+#: glib/gkeyfile.c:3230
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "Väärtust '%s' pole võimalik numbrilise väärtusena kasutada."
 
-#: glib/gkeyfile.c:3245
+#: glib/gkeyfile.c:3240
 #, c-format
 msgid "Integer value '%s' out of range"
 msgstr "Täisarvu väärtus '%s' on väljaspool lubatud piire"
 
-#: glib/gkeyfile.c:3275
+#: glib/gkeyfile.c:3270
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "Väärtust '%s' pole võimalik tõeväärtusena kasutada."
