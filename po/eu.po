@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-23 00:30-0400\n"
+"POT-Creation-Date: 2005-10-03 12:16-0400\n"
 "PO-Revision-Date: 2005-04-12 19:01+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -34,6 +34,7 @@ msgstr "Ezin izan da '%s'(e)tik %s(e)rako bihurtzailea ireki"
 #: glib/gconvert.c:606 glib/gconvert.c:995 glib/giochannel.c:1322
 #: glib/giochannel.c:1364 glib/giochannel.c:2206 glib/gutf8.c:912
 #: glib/gutf8.c:1362
+#, c-format
 msgid "Invalid byte sequence in conversion input"
 msgstr "Byten sekuentzia baliogabea bihurketa-sarreran"
 
@@ -45,6 +46,7 @@ msgstr "Errorea bihurtzean: %s"
 
 #: glib/gconvert.c:647 glib/gutf8.c:908 glib/gutf8.c:1113 glib/gutf8.c:1254
 #: glib/gutf8.c:1358
+#, c-format
 msgid "Partial character sequence at end of input"
 msgstr "Karaktere-sekuentzia partziala sarreraren amaieran"
 
@@ -85,6 +87,7 @@ msgstr "'%s' bide-izena ez da bide-izen absolutua"
 
 #
 #: glib/gconvert.c:1865
+#, c-format
 msgid "Invalid hostname"
 msgstr "Ostalari-izen baliogabea"
 
@@ -133,28 +136,29 @@ msgstr ""
 "du: %s"
 
 #: glib/gfileutils.c:952
-#, fuzzy, c-format
+#, c-format
 msgid "Could not change file mode: fork() failed: %s"
-msgstr "Ezin izan da '%s' fitxategia itxi: fclose()-k huts egin du: %s"
+msgstr "Ezin izan da fitxategi-modua aldatu: fork()-ek huts egin du: %s"
 
 #: glib/gfileutils.c:983
-#, fuzzy, c-format
+#, c-format
 msgid "Could not change file mode: waitpid() failed: %s"
-msgstr "Ezin izan da '%s' fitxategia idatzi: fwrite()-k huts egin du: %s"
+msgstr "Ezin izan da fitxategi-mota aldatu: waitpid()-ek huts egin du: %s"
 
 #: glib/gfileutils.c:1002
-#, fuzzy, c-format
+#, c-format
 msgid "Could not change file mode: chmod() failed: %s"
-msgstr "Ezin izan da '%s' fitxategia itxi: fclose()-k huts egin du: %s"
+msgstr "Ezin izan da fitxategi-mota aldatu: chmod()-ek huts egin du: %s"
 
 #: glib/gfileutils.c:1013
 #, c-format
 msgid "Could not change file mode: Child terminated by signal: %s"
-msgstr ""
+msgstr "Ezin izan da fitxategi-mota aldatu: umea seinalearekin amaitu da: %s"
 
 #: glib/gfileutils.c:1024
+#, c-format
 msgid "Could not change file mode: Child terminated abnormally"
-msgstr ""
+msgstr "Ezin izan da fitxategi-mota aldatu: umea ezustean amaitu da"
 
 #: glib/gfileutils.c:1058 glib/gfileutils.c:1524
 #, c-format
@@ -198,6 +202,7 @@ msgid "Failed to read the symbolic link '%s': %s"
 msgstr "Ezin izan da '%s' esteka sinbolikorik irakurri: %s"
 
 #: glib/gfileutils.c:1995
+#, c-format
 msgid "Symbolic links not supported"
 msgstr "Esteka sinbolikoak ez dira onartzen"
 
@@ -212,30 +217,34 @@ msgid "Could not open converter from `%s' to `%s': %s"
 msgstr "Ezin izan da `%s'(e)tik `%s'(e)rako bihurtzailea ireki: %s"
 
 #: glib/giochannel.c:1499
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_line_string"
 msgstr "Ezin dira datu gordinak irakurri g_io_channel_read_line_string-en"
 
 #: glib/giochannel.c:1546 glib/giochannel.c:1803 glib/giochannel.c:1889
+#, c-format
 msgid "Leftover unconverted data in read buffer"
 msgstr "Irakurketa-bufferrean geratu diren bihurtu gabeko datuak"
 
 #: glib/giochannel.c:1626 glib/giochannel.c:1703
+#, c-format
 msgid "Channel terminates in a partial character"
 msgstr "Kanala karaktere partzial batean bukatzen da"
 
 #: glib/giochannel.c:1689
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_to_end"
 msgstr "Ezin dira datu gordinak irakurri g_io_channel_read_to_end-etik"
 
 #: glib/gmappedfile.c:116
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open file '%s': open() failed: %s"
-msgstr "Ezin izan da '%s' fitxategia ireki: fdopen()-(e)k huts egin du: %s"
+msgstr "Ezin izan da '%s' fitxategia ireki: open()-ek huts egin du: %s"
 
-#: glib/gmappedfile.c:178
-#, fuzzy, c-format
+#: glib/gmappedfile.c:185
+#, c-format
 msgid "Failed to map file '%s': mmap() failed: %s"
-msgstr "Ezin izan da '%s' fitxategia ireki: fdopen()-(e)k huts egin du: %s"
+msgstr "Ezin izan da '%s' fitxategi-mapa ireki: mmap()-ek huts egin du: %s"
 
 #: glib/gmarkup.c:232
 #, c-format
@@ -467,10 +476,12 @@ msgstr ""
 "zen instrukzio baten barruan"
 
 #: glib/gshell.c:73
+#, c-format
 msgid "Quoted text doesn't begin with a quotation mark"
 msgstr "Komatxo arteko testua ez da komatxoekin hasten"
 
 #: glib/gshell.c:163
+#, c-format
 msgid "Unmatched quotation mark in command line or other shell-quoted text"
 msgstr ""
 "Bat ez datozen komatxoak daude komando-lerroan edo shell-ak aipatutako beste "
@@ -488,39 +499,43 @@ msgstr ""
 "Testua %c(r)en komatxoak aurkitu baino lehen amaitu da (testua '%s' zen)"
 
 #: glib/gshell.c:560
+#, c-format
 msgid "Text was empty (or contained only whitespace)"
 msgstr "Testua hutsik dago (edo zuriuneak bakarrik ditu)"
 
-#: glib/gspawn-win32.c:264
+#: glib/gspawn-win32.c:276
+#, c-format
 msgid "Failed to read data from child process"
 msgstr "Ezin izan da daturik irakurri prozesu umetik"
 
-#: glib/gspawn-win32.c:281 glib/gspawn.c:1354
+#: glib/gspawn-win32.c:291 glib/gspawn.c:1375
 #, c-format
 msgid "Failed to create pipe for communicating with child process (%s)"
 msgstr "Ezin izan da kanalizazioa sortu prozesu umearekin komunikatzeko (%s) "
 
-#: glib/gspawn-win32.c:321 glib/gspawn.c:1018
+#: glib/gspawn-win32.c:329 glib/gspawn.c:1039
 #, c-format
 msgid "Failed to read from child pipe (%s)"
 msgstr "Ezin izan da kanalizazio umetik irakurri (%s) "
 
-#: glib/gspawn-win32.c:349 glib/gspawn.c:1223
+#: glib/gspawn-win32.c:355 glib/gspawn.c:1244
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
 msgstr "Ezin izan da `%s' direktoriora aldatu (%s) "
 
-#: glib/gspawn-win32.c:357 glib/gspawn-win32.c:442
+#: glib/gspawn-win32.c:361 glib/gspawn-win32.c:581
 #, c-format
 msgid "Failed to execute child process (%s)"
 msgstr "Ezin izan da prozesu umea exekutatu (%s) "
 
 #
-#: glib/gspawn-win32.c:599
-msgid "Failed to execute helper program"
-msgstr "Ezin izan da laguntza-programa exekutatu"
+#: glib/gspawn-win32.c:890
+#, c-format
+msgid "Failed to execute helper program (%s)"
+msgstr "Ezin izan da laguntza-programa exekutatu (%s)"
 
-#: glib/gspawn-win32.c:797
+#: glib/gspawn-win32.c:1084
+#, c-format
 msgid ""
 "Unexpected error in g_io_channel_win32_poll() reading data from a child "
 "process"
@@ -533,56 +548,59 @@ msgstr ""
 msgid "Failed to read data from child process (%s)"
 msgstr "Ezin izan da daturik irakurri prozesu umetik (%s) "
 
-#: glib/gspawn.c:310
+#: glib/gspawn.c:311
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr "Ustekabeko errorea select()-en, datuak prozesu umetik irakurtzen (%s) "
 
-#: glib/gspawn.c:393
+#: glib/gspawn.c:394
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Ustekabeko errorea waitpid()-en (%s)"
 
-#: glib/gspawn.c:1083
+#: glib/gspawn.c:1104
 #, c-format
 msgid "Failed to fork (%s)"
 msgstr "Ezin da sardetu (%s) "
 
-#: glib/gspawn.c:1233
+#: glib/gspawn.c:1254
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
 msgstr "Ezin izan da \"%s\" prozesu umea exekutatu (%s) "
 
-#: glib/gspawn.c:1243
+#: glib/gspawn.c:1264
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
 msgstr "Ezin izan da prozesu umearen irteera edo sarrera birbideratu (%s) "
 
-#: glib/gspawn.c:1252
+#: glib/gspawn.c:1273
 #, c-format
 msgid "Failed to fork child process (%s)"
 msgstr "Ezin izan da prozesu umea sardetu (%s)"
 
-#: glib/gspawn.c:1260
+#: glib/gspawn.c:1281
 #, c-format
 msgid "Unknown error executing child process \"%s\""
 msgstr "Errore ezezaguna \"%s\" prozesu umea exekutatzean"
 
-#: glib/gspawn.c:1282
+#: glib/gspawn.c:1303
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
 msgstr "Ezin izan da nahikoa datu irakurri pid kanalizazio umetik (%s) "
 
 #: glib/gutf8.c:987
+#, c-format
 msgid "Character out of range for UTF-8"
 msgstr "Karakterea honako barrutitik kanpo UTF-8 formaturako"
 
 #: glib/gutf8.c:1081 glib/gutf8.c:1090 glib/gutf8.c:1222 glib/gutf8.c:1231
 #: glib/gutf8.c:1372 glib/gutf8.c:1468
+#, c-format
 msgid "Invalid sequence in conversion input"
 msgstr "Sekuentzia baliogabea bihurketa-sarreran"
 
 #: glib/gutf8.c:1383 glib/gutf8.c:1479
+#, c-format
 msgid "Character out of range for UTF-16"
 msgstr "Karakterea honako barrutitik kanpo UTF-16 formaturako"
 
@@ -623,7 +641,7 @@ msgstr "%2$s(r)en '%1$s' osoko balioa barrutitik kanpo"
 #: glib/goption.c:957 glib/goption.c:1068
 #, c-format
 msgid "Missing argument for %s"
-msgstr ""
+msgstr "%s(e)ko argumentua falta da"
 
 #: glib/goption.c:1472
 #, c-format
@@ -631,14 +649,17 @@ msgid "Unknown option %s"
 msgstr "%s aukera ezezaguna"
 
 #: glib/gkeyfile.c:339
+#, c-format
 msgid "Valid key file could not be found in data dirs"
 msgstr "Ezin izan da balioko gakoa datuen direktorioan aurkitu"
 
 #: glib/gkeyfile.c:374
+#, c-format
 msgid "Not a regular file"
 msgstr "Ez da fitxategi arrunta"
 
 #: glib/gkeyfile.c:382
+#, c-format
 msgid "File is empty"
 msgstr "Fitxategia hutsik dago"
 
@@ -651,6 +672,7 @@ msgstr ""
 "ez daukalarik"
 
 #: glib/gkeyfile.c:765
+#, c-format
 msgid "Key file does not start with a group"
 msgstr "Gako-fitxategiak ez da talde batekin hasten"
 
@@ -697,26 +719,40 @@ msgstr ""
 msgid "Key file does not have key '%s' in group '%s'"
 msgstr "Gako-fitxategiak ez dauka '%s' gakoa ('%s' taldean)"
 
-#: glib/gkeyfile.c:3072
+#: glib/gkeyfile.c:3067
+#, c-format
 msgid "Key file contains escape character at end of line"
 msgstr "Gako-fitxategiak ihes-karakterea dauka lerro amaieran"
 
-#: glib/gkeyfile.c:3094
+#: glib/gkeyfile.c:3089
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "Gako-fitxategiak '%s' ihes-sekuentzia baliogabea dauka"
 
-#: glib/gkeyfile.c:3235
+#: glib/gkeyfile.c:3230
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "'%s' balioa ezin da zenbaki gisa interpretatu"
 
-#: glib/gkeyfile.c:3245
-#, fuzzy, c-format
+#: glib/gkeyfile.c:3240
+#, c-format
 msgid "Integer value '%s' out of range"
-msgstr "%2$s(r)en '%1$s' osoko balioa barrutitik kanpo"
+msgstr "'%s' osoko balioa barrutitik kanpo"
 
-#: glib/gkeyfile.c:3275
+#: glib/gkeyfile.c:3270
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "'%s' balioa ezin da bolear gisa interpretatu"
+
+#
+#~ msgid "Invalid program name: %s"
+#~ msgstr "Programaren izen baliogabea: %s"
+
+#~ msgid "Invalid string in argument vector at %d: %s"
+#~ msgstr "Kate baliogabea %d(e)ko bektorearen argumentuan: %s"
+
+#~ msgid "Invalid string in environment: %s"
+#~ msgstr "Kate baliogabea ingurunean: %s"
+
+#~ msgid "Invalid working directory: %s"
+#~ msgstr "Laneko direktorio baliogabea: %s "
