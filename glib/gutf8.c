@@ -896,7 +896,7 @@ g_utf8_to_ucs4 (const gchar *str,
   n_chars = 0;
   while ((len < 0 || str + len - in > 0) && *in)
     {
-      gunichar wc = g_utf8_get_char_extended (in, str + len - in);
+      gunichar wc = g_utf8_get_char_extended (in, len < 0 ? 6 : str + len - in);
       if (wc & 0x80000000)
 	{
 	  if (wc == (gunichar)-2)
@@ -944,7 +944,7 @@ g_utf8_to_ucs4 (const gchar *str,
  * @str: a UCS-4 encoded string
  * @len: the maximum length of @str to use. If @len < 0, then
  *       the string is terminated with a 0 character.
- * @items_read: location to store number of characters read read, or %NULL.
+ * @items_read: location to store number of characters read, or %NULL.
  * @items_written: location to store number of bytes written or %NULL.
  *                 The value here stored does not include the trailing 0
  *                 byte. 
@@ -958,7 +958,9 @@ g_utf8_to_ucs4 (const gchar *str,
  * Return value: a pointer to a newly allocated UTF-8 string.
  *               This value must be freed with g_free(). If an
  *               error occurs, %NULL will be returned and
- *               @error set.
+ *               @error set. In that case, @items_read will be
+ *               set to the position of the first invalid input 
+ *               character.
  **/
 gchar *
 g_ucs4_to_utf8 (const gunichar *str,
@@ -980,9 +982,6 @@ g_ucs4_to_utf8 (const gunichar *str,
 
       if (str[i] >= 0x80000000)
 	{
-	  if (items_read)
-	    *items_read = i;
-	  
 	  g_set_error (error, G_CONVERT_ERROR, G_CONVERT_ERROR_ILLEGAL_SEQUENCE,
 		       _("Character out of range for UTF-8"));
 	  goto err_out;
@@ -1346,7 +1345,7 @@ g_utf8_to_utf16 (const gchar *str,
   n16 = 0;
   while ((len < 0 || str + len - in > 0) && *in)
     {
-      gunichar wc = g_utf8_get_char_extended (in, str + len - in);
+      gunichar wc = g_utf8_get_char_extended (in, len < 0 ? 6 : str + len - in);
       if (wc & 0x80000000)
 	{
 	  if (wc == (gunichar)-2)

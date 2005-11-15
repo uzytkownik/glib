@@ -1,3 +1,39 @@
+2005-11-15  Matthias Clasen  <mclasen@redhat.com>
+
+	* ===  Released 2.8.4 ===
+
+2005-11-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/tmpl/threads.sgml: Improve GOnce docs.
+	(#320950, Christophe Fergeau)
+
+2005-11-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/running.sgml: Document fatal_criticals.
+
+2005-10-03  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.8.3 ===
+
+2005-10-01  Davyd Madeley  <davyd@fugro-fsi.com.au>
+
+	* glib/tmpl/string_utils.sgml: Minor documentation improvements for
+	  g_strchug, g_strchomp and g_strstrip.
+
+2005-09-26  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.8.2 ===
+
+2005-08-26  Matthias Clasen  <mclasen@redhat.com>
+
+	Improvements pointed out by Behdad Esfahbod (#314460):
+	
+	* glib/tmpl/strings.sgml: Fix up some character/byte
+	sloppyness.
+
+	* glib/tmpl/iochannels.sgml: Don't mention deprecated
+	functions in the introduction.
+
 2005-08-23  Matthias Clasen  <mclasen@redhat.com>
 
 	* === Released 2.8.1 ===

@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: glib 2.6.x\n"
+"Project-Id-Version: glib 2.8.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-23 00:30-0400\n"
-"PO-Revision-Date: 2005-01-30 17:16+0100\n"
+"POT-Creation-Date: 2005-11-15 09:42-0500\n"
+"PO-Revision-Date: 2005-09-05 09:56+0200\n"
 "Last-Translator: Luca Ferretti <elle.uca@infinito.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,8 @@ msgstr "Impossibile aprire il convertitore da \"%s\" a \"%s\""
 
 #: glib/gconvert.c:606 glib/gconvert.c:995 glib/giochannel.c:1322
 #: glib/giochannel.c:1364 glib/giochannel.c:2206 glib/gutf8.c:912
-#: glib/gutf8.c:1362
+#: glib/gutf8.c:1361
+#, c-format
 msgid "Invalid byte sequence in conversion input"
 msgstr "Sequenza di byte non valida nell'ingresso per la conversione"
 
@@ -38,8 +39,9 @@ msgstr "Sequenza di byte non valida nell'ingresso per la conversione"
 msgid "Error during conversion: %s"
 msgstr "Errore durante la conversione: %s"
 
-#: glib/gconvert.c:647 glib/gutf8.c:908 glib/gutf8.c:1113 glib/gutf8.c:1254
-#: glib/gutf8.c:1358
+#: glib/gconvert.c:647 glib/gutf8.c:908 glib/gutf8.c:1112 glib/gutf8.c:1253
+#: glib/gutf8.c:1357
+#, c-format
 msgid "Partial character sequence at end of input"
 msgstr "Sequenza di caratteri parziale al termine dei dati in ingresso"
 
@@ -80,6 +82,7 @@ msgid "The pathname '%s' is not an absolute path"
 msgstr "Il nome di percorso \"%s\" non è un percorso assoluto"
 
 #: glib/gconvert.c:1865
+#, c-format
 msgid "Invalid hostname"
 msgstr "Nome host non valido"
 
@@ -119,33 +122,39 @@ msgid "Failed to open file '%s': fdopen() failed: %s"
 msgstr "Apertura del file \"%s\" fallita: fdopen() fallita: %s"
 
 #: glib/gfileutils.c:909
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to rename file '%s' to '%s': g_rename() failed: %s"
-msgstr "Apertura del file \"%s\" fallita: fdopen() fallita: %s"
+msgstr ""
+"Cambio di nome del file \"%s\" in \"%s\" fallito: g_rename() fallita: %s"
 
+# mode nel senso di chmod
 #: glib/gfileutils.c:952
-#, fuzzy, c-format
+#, c-format
 msgid "Could not change file mode: fork() failed: %s"
-msgstr "Apertura del file \"%s\" fallita: fdopen() fallita: %s"
+msgstr "Impossibile cambiare permessi al file: fork() fallita: %s"
 
 #: glib/gfileutils.c:983
-#, fuzzy, c-format
+#, c-format
 msgid "Could not change file mode: waitpid() failed: %s"
-msgstr "Impossibile allocare %lu bytes per leggere il file \"%s\""
+msgstr "Impossibile cambiare permessi al file: waitpid() fallita: %s"
 
 #: glib/gfileutils.c:1002
-#, fuzzy, c-format
+#, c-format
 msgid "Could not change file mode: chmod() failed: %s"
-msgstr "Apertura del file \"%s\" fallita: fdopen() fallita: %s"
+msgstr "Impossibile cambiare permessi: chamod() fallita: %s"
 
+# mode nel senso di chmod
 #: glib/gfileutils.c:1013
 #, c-format
 msgid "Could not change file mode: Child terminated by signal: %s"
-msgstr ""
+msgstr "Impossibile cambiare permessi al file: figlio terminato da segnale: %s"
 
+# mode nel senso chmod
 #: glib/gfileutils.c:1024
+#, c-format
 msgid "Could not change file mode: Child terminated abnormally"
 msgstr ""
+"Impossibile cambiare permessi al file: figlio terminato in modo anormale"
 
 #: glib/gfileutils.c:1058 glib/gfileutils.c:1524
 #, c-format
@@ -153,24 +162,25 @@ msgid "Failed to create file '%s': %s"
 msgstr "Creazione del file \"%s\" fallita: %s"
 
 #: glib/gfileutils.c:1080
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open file '%s' for writing: fdopen() failed: %s"
-msgstr "Apertura del file \"%s\" fallita: fdopen() fallita: %s"
+msgstr "Apertura del file \"%s\" in scrittura fallita: fdopen() fallita: %s"
 
 #: glib/gfileutils.c:1105
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write file '%s': fwrite() failed: %s"
-msgstr "Apertura del file \"%s\" fallita: fdopen() fallita: %s"
+msgstr "Scrittura del file \"%s\" fallita: fwrite() fallita: %s"
 
 #: glib/gfileutils.c:1124
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to close file '%s': fclose() failed: %s"
-msgstr "Apertura del file \"%s\" fallita: fdopen() fallita: %s"
+msgstr "Chiusura del file \"%s\" fallita: fclose() fallita: %s"
 
 #: glib/gfileutils.c:1242
 #, c-format
 msgid "Existing file '%s' could not be removed: g_unlink() failed: %s"
 msgstr ""
+"Il file \"%s\" non può essere rimosso pur esistendo: g_unlink() fallita: %s"
 
 # Il secondo %s è qualcosa tipo 
 #
@@ -194,6 +204,7 @@ msgid "Failed to read the symbolic link '%s': %s"
 msgstr "Lettura del collegamento simbolico \"%s\" fallita: %s"
 
 #: glib/gfileutils.c:1995
+#, c-format
 msgid "Symbolic links not supported"
 msgstr "Collegamenti simbolici non supportati"
 
@@ -209,32 +220,36 @@ msgid "Could not open converter from `%s' to `%s': %s"
 msgstr "Impossibile aprire il convertitore da \"%s\" a \"%s\": %s"
 
 #: glib/giochannel.c:1499
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_line_string"
 msgstr "Impossibile leggere i dati grezzi in g_io_channel_read_line_string"
 
 #: glib/giochannel.c:1546 glib/giochannel.c:1803 glib/giochannel.c:1889
+#, c-format
 msgid "Leftover unconverted data in read buffer"
 msgstr "Sono rimasti dei dati non convertiti nel buffer di lettura"
 
 # era 'termina con un con carattere non completo'
 # L'ho cambiata per essere + simile all'originale
 #: glib/giochannel.c:1626 glib/giochannel.c:1703
+#, c-format
 msgid "Channel terminates in a partial character"
 msgstr "Il canale termina in un carattere parziale"
 
 #: glib/giochannel.c:1689
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_to_end"
 msgstr "Impossibile leggere i dati grezzi in g_io_channel_read_to_end"
 
 #: glib/gmappedfile.c:116
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open file '%s': open() failed: %s"
-msgstr "Apertura del file \"%s\" fallita: fdopen() fallita: %s"
+msgstr "Apertura del file \"%s\" fallita: open() fallita: %s"
 
-#: glib/gmappedfile.c:178
-#, fuzzy, c-format
+#: glib/gmappedfile.c:185
+#, c-format
 msgid "Failed to map file '%s': mmap() failed: %s"
-msgstr "Apertura del file \"%s\" fallita: fdopen() fallita: %s"
+msgstr "Mappatura del file \"%s\" fallita: mmap() fallita: %s"
 
 #: glib/gmarkup.c:232
 #, c-format
@@ -477,10 +492,12 @@ msgstr ""
 "istruzione di processo"
 
 #: glib/gshell.c:73
+#, c-format
 msgid "Quoted text doesn't begin with a quotation mark"
 msgstr "Il testo citato non inizia con un carattere di quoting"
 
 #: glib/gshell.c:163
+#, c-format
 msgid "Unmatched quotation mark in command line or other shell-quoted text"
 msgstr ""
 "Carattere di quoting non accoppitato nella riga di comando o nel testo con "
@@ -499,39 +516,43 @@ msgstr ""
 "c (il testo era \"%s\")."
 
 #: glib/gshell.c:560
+#, c-format
 msgid "Text was empty (or contained only whitespace)"
 msgstr "Il testo era vuoto (oppure conteneva unicamente spazi bianchi)"
 
-#: glib/gspawn-win32.c:264
+#: glib/gspawn-win32.c:276
+#, c-format
 msgid "Failed to read data from child process"
 msgstr "Lettura di dati dal processo figlio fallita"
 
-#: glib/gspawn-win32.c:281 glib/gspawn.c:1354
+#: glib/gspawn-win32.c:291 glib/gspawn.c:1375
 #, c-format
 msgid "Failed to create pipe for communicating with child process (%s)"
 msgstr ""
 "Creazione della pipe per comunicare con il processo figlio (%s) fallita"
 
-#: glib/gspawn-win32.c:321 glib/gspawn.c:1018
+#: glib/gspawn-win32.c:329 glib/gspawn.c:1039
 #, c-format
 msgid "Failed to read from child pipe (%s)"
 msgstr "Lettura dalla pipe figlia (%s) fallita"
 
-#: glib/gspawn-win32.c:349 glib/gspawn.c:1223
+#: glib/gspawn-win32.c:355 glib/gspawn.c:1244
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
 msgstr "Cambio della directory in \"%s\" (%s) fallita"
 
-#: glib/gspawn-win32.c:357 glib/gspawn-win32.c:442
+#: glib/gspawn-win32.c:361 glib/gspawn-win32.c:581
 #, c-format
 msgid "Failed to execute child process (%s)"
 msgstr "Esecuzione del processo figlio (%s) fallita"
 
-#: glib/gspawn-win32.c:599
-msgid "Failed to execute helper program"
-msgstr "Esecuzione del programma helper fallita"
+#: glib/gspawn-win32.c:890
+#, c-format
+msgid "Failed to execute helper program (%s)"
+msgstr "Esecuzione del programma helper (%s) fallita"
 
-#: glib/gspawn-win32.c:797
+#: glib/gspawn-win32.c:1084
+#, c-format
 msgid ""
 "Unexpected error in g_io_channel_win32_poll() reading data from a child "
 "process"
@@ -544,60 +565,63 @@ msgstr ""
 msgid "Failed to read data from child process (%s)"
 msgstr "Lettura dei dati dal processo figlio (%s) fallita"
 
-#: glib/gspawn.c:310
+#: glib/gspawn.c:311
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr ""
 "Errore inatteso in select() durante la lettura dei dati da un processo "
 "figlio (%s)"
 
-#: glib/gspawn.c:393
+#: glib/gspawn.c:394
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Errore inatteso in waitpid() (%s)"
 
-#: glib/gspawn.c:1083
+#: glib/gspawn.c:1104
 #, c-format
 msgid "Failed to fork (%s)"
 msgstr "Esecuzione di fork (%s) fallita"
 
-#: glib/gspawn.c:1233
+#: glib/gspawn.c:1254
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
 msgstr "Esecuzione del processo figlio \"%s\" (%s) fallita"
 
-#: glib/gspawn.c:1243
+#: glib/gspawn.c:1264
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
 msgstr "Redirezione dell'output o input del processo figlio (%s) fallita"
 
-#: glib/gspawn.c:1252
+#: glib/gspawn.c:1273
 #, c-format
 msgid "Failed to fork child process (%s)"
 msgstr "Esecuzione del fork per processo figlio (%s) fallita"
 
-#: glib/gspawn.c:1260
+#: glib/gspawn.c:1281
 #, c-format
 msgid "Unknown error executing child process \"%s\""
 msgstr "Errore sconosciuto nell'eseguire il processo figlio \"%s\""
 
-#: glib/gspawn.c:1282
+#: glib/gspawn.c:1303
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
 msgstr ""
 "Lettura di una quantità di dati sufficiente dalla pipe del processo figlio (%"
 "s) fallita"
 
-#: glib/gutf8.c:987
+#: glib/gutf8.c:986
+#, c-format
 msgid "Character out of range for UTF-8"
 msgstr "Carattere fuori dell'intervallo per UTF-8"
 
-#: glib/gutf8.c:1081 glib/gutf8.c:1090 glib/gutf8.c:1222 glib/gutf8.c:1231
-#: glib/gutf8.c:1372 glib/gutf8.c:1468
+#: glib/gutf8.c:1080 glib/gutf8.c:1089 glib/gutf8.c:1221 glib/gutf8.c:1230
+#: glib/gutf8.c:1371 glib/gutf8.c:1467
+#, c-format
 msgid "Invalid sequence in conversion input"
 msgstr "Sequenza non valida in ingresso per la conversione"
 
-#: glib/gutf8.c:1383 glib/gutf8.c:1479
+#: glib/gutf8.c:1382 glib/gutf8.c:1478
+#, c-format
 msgid "Character out of range for UTF-16"
 msgstr "Carattere fuori dell'intervallo per UTF-16"
 
@@ -626,9 +650,9 @@ msgid "Application Options:"
 msgstr "Opzioni dell'applicazione:"
 
 #: glib/goption.c:653
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot parse integer value '%s' for %s"
-msgstr "Impossibile analizzare il valore intero \"%s\" per --%s"
+msgstr "Impossibile analizzare il valore intero \"%s\" per %s"
 
 #: glib/goption.c:663
 #, c-format
@@ -638,7 +662,7 @@ msgstr "Il valore intero \"%s\" per %s è fuori dell'intervallo"
 #: glib/goption.c:957 glib/goption.c:1068
 #, c-format
 msgid "Missing argument for %s"
-msgstr ""
+msgstr "Argomento mancante per %s"
 
 #: glib/goption.c:1472
 #, c-format
@@ -649,14 +673,17 @@ msgstr "Opzione %s sconoscuta"
 #
 # Ad esempio i file .themes per i temi del desktop e delle icone.
 #: glib/gkeyfile.c:339
+#, c-format
 msgid "Valid key file could not be found in data dirs"
 msgstr "Impossibile trovare un file chiavi valido nelle directory dei dati"
 
 #: glib/gkeyfile.c:374
+#, c-format
 msgid "Not a regular file"
 msgstr "Non è un file normale"
 
 #: glib/gkeyfile.c:382
+#, c-format
 msgid "File is empty"
 msgstr "Il file è vuoto"
 
@@ -669,6 +696,7 @@ msgstr ""
 "gruppo o un commento valido"
 
 #: glib/gkeyfile.c:765
+#, c-format
 msgid "Key file does not start with a group"
 msgstr "Il file chiavi non inizia con un gruppo"
 
@@ -717,26 +745,27 @@ msgstr ""
 msgid "Key file does not have key '%s' in group '%s'"
 msgstr "Il file chiavi non presenta alcuna chiave \"%s\" nel gruppo \"%s\""
 
-#: glib/gkeyfile.c:3072
+#: glib/gkeyfile.c:3067
+#, c-format
 msgid "Key file contains escape character at end of line"
 msgstr "Il file chiavi contiene un carattere di escape alla fine della riga"
 
-#: glib/gkeyfile.c:3094
+#: glib/gkeyfile.c:3089
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "Il file chiavi contiene la sequenza di escape non valida \"%s\""
 
-#: glib/gkeyfile.c:3235
+#: glib/gkeyfile.c:3230
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "Impossibile interpretare il valore \"%s\" come un numero."
 
-#: glib/gkeyfile.c:3245
-#, fuzzy, c-format
+#: glib/gkeyfile.c:3240
+#, c-format
 msgid "Integer value '%s' out of range"
-msgstr "Il valore intero \"%s\" per %s è fuori dell'intervallo"
+msgstr "Il valore intero \"%s\" è fuori dell'intervallo"
 
-#: glib/gkeyfile.c:3275
+#: glib/gkeyfile.c:3270
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "Impossibile interpretare il valore \"%s\" come un booleano."
