@@ -1,3 +1,55 @@
+2006-01-03  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.8.5 ===
+	
+Thu Dec 22 16:33:49 2005  Tim Janik  <timj@imendio.com>
+
+	* gobject.[hc]: added g_object_compat_control().
+
+2005-12-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* genums.h (G_FLAGS_CLASS_TYPE_NAME): Use G_FLAGS_CLASS_TYPE.
+	(#323273, Kalle Vahlman)
+
+2005-11-17  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib-genmarshal.c:
+	* gtype.c: const correctness fixes, found
+	by Arjan van de Ven and gcc.
+	
+2005-11-15  Matthias Clasen  <mclasen@redhat.com>
+
+	* ===  Released 2.8.4 ===
+
+2005-10-03  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.8.3 ===
+
+2005-10-03  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib-mkenums.in: Really fix #314890.
+
+2005-09-28  Michael Natterer  <mitch@gimp.org>
+
+	* gtype.h (G_IMPLEMENT_INTERFACE): revert last change, it breaks
+	all users of G_IMPLEMENT_INTERFACE() inside
+	G_DEFINE_TYPE_WITH_CODE(), since apparently GCC doesn't like
+	commas enclosed in {}, not (), in nested macro calls.
+
+2005-09-26  DindinX  <dindinx@gimp.org>
+
+	* gtype.h: initialize all the fields of GInterfaceInfo in the
+	G_IMPLEMENT_INTERFACE macro, to shut up a warning when compiling at -W
+
+2005-09-26  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.8.2 ===
+
+2005-09-26  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib-mkenums.in: Don't hang on '{' following a trigraph comment
+	in the same line.  (#314890, Mathias Hasselmann)
+
 2005-08-23  Matthias Clasen  <mclasen@redhat.com>
 
 	* === Released 2.8.1 ===

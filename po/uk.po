@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: glib\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-23 00:30-0400\n"
-"PO-Revision-Date: 2005-08-15 11:56--500\n"
+"POT-Creation-Date: 2006-01-03 09:57-0500\n"
+"PO-Revision-Date: 2005-09-08 11:56--500\n"
 "Last-Translator: Maxim Dziumanenko <mvd@mylinux.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,8 @@ msgstr "Не вдається відкрити перетворювач з \"%s\
 
 #: glib/gconvert.c:606 glib/gconvert.c:995 glib/giochannel.c:1322
 #: glib/giochannel.c:1364 glib/giochannel.c:2206 glib/gutf8.c:912
-#: glib/gutf8.c:1362
+#: glib/gutf8.c:1361
+#, c-format
 msgid "Invalid byte sequence in conversion input"
 msgstr "Неправильна послідовність байтів у перетворюваному вводі"
 
@@ -37,8 +38,9 @@ msgstr "Неправильна послідовність байтів у пер
 msgid "Error during conversion: %s"
 msgstr "Помилка під час перетворення: %s"
 
-#: glib/gconvert.c:647 glib/gutf8.c:908 glib/gutf8.c:1113 glib/gutf8.c:1254
-#: glib/gutf8.c:1358
+#: glib/gconvert.c:647 glib/gutf8.c:908 glib/gutf8.c:1112 glib/gutf8.c:1253
+#: glib/gutf8.c:1357
+#, c-format
 msgid "Partial character sequence at end of input"
 msgstr "Незавершена символьна послідовність на кінці вводу"
 
@@ -80,6 +82,7 @@ msgid "The pathname '%s' is not an absolute path"
 msgstr "Шлях \"%s\" не є абсолютним"
 
 #: glib/gconvert.c:1865
+#, c-format
 msgid "Invalid hostname"
 msgstr "Неправильна назва вузла"
 
@@ -146,6 +149,7 @@ msgstr ""
 "сигналом: %s"
 
 #: glib/gfileutils.c:1024
+#, c-format
 msgid "Could not change file mode: Child terminated abnormally"
 msgstr ""
 "Не вдається змінити права доступу до файлу: дочірній процес завершився "
@@ -192,6 +196,7 @@ msgid "Failed to read the symbolic link '%s': %s"
 msgstr "Помилка читання символічного посилання \"%s\": %s"
 
 #: glib/gfileutils.c:1995
+#, c-format
 msgid "Symbolic links not supported"
 msgstr "Символічні посилання не підтримуються"
 
@@ -206,20 +211,24 @@ msgid "Could not open converter from `%s' to `%s': %s"
 msgstr "Не вдається відкрити перетворювач з \"%s\" у \"%s\": %s"
 
 #: glib/giochannel.c:1499
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_line_string"
 msgstr ""
 "Не вдається виконати безпосереднє зчитування у функції "
 "g_io_channel_read_line_string"
 
 #: glib/giochannel.c:1546 glib/giochannel.c:1803 glib/giochannel.c:1889
+#, c-format
 msgid "Leftover unconverted data in read buffer"
 msgstr "В буфері зчитування лишились неперетворені дані"
 
 #: glib/giochannel.c:1626 glib/giochannel.c:1703
+#, c-format
 msgid "Channel terminates in a partial character"
 msgstr "Канал завершується на неповному символі"
 
 #: glib/giochannel.c:1689
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_to_end"
 msgstr ""
 "Не можна виконувати безпосереднє зчитування у функції "
@@ -230,7 +239,7 @@ msgstr ""
 msgid "Failed to open file '%s': open() failed: %s"
 msgstr "Помилка відкривання файлу \"%s\": помилка open(): %s"
 
-#: glib/gmappedfile.c:178
+#: glib/gmappedfile.c:185
 #, c-format
 msgid "Failed to map file '%s': mmap() failed: %s"
 msgstr "Помилка створення карти файлу \"%s\": помилка mmap(): %s"
@@ -460,10 +469,12 @@ msgid "Document ended unexpectedly inside a comment or processing instruction"
 msgstr "Документ раптово закінчився у середині коментарю чи інструкції обробки"
 
 #: glib/gshell.c:73
+#, c-format
 msgid "Quoted text doesn't begin with a quotation mark"
 msgstr "Текст в лапках не починається з лапок"
 
 #: glib/gshell.c:163
+#, c-format
 msgid "Unmatched quotation mark in command line or other shell-quoted text"
 msgstr "Невідповідні лапки у командному рядку чи іншому тексті оболонки"
 
@@ -479,38 +490,42 @@ msgstr ""
 "Текст закінчився перед відповідними лапками для %c. (Текст був таким: \"%s\")"
 
 #: glib/gshell.c:560
+#, c-format
 msgid "Text was empty (or contained only whitespace)"
 msgstr "Текст порожній (чи містить лише пропуски)"
 
-#: glib/gspawn-win32.c:264
+#: glib/gspawn-win32.c:277
+#, c-format
 msgid "Failed to read data from child process"
 msgstr "Помилка зчитування даних з дочірнього процесу"
 
-#: glib/gspawn-win32.c:281 glib/gspawn.c:1354
+#: glib/gspawn-win32.c:292 glib/gspawn.c:1375
 #, c-format
 msgid "Failed to create pipe for communicating with child process (%s)"
 msgstr "Помилка створення каналу для обміну з дочірнім процесом (%s)"
 
-#: glib/gspawn-win32.c:321 glib/gspawn.c:1018
+#: glib/gspawn-win32.c:330 glib/gspawn.c:1039
 #, c-format
 msgid "Failed to read from child pipe (%s)"
 msgstr "Помилка зчитування з дочірнього каналу (%s)"
 
-#: glib/gspawn-win32.c:349 glib/gspawn.c:1223
+#: glib/gspawn-win32.c:356 glib/gspawn.c:1244
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
 msgstr "Помилка переходу в каталог \"%s\" (%s)"
 
-#: glib/gspawn-win32.c:357 glib/gspawn-win32.c:442
+#: glib/gspawn-win32.c:362 glib/gspawn-win32.c:582
 #, c-format
 msgid "Failed to execute child process (%s)"
 msgstr "Помилка виконання дочірнього процесу (%s)"
 
-#: glib/gspawn-win32.c:599
-msgid "Failed to execute helper program"
-msgstr "Помилка під час виконання допоміжної програми"
+#: glib/gspawn-win32.c:891
+#, c-format
+msgid "Failed to execute helper program (%s)"
+msgstr "Помилка під час виконання допоміжної програми (%s)"
 
-#: glib/gspawn-win32.c:797
+#: glib/gspawn-win32.c:1091
+#, c-format
 msgid ""
 "Unexpected error in g_io_channel_win32_poll() reading data from a child "
 "process"
@@ -523,58 +538,61 @@ msgstr ""
 msgid "Failed to read data from child process (%s)"
 msgstr "Помилка зчитування даних з дочірнього процесу (%s)"
 
-#: glib/gspawn.c:310
+#: glib/gspawn.c:311
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr ""
 "Неочікувана помилка під час очікування на зміну стану файлового дескриптора "
 "дочірнього процесу (%s)"
 
-#: glib/gspawn.c:393
+#: glib/gspawn.c:394
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Неочікувана помилка у waitpid() (%s)"
 
-#: glib/gspawn.c:1083
+#: glib/gspawn.c:1104
 #, c-format
 msgid "Failed to fork (%s)"
 msgstr "Помилка створення процесу (%s)"
 
-#: glib/gspawn.c:1233
+#: glib/gspawn.c:1254
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
 msgstr "Помилка виконання дочірнього процесу \"%s\" (%s)"
 
-#: glib/gspawn.c:1243
+#: glib/gspawn.c:1264
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
 msgstr "Помилка перенаправлення виводу чи вводу дочірнього процесу (%s)"
 
-#: glib/gspawn.c:1252
+#: glib/gspawn.c:1273
 #, c-format
 msgid "Failed to fork child process (%s)"
 msgstr "Помилка запуску дочірнього процесу (%s)"
 
-#: glib/gspawn.c:1260
+#: glib/gspawn.c:1281
 #, c-format
 msgid "Unknown error executing child process \"%s\""
 msgstr "Невідома помилка виконання дочірнього процесу \"%s\""
 
-#: glib/gspawn.c:1282
+#: glib/gspawn.c:1303
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
 msgstr "Не вдається зчитати достатню кількість даних з дочірнього каналу (%s)"
 
-#: glib/gutf8.c:987
+#: glib/gutf8.c:986
+#, c-format
 msgid "Character out of range for UTF-8"
 msgstr "Символ не входить в набір UTF-8"
 
-#: glib/gutf8.c:1081 glib/gutf8.c:1090 glib/gutf8.c:1222 glib/gutf8.c:1231
-#: glib/gutf8.c:1372 glib/gutf8.c:1468
+#: glib/gutf8.c:1080 glib/gutf8.c:1089 glib/gutf8.c:1221 glib/gutf8.c:1230
+#: glib/gutf8.c:1371 glib/gutf8.c:1467
+#, c-format
 msgid "Invalid sequence in conversion input"
 msgstr "Неправильна послідовність у перетворюваному вводі"
 
-#: glib/gutf8.c:1383 glib/gutf8.c:1479
+#: glib/gutf8.c:1382 glib/gutf8.c:1478
+#, c-format
 msgid "Character out of range for UTF-16"
 msgstr "Символ не входить в набір UTF-16"
 
@@ -612,25 +630,33 @@ msgstr "Не вдається розібрати числове ціле зна�
 msgid "Integer value '%s' for %s out of range"
 msgstr "Числове ціле значення '%s' для %s поза межами діапазону"
 
-#: glib/goption.c:957 glib/goption.c:1068
+#: glib/goption.c:926
+#, fuzzy, c-format
+msgid "Error parsing option %s"
+msgstr "Помилка під час перетворення: %s"
+
+#: glib/goption.c:959 glib/goption.c:1070
 #, c-format
 msgid "Missing argument for %s"
 msgstr "Відсутній аргумент %s"
 
-#: glib/goption.c:1472
+#: glib/goption.c:1474
 #, c-format
 msgid "Unknown option %s"
 msgstr "Невідомий параметр %s"
 
 #: glib/gkeyfile.c:339
+#, c-format
 msgid "Valid key file could not be found in data dirs"
 msgstr "Не вдається знайти правильний ключовий файл у каталогах даних"
 
 #: glib/gkeyfile.c:374
+#, c-format
 msgid "Not a regular file"
 msgstr "Не є звичайним файлом"
 
 #: glib/gkeyfile.c:382
+#, c-format
 msgid "File is empty"
 msgstr "Файл порожній"
 
@@ -643,6 +669,7 @@ msgstr ""
 "коментарем"
 
 #: glib/gkeyfile.c:765
+#, c-format
 msgid "Key file does not start with a group"
 msgstr "Ключовий файл не починається з групи"
 
@@ -689,26 +716,27 @@ msgstr ""
 msgid "Key file does not have key '%s' in group '%s'"
 msgstr "Ключовий файл не містить ключ '%s' у групі '%s'"
 
-#: glib/gkeyfile.c:3072
+#: glib/gkeyfile.c:3067
+#, c-format
 msgid "Key file contains escape character at end of line"
 msgstr "Ключовий файл містить escape-символ наприкінці рядка"
 
-#: glib/gkeyfile.c:3094
+#: glib/gkeyfile.c:3089
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "Ключовий файл містить неправильну escape-послідовність '%s'"
 
-#: glib/gkeyfile.c:3235
+#: glib/gkeyfile.c:3230
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "Не вдається розібрати значення '%s' як число."
 
-#: glib/gkeyfile.c:3245
+#: glib/gkeyfile.c:3240
 #, c-format
 msgid "Integer value '%s' out of range"
 msgstr "Числове ціле значення '%s' поза межами діапазону"
 
-#: glib/gkeyfile.c:3275
+#: glib/gkeyfile.c:3270
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "Не вдається розібрати значення '%s' як логічне значення."

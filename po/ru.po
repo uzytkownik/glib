@@ -1,21 +1,24 @@
+# translation of glib.glib-2-8.po to
 # translation of glib to Russian
-# Copyright (C) 1998-2002, 2004 Free Software Foundation, Inc.
+# Copyright (C) 1998-2002, 2004, 2005 Free Software Foundation, Inc.
 # Valek Filippov <frob@df.ru>, 2001-2002.
 # Dmitry G. Mastrukov <dmitry@taurussoft.org>, 2002-2003.
-# Leonid Kanter <leon@asplinux.ru>, 2004.
+# Leonid Kanter <leon@asplinux.ru>, 2004, 2005.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: glib\n"
+"Project-Id-Version: glib.glib-2-8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-23 00:30-0400\n"
-"PO-Revision-Date: 2004-12-17 15:42+0200\n"
+"POT-Creation-Date: 2006-01-03 09:57-0500\n"
+"PO-Revision-Date: 2005-08-30 14:53+0300\n"
 "Last-Translator: Leonid Kanter <leon@asplinux.ru>\n"
 "Language-Team:  <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.9.1\n"
+"X-Generator: KBabel 1.10.2\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: glib/gconvert.c:408 glib/gconvert.c:486
 #, c-format
@@ -29,7 +32,8 @@ msgstr "Не удалось открыть преобразователь из \
 
 #: glib/gconvert.c:606 glib/gconvert.c:995 glib/giochannel.c:1322
 #: glib/giochannel.c:1364 glib/giochannel.c:2206 glib/gutf8.c:912
-#: glib/gutf8.c:1362
+#: glib/gutf8.c:1361
+#, c-format
 msgid "Invalid byte sequence in conversion input"
 msgstr ""
 "Недопустимая последовательность байтов для преобразования содержится во "
@@ -41,16 +45,16 @@ msgstr ""
 msgid "Error during conversion: %s"
 msgstr "Произошла ошибка при преобразовании: %s"
 
-#: glib/gconvert.c:647 glib/gutf8.c:908 glib/gutf8.c:1113 glib/gutf8.c:1254
-#: glib/gutf8.c:1358
+#: glib/gconvert.c:647 glib/gutf8.c:908 glib/gutf8.c:1112 glib/gutf8.c:1253
+#: glib/gutf8.c:1357
+#, c-format
 msgid "Partial character sequence at end of input"
 msgstr "Неполный символ содержится в конце входной строки"
 
 #: glib/gconvert.c:897
 #, c-format
 msgid "Cannot convert fallback '%s' to codeset '%s'"
-msgstr ""
-"Невозможно корректно преобразовать символ \"%s\" в символ из набора \"%s\""
+msgstr "Не удается преобразовать символ \"%s\" в символ из набора \"%s\""
 
 #: glib/gconvert.c:1706
 #, c-format
@@ -86,6 +90,7 @@ msgid "The pathname '%s' is not an absolute path"
 msgstr "Путь \"%s\" не является абсолютным"
 
 #: glib/gconvert.c:1865
+#, c-format
 msgid "Invalid hostname"
 msgstr "Имя узла недопустимо"
 
@@ -97,7 +102,7 @@ msgstr "Произошла ошибка при открытии каталога
 #: glib/gfileutils.c:576 glib/gfileutils.c:649
 #, c-format
 msgid "Could not allocate %lu bytes to read file \"%s\""
-msgstr "Не удалось распределить %lu байтов для прочтения файла \"%s\""
+msgstr "Не удается распределить %lu байтов для прочтения файла \"%s\""
 
 #: glib/gfileutils.c:591
 #, c-format
@@ -127,58 +132,62 @@ msgid "Failed to open file '%s': fdopen() failed: %s"
 msgstr "Произошёл сбой при открытии файла \"%s\": сбой в функции fdopen(): %s"
 
 #: glib/gfileutils.c:909
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to rename file '%s' to '%s': g_rename() failed: %s"
-msgstr "Произошёл сбой при открытии файла \"%s\": сбой в функции fdopen(): %s"
+msgstr "Не удается переименовать файл '%s' в '%s': сбой функции g_rename(): %s"
 
 #: glib/gfileutils.c:952
-#, fuzzy, c-format
+#, c-format
 msgid "Could not change file mode: fork() failed: %s"
-msgstr "Произошёл сбой при открытии файла \"%s\": сбой в функции fdopen(): %s"
+msgstr "Не удается изменить режим файла: сбой функции fork(): %s"
 
 #: glib/gfileutils.c:983
-#, fuzzy, c-format
+#, c-format
 msgid "Could not change file mode: waitpid() failed: %s"
-msgstr "Не удалось распределить %lu байтов для прочтения файла \"%s\""
+msgstr "Не удается изменить режим файла: сбой функции waitpid(): %s"
 
 #: glib/gfileutils.c:1002
-#, fuzzy, c-format
+#, c-format
 msgid "Could not change file mode: chmod() failed: %s"
-msgstr "Произошёл сбой при открытии файла \"%s\": сбой в функции fdopen(): %s"
+msgstr "Не удается изменить режим файла: сбой функции chmod(): %s"
 
 #: glib/gfileutils.c:1013
 #, c-format
 msgid "Could not change file mode: Child terminated by signal: %s"
 msgstr ""
+"Не удается изменить режим файла: дочерний процесс завершился сигналом: %s"
 
 #: glib/gfileutils.c:1024
+#, c-format
 msgid "Could not change file mode: Child terminated abnormally"
 msgstr ""
+"Не удается изенить режим файла: дочерний процесс завершился ненормально"
 
 #: glib/gfileutils.c:1058 glib/gfileutils.c:1524
 #, c-format
 msgid "Failed to create file '%s': %s"
-msgstr "Произошёл сбой при создании файла \"%s\": %s"
+msgstr "Не удается создать файл \"%s\": %s"
 
 #: glib/gfileutils.c:1080
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open file '%s' for writing: fdopen() failed: %s"
-msgstr "Произошёл сбой при открытии файла \"%s\": сбой в функции fdopen(): %s"
+msgstr "Не удается открыть файл \"%s\" для записи: сбой в функции fdopen(): %s"
 
 #: glib/gfileutils.c:1105
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write file '%s': fwrite() failed: %s"
-msgstr "Произошёл сбой при открытии файла \"%s\": сбой в функции fdopen(): %s"
+msgstr "Не удается записать файл \"%s\": сбой в функции fdopen(): %s"
 
 #: glib/gfileutils.c:1124
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to close file '%s': fclose() failed: %s"
-msgstr "Произошёл сбой при открытии файла \"%s\": сбой в функции fdopen(): %s"
+msgstr "Не удается закрыть файл \"%s\": сбой в функции fclose(): %s"
 
 #: glib/gfileutils.c:1242
 #, c-format
 msgid "Existing file '%s' could not be removed: g_unlink() failed: %s"
 msgstr ""
+"Существующий файл '%s' не может быть удален: сбой функции g_unlink(): %s"
 
 #: glib/gfileutils.c:1485
 #, c-format
@@ -196,6 +205,7 @@ msgid "Failed to read the symbolic link '%s': %s"
 msgstr "Произошёл сбой при чтении символической ссылки \"%s\": %s"
 
 #: glib/gfileutils.c:1995
+#, c-format
 msgid "Symbolic links not supported"
 msgstr "Символические ссылки не поддерживаются"
 
@@ -207,37 +217,41 @@ msgstr "Преобразование из набора символов \"%s\" �
 #: glib/giochannel.c:1154
 #, c-format
 msgid "Could not open converter from `%s' to `%s': %s"
-msgstr "Не удалось открыть преобразователь из \"%s\" в \"%s\": %s"
+msgstr "Не удается открыть преобразователь из \"%s\" в \"%s\": %s"
 
 #: glib/giochannel.c:1499
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_line_string"
 msgstr ""
-"Невозможно выполнить непосредственное чтение в функции "
+"Не удается выполнить непосредственное чтение в функции "
 "g_io_channel_read_line_string"
 
 #: glib/giochannel.c:1546 glib/giochannel.c:1803 glib/giochannel.c:1889
+#, c-format
 msgid "Leftover unconverted data in read buffer"
 msgstr "Непреобразованные данные остались в буфере чтения "
 
 #: glib/giochannel.c:1626 glib/giochannel.c:1703
+#, c-format
 msgid "Channel terminates in a partial character"
 msgstr "Канал закрывается на неполном символе"
 
 #: glib/giochannel.c:1689
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_to_end"
 msgstr ""
-"Невозможно выполнить непосредственное чтение в функции "
+"Не удается выполнить непосредственное чтение в функции "
 "g_io_channel_read_to_end"
 
 #: glib/gmappedfile.c:116
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open file '%s': open() failed: %s"
-msgstr "Произошёл сбой при открытии файла \"%s\": сбой в функции fdopen(): %s"
+msgstr "Не удается открыть файл \"%s\": сбой в функции open(): %s"
 
-#: glib/gmappedfile.c:178
-#, fuzzy, c-format
+#: glib/gmappedfile.c:185
+#, c-format
 msgid "Failed to map file '%s': mmap() failed: %s"
-msgstr "Произошёл сбой при открытии файла \"%s\": сбой в функции fdopen(): %s"
+msgstr "Не удается отобразить файл \"%s\": сбой функции mmap(): %s"
 
 #: glib/gmarkup.c:232
 #, c-format
@@ -470,10 +484,12 @@ msgstr ""
 "Документ непредвиденно окончился внутри комментария или инструкции обработки"
 
 #: glib/gshell.c:73
+#, c-format
 msgid "Quoted text doesn't begin with a quotation mark"
 msgstr "Текст в кавычках не начинается с символа кавычки"
 
 #: glib/gshell.c:163
+#, c-format
 msgid "Unmatched quotation mark in command line or other shell-quoted text"
 msgstr ""
 "Обнаружена несоответствующая кавычка в командной строке или ином тексте "
@@ -491,39 +507,43 @@ msgstr ""
 "Текст закончился перед соответствующей кавычкой для %c. (Текст был \"%s\")"
 
 #: glib/gshell.c:560
+#, c-format
 msgid "Text was empty (or contained only whitespace)"
 msgstr "Текст был пуст (или содержал только пробелы)"
 
-#: glib/gspawn-win32.c:264
+#: glib/gspawn-win32.c:277
+#, c-format
 msgid "Failed to read data from child process"
 msgstr "Произошёл сбой при чтении данных из процесса-потомка"
 
-#: glib/gspawn-win32.c:281 glib/gspawn.c:1354
+#: glib/gspawn-win32.c:292 glib/gspawn.c:1375
 #, c-format
 msgid "Failed to create pipe for communicating with child process (%s)"
 msgstr ""
 "Произошёл сбой при создании канала для сообщения с процессом-потомком (%s)"
 
-#: glib/gspawn-win32.c:321 glib/gspawn.c:1018
+#: glib/gspawn-win32.c:330 glib/gspawn.c:1039
 #, c-format
 msgid "Failed to read from child pipe (%s)"
 msgstr "Произошёл сбой при чтении данных из канала потомка (%s)"
 
-#: glib/gspawn-win32.c:349 glib/gspawn.c:1223
+#: glib/gspawn-win32.c:356 glib/gspawn.c:1244
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
 msgstr "Произошёл сбой при смене каталога \"%s\" (%s)"
 
-#: glib/gspawn-win32.c:357 glib/gspawn-win32.c:442
+#: glib/gspawn-win32.c:362 glib/gspawn-win32.c:582
 #, c-format
 msgid "Failed to execute child process (%s)"
 msgstr "Произошёл сбой при выполнении процесса-потомка (%s)"
 
-#: glib/gspawn-win32.c:599
-msgid "Failed to execute helper program"
-msgstr "Произошёл сбой при выполнении вспомогательной программы"
+#: glib/gspawn-win32.c:891
+#, c-format
+msgid "Failed to execute helper program (%s)"
+msgstr "Не удается выполнить вспомогательную программу (%s)"
 
-#: glib/gspawn-win32.c:797
+#: glib/gspawn-win32.c:1091
+#, c-format
 msgid ""
 "Unexpected error in g_io_channel_win32_poll() reading data from a child "
 "process"
@@ -536,63 +556,66 @@ msgstr ""
 msgid "Failed to read data from child process (%s)"
 msgstr "Произошёл сбой при чтении данных из процесса-потомка (%s)"
 
-#: glib/gspawn.c:310
+#: glib/gspawn.c:311
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr ""
 "Произошла непредвиденная ошибка в функции select() при чтении данных из "
 "процесса-потомка (%s)"
 
-#: glib/gspawn.c:393
+#: glib/gspawn.c:394
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "Произошла непредвиденная ошибка в функции waitpid() (%s)"
 
-#: glib/gspawn.c:1083
+#: glib/gspawn.c:1104
 #, c-format
 msgid "Failed to fork (%s)"
 msgstr "Произошёл сбой при ответвлении (%s)"
 
-#: glib/gspawn.c:1233
+#: glib/gspawn.c:1254
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
 msgstr "Произошёл сбой при выполнении процесса-потомка \"%s\" (%s)"
 
-#: glib/gspawn.c:1243
+#: glib/gspawn.c:1264
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
 msgstr ""
 "Произошёл сбой при перенаправлении вывода или ввода процесса-потомка (%s)"
 
-#: glib/gspawn.c:1252
+#: glib/gspawn.c:1273
 #, c-format
 msgid "Failed to fork child process (%s)"
 msgstr "Произошёл сбой при ответвлении процесса-потомка (%s)"
 
-#: glib/gspawn.c:1260
+#: glib/gspawn.c:1281
 #, c-format
 msgid "Unknown error executing child process \"%s\""
 msgstr "Произошла неизвестная ошибка при выполнении процесса-потомка \"%s\""
 
-#: glib/gspawn.c:1282
+#: glib/gspawn.c:1303
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
 msgstr ""
 "Произошёл сбой при чтении нужного количества данных из канала процесса-"
 "потомка (%s)"
 
-#: glib/gutf8.c:987
+#: glib/gutf8.c:986
+#, c-format
 msgid "Character out of range for UTF-8"
 msgstr "Символ находится вне диапазона для UTF-8"
 
-#: glib/gutf8.c:1081 glib/gutf8.c:1090 glib/gutf8.c:1222 glib/gutf8.c:1231
-#: glib/gutf8.c:1372 glib/gutf8.c:1468
+#: glib/gutf8.c:1080 glib/gutf8.c:1089 glib/gutf8.c:1221 glib/gutf8.c:1230
+#: glib/gutf8.c:1371 glib/gutf8.c:1467
+#, c-format
 msgid "Invalid sequence in conversion input"
 msgstr ""
 "Недопустимая последовательность для преобразования обнаружена во входной "
 "строке"
 
-#: glib/gutf8.c:1383 glib/gutf8.c:1479
+#: glib/gutf8.c:1382 glib/gutf8.c:1478
+#, c-format
 msgid "Character out of range for UTF-16"
 msgstr "Символ находится вне диапазона для UTF-16"
 
@@ -621,34 +644,42 @@ msgid "Application Options:"
 msgstr "Применимые параметры:"
 
 #: glib/goption.c:653
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot parse integer value '%s' for %s"
-msgstr "Не удается разобрать значение '%s' для --%s"
+msgstr "Не удается разобрать значение '%s' для %s"
 
 #: glib/goption.c:663
 #, c-format
 msgid "Integer value '%s' for %s out of range"
 msgstr "Целое значение '%s' для %s выходит за пределы"
 
-#: glib/goption.c:957 glib/goption.c:1068
+#: glib/goption.c:926
+#, fuzzy, c-format
+msgid "Error parsing option %s"
+msgstr "Произошла ошибка при преобразовании: %s"
+
+#: glib/goption.c:959 glib/goption.c:1070
 #, c-format
 msgid "Missing argument for %s"
-msgstr ""
+msgstr "Отсутствует аргумент для %s"
 
-#: glib/goption.c:1472
+#: glib/goption.c:1474
 #, c-format
 msgid "Unknown option %s"
 msgstr "Неизвестный параметр %s"
 
 #: glib/gkeyfile.c:339
+#, c-format
 msgid "Valid key file could not be found in data dirs"
 msgstr "Не удается найти действительный файл ключа в каталогах данных"
 
 #: glib/gkeyfile.c:374
+#, c-format
 msgid "Not a regular file"
 msgstr "Не является обычным файлом"
 
 #: glib/gkeyfile.c:382
+#, c-format
 msgid "File is empty"
 msgstr "Файл пуст"
 
@@ -661,6 +692,7 @@ msgstr ""
 "группой или комментарием"
 
 #: glib/gkeyfile.c:765
+#, c-format
 msgid "Key file does not start with a group"
 msgstr "Файл ключа не начинается с группы"
 
@@ -708,26 +740,27 @@ msgstr ""
 msgid "Key file does not have key '%s' in group '%s'"
 msgstr "Файл ключа не имеет ключа '%s' в группе '%s'"
 
-#: glib/gkeyfile.c:3072
+#: glib/gkeyfile.c:3067
+#, c-format
 msgid "Key file contains escape character at end of line"
 msgstr "Файл ключа содержит символ escape в конце файла"
 
-#: glib/gkeyfile.c:3094
+#: glib/gkeyfile.c:3089
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "Файл ключа содержит неверную escape-последовательность '%s'"
 
-#: glib/gkeyfile.c:3235
+#: glib/gkeyfile.c:3230
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "Значение '%s'  не может быть интерпретировано как числовое."
 
-#: glib/gkeyfile.c:3245
-#, fuzzy, c-format
+#: glib/gkeyfile.c:3240
+#, c-format
 msgid "Integer value '%s' out of range"
-msgstr "Целое значение '%s' для %s выходит за пределы"
+msgstr "Целое значение '%s' выходит за пределы"
 
-#: glib/gkeyfile.c:3275
+#: glib/gkeyfile.c:3270
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "Значение '%s'  не может быть интерпретировано как булево."

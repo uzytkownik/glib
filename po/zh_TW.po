@@ -6,9 +6,9 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: glib 2.3.0\n"
+"Project-Id-Version: glib 2.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-23 00:30-0400\n"
+"POT-Creation-Date: 2006-01-03 09:57-0500\n"
 "PO-Revision-Date: 2005-07-21 10:01+0800\n"
 "Last-Translator: Woodman Tuen <wmtuen@gmail.com>\n"
 "Language-Team: Chinese/Traditional <community@linuxhall.org>\n"
@@ -28,7 +28,8 @@ msgstr "無法將‘%s’轉換至‘%s’"
 
 #: glib/gconvert.c:606 glib/gconvert.c:995 glib/giochannel.c:1322
 #: glib/giochannel.c:1364 glib/giochannel.c:2206 glib/gutf8.c:912
-#: glib/gutf8.c:1362
+#: glib/gutf8.c:1361
+#, c-format
 msgid "Invalid byte sequence in conversion input"
 msgstr "轉換輸入資料時遇到不正確的位元組次序"
 
@@ -38,8 +39,9 @@ msgstr "轉換輸入資料時遇到不正確的位元組次序"
 msgid "Error during conversion: %s"
 msgstr "轉換時發生錯誤：%s"
 
-#: glib/gconvert.c:647 glib/gutf8.c:908 glib/gutf8.c:1113 glib/gutf8.c:1254
-#: glib/gutf8.c:1358
+#: glib/gconvert.c:647 glib/gutf8.c:908 glib/gutf8.c:1112 glib/gutf8.c:1253
+#: glib/gutf8.c:1357
+#, c-format
 msgid "Partial character sequence at end of input"
 msgstr "輸入資料結束時出現未完成的字元次序"
 
@@ -71,7 +73,7 @@ msgstr "URI‘%s’中的主機名稱無效"
 #: glib/gconvert.c:1761
 #, c-format
 msgid "The URI '%s' contains invalidly escaped characters"
-msgstr "URI‘%s’含有不正確的「跳出字元」(escaped characters)"
+msgstr "URI‘%s’含有「不正確跳出」的字元"
 
 #: glib/gconvert.c:1855
 #, c-format
@@ -79,6 +81,7 @@ msgid "The pathname '%s' is not an absolute path"
 msgstr "路徑名稱‘%s’不是絕對路徑"
 
 #: glib/gconvert.c:1865
+#, c-format
 msgid "Invalid hostname"
 msgstr "主機名稱無效"
 
@@ -90,7 +93,7 @@ msgstr "開啟目錄‘%s’時發生錯誤：%s"
 #: glib/gfileutils.c:576 glib/gfileutils.c:649
 #, c-format
 msgid "Could not allocate %lu bytes to read file \"%s\""
-msgstr "無法分配 %lu 位元來讀取檔案“%s”"
+msgstr "無法配置 %lu 位元來讀取檔案“%s”"
 
 #: glib/gfileutils.c:591
 #, c-format
@@ -143,6 +146,7 @@ msgid "Could not change file mode: Child terminated by signal: %s"
 msgstr "無法更改檔案模式：子程序被訊息中止，訊息：%s"
 
 #: glib/gfileutils.c:1024
+#, c-format
 msgid "Could not change file mode: Child terminated abnormally"
 msgstr "無法更改檔案模式：子程序不正常地被中止"
 
@@ -187,6 +191,7 @@ msgid "Failed to read the symbolic link '%s': %s"
 msgstr "讀取符號連結‘%s’失敗：%s"
 
 #: glib/gfileutils.c:1995
+#, c-format
 msgid "Symbolic links not supported"
 msgstr "不支援符號連結"
 
@@ -201,18 +206,22 @@ msgid "Could not open converter from `%s' to `%s': %s"
 msgstr "無法將‘%s’轉換至‘%s’：%s"
 
 #: glib/giochannel.c:1499
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_line_string"
 msgstr "在 g_io_channel_read_line_string 中無法讀取原始資料"
 
 #: glib/giochannel.c:1546 glib/giochannel.c:1803 glib/giochannel.c:1889
+#, c-format
 msgid "Leftover unconverted data in read buffer"
 msgstr "用來讀取資料的緩衝區中仍有未轉換的資料"
 
 #: glib/giochannel.c:1626 glib/giochannel.c:1703
+#, c-format
 msgid "Channel terminates in a partial character"
 msgstr "在字元未完整之前，輸入管道已經結束"
 
 #: glib/giochannel.c:1689
+#, c-format
 msgid "Can't do a raw read in g_io_channel_read_to_end"
 msgstr "g_io_channel_read_to_end 中無法讀取原始資料"
 
@@ -221,7 +230,7 @@ msgstr "g_io_channel_read_to_end 中無法讀取原始資料"
 msgid "Failed to open file '%s': open() failed: %s"
 msgstr "開啟檔案‘%s’失敗：open() 失敗：%s"
 
-#: glib/gmappedfile.c:178
+#: glib/gmappedfile.c:185
 #, c-format
 msgid "Failed to map file '%s': mmap() failed: %s"
 msgstr "對應檔案‘%s’失敗：mmap() 失敗：%s"
@@ -426,10 +435,12 @@ msgid "Document ended unexpectedly inside a comment or processing instruction"
 msgstr "在註解或處理指示內，文件突然結束"
 
 #: glib/gshell.c:73
+#, c-format
 msgid "Quoted text doesn't begin with a quotation mark"
 msgstr "應該用引號括起來的文字不是以括號為開始"
 
 #: glib/gshell.c:163
+#, c-format
 msgid "Unmatched quotation mark in command line or other shell-quoted text"
 msgstr "指令列或其它標為指令的字串內有不對稱的引號"
 
@@ -444,38 +455,42 @@ msgid "Text ended before matching quote was found for %c. (The text was '%s')"
 msgstr "字串完結前仍沒有對應於 %c 的引號（字串為‘%s’）"
 
 #: glib/gshell.c:560
+#, c-format
 msgid "Text was empty (or contained only whitespace)"
 msgstr "文字是空白的（或只含有空白字元）"
 
-#: glib/gspawn-win32.c:264
+#: glib/gspawn-win32.c:277
+#, c-format
 msgid "Failed to read data from child process"
 msgstr "無法從副進程讀取資料"
 
-#: glib/gspawn-win32.c:281 glib/gspawn.c:1354
+#: glib/gspawn-win32.c:292 glib/gspawn.c:1375
 #, c-format
 msgid "Failed to create pipe for communicating with child process (%s)"
 msgstr "無法建立管道來和副進程溝通 (%s)"
 
-#: glib/gspawn-win32.c:321 glib/gspawn.c:1018
+#: glib/gspawn-win32.c:330 glib/gspawn.c:1039
 #, c-format
 msgid "Failed to read from child pipe (%s)"
 msgstr "無法從管道讀取資料 (%s)"
 
-#: glib/gspawn-win32.c:349 glib/gspawn.c:1223
+#: glib/gspawn-win32.c:356 glib/gspawn.c:1244
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
 msgstr "無法進入目錄‘%s’(%s)"
 
-#: glib/gspawn-win32.c:357 glib/gspawn-win32.c:442
+#: glib/gspawn-win32.c:362 glib/gspawn-win32.c:582
 #, c-format
 msgid "Failed to execute child process (%s)"
 msgstr "無法執行副進程 (%s)"
 
-#: glib/gspawn-win32.c:599
-msgid "Failed to execute helper program"
-msgstr "無法執行助理程式"
+#: glib/gspawn-win32.c:891
+#, c-format
+msgid "Failed to execute helper program (%s)"
+msgstr "無法執行協助程式 (%s)"
 
-#: glib/gspawn-win32.c:797
+#: glib/gspawn-win32.c:1091
+#, c-format
 msgid ""
 "Unexpected error in g_io_channel_win32_poll() reading data from a child "
 "process"
@@ -486,56 +501,59 @@ msgstr "當 g_io_channel_win32_poll() 從副進程讀取資料時發生無法預
 msgid "Failed to read data from child process (%s)"
 msgstr "無法從副進程讀取資料 (%s)"
 
-#: glib/gspawn.c:310
+#: glib/gspawn.c:311
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr "當 select() 從副進程讀取資料時發生無法預計的錯誤 (%s)"
 
-#: glib/gspawn.c:393
+#: glib/gspawn.c:394
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "waitpid() 發生無法預計的錯誤 (%s)"
 
-#: glib/gspawn.c:1083
+#: glib/gspawn.c:1104
 #, c-format
 msgid "Failed to fork (%s)"
 msgstr "無法衍生進程 (%s)"
 
-#: glib/gspawn.c:1233
+#: glib/gspawn.c:1254
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
 msgstr "無法執行副進程“%s”(%s)"
 
-#: glib/gspawn.c:1243
+#: glib/gspawn.c:1264
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
 msgstr "無法將副進程的輸出或輸入重新導向 (%s)"
 
-#: glib/gspawn.c:1252
+#: glib/gspawn.c:1273
 #, c-format
 msgid "Failed to fork child process (%s)"
 msgstr "無法衍生副進程 (%s)"
 
-#: glib/gspawn.c:1260
+#: glib/gspawn.c:1281
 #, c-format
 msgid "Unknown error executing child process \"%s\""
 msgstr "執行副進程“%s”時發生不明的錯誤"
 
-#: glib/gspawn.c:1282
+#: glib/gspawn.c:1303
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
 msgstr "無法從 child pid pipe 讀取足夠的資料 (%s)"
 
-#: glib/gutf8.c:987
+#: glib/gutf8.c:986
+#, c-format
 msgid "Character out of range for UTF-8"
 msgstr "字元不在 UTF-8 範圍之內"
 
-#: glib/gutf8.c:1081 glib/gutf8.c:1090 glib/gutf8.c:1222 glib/gutf8.c:1231
-#: glib/gutf8.c:1372 glib/gutf8.c:1468
+#: glib/gutf8.c:1080 glib/gutf8.c:1089 glib/gutf8.c:1221 glib/gutf8.c:1230
+#: glib/gutf8.c:1371 glib/gutf8.c:1467
+#, c-format
 msgid "Invalid sequence in conversion input"
 msgstr "轉換輸入資料時出現無效的字元次序"
 
-#: glib/gutf8.c:1383 glib/gutf8.c:1479
+#: glib/gutf8.c:1382 glib/gutf8.c:1478
+#, c-format
 msgid "Character out of range for UTF-16"
 msgstr "字元不在 UTF-16 範圍之內"
 
@@ -573,25 +591,33 @@ msgstr "無法給 %2$s 解析整數值‘%1$s’"
 msgid "Integer value '%s' for %s out of range"
 msgstr "%2$s 的整數值‘%1$s’超出範圍"
 
-#: glib/goption.c:957 glib/goption.c:1068
+#: glib/goption.c:926
+#, fuzzy, c-format
+msgid "Error parsing option %s"
+msgstr "轉換時發生錯誤：%s"
+
+#: glib/goption.c:959 glib/goption.c:1070
 #, c-format
 msgid "Missing argument for %s"
 msgstr "缺少 %s 的參數"
 
-#: glib/goption.c:1472
+#: glib/goption.c:1474
 #, c-format
 msgid "Unknown option %s"
 msgstr "未知的選項 %s"
 
 #: glib/gkeyfile.c:339
+#, c-format
 msgid "Valid key file could not be found in data dirs"
 msgstr "在資料目錄中找不到有效的設定鍵檔案"
 
 #: glib/gkeyfile.c:374
+#, c-format
 msgid "Not a regular file"
-msgstr "不是合格的檔案"
+msgstr "不是正規的檔案"
 
 #: glib/gkeyfile.c:382
+#, c-format
 msgid "File is empty"
 msgstr "檔案是空的"
 
@@ -602,6 +628,7 @@ msgid ""
 msgstr "設定鍵檔案中‘%s’行並非設定鍵值配對、群組或註解"
 
 #: glib/gkeyfile.c:765
+#, c-format
 msgid "Key file does not start with a group"
 msgstr "設定鍵檔案並非以群組開頭"
 
@@ -644,26 +671,27 @@ msgstr "設定鍵檔案包含的群組‘%2$s’中設定鍵‘%1$s’數值無�
 msgid "Key file does not have key '%s' in group '%s'"
 msgstr "設定鍵檔案的群組‘%2$s’中沒有設定鍵‘%1$s’"
 
-#: glib/gkeyfile.c:3072
+#: glib/gkeyfile.c:3067
+#, c-format
 msgid "Key file contains escape character at end of line"
 msgstr "設定鍵檔案在行尾包含跳出字元"
 
-#: glib/gkeyfile.c:3094
+#: glib/gkeyfile.c:3089
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "設定鍵檔案含有不正確的「跳出字元」‘%s’"
 
-#: glib/gkeyfile.c:3235
+#: glib/gkeyfile.c:3230
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "數值‘%s’不能被解譯為數字。"
 
-#: glib/gkeyfile.c:3245
+#: glib/gkeyfile.c:3240
 #, c-format
 msgid "Integer value '%s' out of range"
 msgstr "整數值‘%s’超出範圍"
 
-#: glib/gkeyfile.c:3275
+#: glib/gkeyfile.c:3270
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "數值‘%s’不能被解譯為布林值。"
