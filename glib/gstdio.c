@@ -33,6 +33,7 @@
 #endif
 
 #ifdef G_OS_WIN32
+#include <windows.h>
 #include <errno.h>
 #include <wchar.h>
 #include <direct.h>
@@ -336,10 +337,9 @@ g_creat (const gchar *filename,
  * renames a file, moving it between directories if required.
  * 
  * See your C library manual for more details about how rename() works
- * on your system. Note in particular that on Windows, it is in
- * general not possible to rename a file if a file with the new name
- * already exists. Also it is not possible in general to rename an
- * open file.
+ * on your system. Note in particular that on Win9x it is not possible
+ * to rename a file if a file with the new name already exists. Also
+ * it is not possible in general on Windows to rename an open file.
  *
  * Returns: 0 if the renaming succeeded, -1 if an error occurred
  * 
@@ -372,8 +372,26 @@ g_rename (const gchar *oldfilename,
 	  return -1;
 	}
 
-      retval = _wrename (woldfilename, wnewfilename);
-      save_errno = errno;
+      if (MoveFileExW (woldfilename, wnewfilename, MOVEFILE_REPLACE_EXISTING))
+	retval = 0;
+      else
+	{
+	  retval = -1;
+	  switch (GetLastError ())
+	    {
+#define CASE(a,b) case ERROR_##a: save_errno = b; break
+	    CASE (FILE_NOT_FOUND, ENOENT);
+	    CASE (PATH_NOT_FOUND, ENOENT);
+	    CASE (ACCESS_DENIED, EACCES);
+	    CASE (NOT_SAME_DEVICE, EXDEV);
+	    CASE (LOCK_VIOLATION, EACCES);
+	    CASE (SHARING_VIOLATION, EACCES);
+	    CASE (FILE_EXISTS, EEXIST);
+	    CASE (ALREADY_EXISTS, EEXIST);
+#undef CASE
+	    default: save_errno = EIO;
+	    }
+	}
 
       g_free (woldfilename);
       g_free (wnewfilename);
@@ -570,12 +588,20 @@ g_stat (const gchar *filename,
       wchar_t *wfilename = g_utf8_to_utf16 (filename, -1, NULL, NULL, NULL);
       int retval;
       int save_errno;
+      int len;
 
       if (wfilename == NULL)
 	{
 	  errno = EINVAL;
 	  return -1;
 	}
+
+      len = wcslen (wfilename);
+      while (len > 0 && G_IS_DIR_SEPARATOR (wfilename[len-1]))
+	len--;
+      if (len > 0 &&
+	  (!g_path_is_absolute (filename) || len > g_path_skip_root (filename) - filename))
+	wfilename[len] = '\0';
 
       retval = _wstat (wfilename, (struct _stat *) buf);
       save_errno = errno;
@@ -590,6 +616,7 @@ g_stat (const gchar *filename,
       gchar *cp_filename = g_locale_from_utf8 (filename, -1, NULL, NULL, NULL);
       int retval;
       int save_errno;
+      int len;
 
       if (cp_filename == NULL)
 	{
@@ -597,6 +624,13 @@ g_stat (const gchar *filename,
 	  return -1;
 	}
 
+      len = strlen (cp_filename);
+      while (len > 0 && G_IS_DIR_SEPARATOR (cp_filename[len-1]))
+	len--;
+      if (len > 0 &&
+	  (!g_path_is_absolute (filename) || len > g_path_skip_root (filename) - filename))
+	cp_filename[len] = '\0';
+      
       retval = stat (cp_filename, buf);
       save_errno = errno;
 

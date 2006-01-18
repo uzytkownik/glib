@@ -1936,10 +1936,10 @@ g_main_dispatch (GMainContext *context)
 				     user_data);
 	  (*depth)--;
 	  
- 	  LOCK_CONTEXT (context);
-
 	  if (cb_funcs)
 	    cb_funcs->unref (cb_data);
+
+ 	  LOCK_CONTEXT (context);
 
 	 if (!was_in_call)
 	    source->flags &= ~G_HOOK_FLAG_IN_CALL;
@@ -3665,11 +3665,15 @@ g_child_watch_source_init (void)
  * @pid: process id of a child process to watch. On Windows, a HANDLE
  * for the process to watch (which actually doesn't have to be a child).
  * 
- * Creates a new child_watch source.
+ * Creates a new child watch source.
  *
  * The source will not initially be associated with any #GMainContext
  * and must be added to one with g_source_attach() before it will be
  * executed.
+ * 
+ * Note that child watch sources can only be used in conjunction with 
+ * <literal>g_spawn...</literal> when the %G_SPAWN_DO_NOT_REAP_CHILD
+ * flag is used.
  * 
  * Note that on platforms where #GPid must be explicitely closed
  * (see g_spawn_close_pid()) @pid must not be closed while the

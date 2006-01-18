@@ -242,6 +242,11 @@ void        g_value_set_object_take_ownership (GValue         *value,
 					       gpointer        v_object);
 #endif
 
+#if !defined(G_DISABLE_DEPRECATED) || defined(GTK_COMPILATION)
+gsize       g_object_compat_control           (gsize           what,
+                                               gpointer        data);
+#endif
+
 /* --- implementation macros --- */
 #define G_OBJECT_WARN_INVALID_PSPEC(object, pname, property_id, pspec) \
 G_STMT_START { \
