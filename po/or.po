@@ -2,13 +2,13 @@
 # Copyright (C) 2004, Free Software Foundation, Inc.
 # This file is distributed under the same license as the glib.glib-2-4 package.
 # Subhransu Behera <arya_subhransu@yahoo.co.in>, 2004.
-# $Id: or.po,v 1.24 2006/01/27 14:37:02 matthiasc Exp $
+# $Id: or.po,v 1.25 2006/02/11 14:05:58 matthiasc Exp $
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: glib.glib-2-4.HEAD.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-27 09:19-0500\n"
+"POT-Creation-Date: 2006-02-10 15:36-0500\n"
 "PO-Revision-Date: 2004-09-05 21:30+0530\n"
 "Last-Translator: Subhransu Behera <arya_subhransu@yahoo.co.in>\n"
 "Language-Team: Oriya <oriya-group@lists.sarovar.org>\n"
