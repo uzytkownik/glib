@@ -1,8 +1,147 @@
+2006-05-26  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.10.3 ===
+
+	* NEWS: Updates
+
+Tue May  2 14:18:25 2006  Tim Janik  <timj@gtk.org>
+
+        * glib/goption.c (g_option_context_parse): fixed leak in short
+        option parsing. rewrote parts of the code to be more concise to
+        enhance readability. fixed exaggerated uses of strlen.
+
+2006-05-12  Tor Lillqvist  <tml@novell.com>
+
+	* glib/giowin32.c (g_io_win32_sock_set_flags): Implement
+	setting/clearing G_IO_FLAG_NONBLOCK for channels attached to
+	sockets. (#341192)
+	(g_io_win32_unimpl_set_flags): set_flags method for the
+	unimplemented case.
+	
+2006-05-07  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gkeyfile.c (g_key_file_set_locale_string_list): 
+	(g_key_file_set_string_list): Fix an invalid memory 
+	read.  (#340816, Nick Treleaven)
+
+2006-04-26  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/grand.c (g_rand_new): Don't repeat a failed fclose()
+	call, since that invokes undefined behaviour.  (Coverity)
+
+2006-04-25  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gkeyfile.c (g_key_file_lookup_group_node): Remove
+	redundant code.
+	(g_key_file_get_group_comment): Don't dereference before
+	checking for NULL.  (#338572, Coverity, Pascal Terjan)
+
+2006-04-19  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gdataset.c: Add some missing Since 2.8 flags.
+
+2006-04-19  Tor Lillqvist  <tml@novell.com>
+
+	* glib/gatomic.c: Adapt to the changed prototype of
+	InterlockedCompareExchange() in newer SDKs. Use
+	InterlockedCompareExchangePointer() when applicable. (#155884,
+	John Ehresman)
+
+2006-04-18  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gkeyfile.c (g_key_file_add_group): Accept duplicate
+	groups.  (#157877, Sebastien Bacher)
+
+	* tests/keyfile-test.c: Add tests for duplicate key and
+	duplicate group handling.
+
+2006-04-17  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gcompletion.c (g_completion_complete_utf8): Make passing
+	NULL for new_prefix work as documented.  (#338845, Yevgen Muntyan)
+
+	* tests/completion-test.c: Test that passing NULL for 
+	new_prefix in g_completion_complete_utf8 works.
+
+2006-04-16  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gdate.c (g_date_fill_parse_tokens): Avoid an array
+	overrun.  (Coverity, fix by Pascal Terjan)
+
+2006-04-07  Martyn Russell  <martyn@imendio.com>
+
+	* tests/threadpool-test.c: (test_thread_stop_unused): Removed an
+	assertion which can fail and is not a critical test.
+
+2006-04-07  Matthias Clasen  <mclasen@redhat.com>
+	
+	* configure.in: Bump version
+	
+	* === Released 2.10.2 ===
+
+	* NEWS: Updates
+
+	* tests/option-test.c (add_test1): Fix this test.
+
+2006-04-07  Martyn Russell  <martyn@imendio.com>
+
+	* glib/gasyncqueue.[ch]: Added private API
+	_g_async_queue_get_mutex so that g_thread_pool_free() can use the
+	async queue mutex. 
+	
+	* glib/gthreadpool.c: Make sure
+	g_thread_pool_stop_unused_threads() actually stops unused threads
+	and global limits (like max idle time and max unused threads) can
+	be set without creating a thread pool first. Fixed #335215 (patch
+	from Chris Wilson).  
+	
+	* tests/threadpool-test.c: Added two new tests, tests setting
+	global limits before creating a thread pool. The second test
+	makes sure unused threads are actually stopped when using the
+	g_thread_pool_stop_unused_threads(). 
+
+2006-04-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gnulib/vasnprintf.c (vasnprintf): Make
+	long long printing work if snprintf is not 
+	available.  (#332841, Michael McDonald)
+
+2006-04-04  Pema Geyleg  <pema.geyleg@gmail.com>
+
+	* configure.in: Added dz (Dzongkha) to ALL_LINGUAS.
+
+2006-03-31  Tor Lillqvist  <tml@novell.com>
+
+	* glib/gstdio.c (g_remove): Revert change below. It wasn't a good
+	idea after all, says the original bug reporter. See bug for
+	discussion.
+
+2006-03-30  Tor Lillqvist  <tml@novell.com>
+
+	* glib/gstdio.c (g_remove): [Win32] call rmdir() only if remove()
+	fails with errno set to ENOENT, to leave errno set to EACCESS if
+	that is the problem. (#334799, Yevgen Muntyan)
+
+2006-03-26  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/goption.c (g_option_context_new): Improve the description
+	of parameter_string in the docs.  (#336085, Claudio Saavedra)
+
+2006-03-24  Martyn Russell  <martyn@imendio.com>
+
+	* glib/gthreadpool.c: Updated the documentation to explain that
+	when the maximum threads is > 1 the sort functionality is not 100%
+	accurate due to the ramdom nature of the scheduler choosing which
+	threads to execute. Fixes bug #334943.
+
+	* tests/threadpool-test.c: Disabled the debugging by default and
+	fixed the sort test to set the maximum threads to 1 to guarantee
+	the thread entry function is called in order. 
+
 2006-03-20  Vladimer Sichinava  <vlsichinava@gmail.com>
 
         * configure.in: Added "ka" (Georgian) to ALL_LINGUAS
 
-=======
 2006-03-20  Matthias Clasen  <mclasen@redhat.com>
 
 	* glib/gmem.c (profiler_log): use standard_calloc to allocate
@@ -23,7 +162,6 @@
 
 	* MAINTAINERS: Add this, at the request of the GNOME sysadmin team.
 
->>>>>>> 1.2267
 2006-03-15  Matthias Clasen  <mclasen@redhat.com>
 
 	* glib/goption.c (g_option_context_parse): Only set the prgname

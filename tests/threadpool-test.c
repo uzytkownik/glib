@@ -5,10 +5,8 @@
 
 #include <glib.h>
 
-/* #define DEBUG_MSG(x) */
-#define DEBUG_MSG(args) g_printerr args ; g_printerr ("\n");
-
-#define RUNS 100
+#define DEBUG_MSG(x)  
+/* #define DEBUG_MSG(args) g_printerr args ; g_printerr ("\n");  */
 
 #define WAIT                5    /* seconds */
 #define MAX_THREADS         10
@@ -36,6 +34,113 @@ static GThreadPool *idle_pool = NULL;
 
 static GMainLoop *main_loop = NULL;
 
+static void
+test_thread_functions (void)
+{
+  gint max_unused_threads;
+  guint max_idle_time;
+
+  /* This function attempts to call functions which don't need a
+   * threadpool to operate to make sure no uninitialised pointers
+   * accessed and no errors occur.
+   */
+
+  max_unused_threads = 3;
+
+  DEBUG_MSG (("[funcs] Setting max unused threads to %d", 
+	      max_unused_threads));
+  g_thread_pool_set_max_unused_threads (max_unused_threads);
+
+  DEBUG_MSG (("[funcs] Getting max unused threads = %d", 
+	     g_thread_pool_get_max_unused_threads ()));
+  g_assert (g_thread_pool_get_max_unused_threads() == max_unused_threads);
+
+  DEBUG_MSG (("[funcs] Getting num unused threads = %d", 
+	     g_thread_pool_get_num_unused_threads ()));
+  g_assert (g_thread_pool_get_num_unused_threads () == 0);
+
+  DEBUG_MSG (("[funcs] Stopping unused threads"));
+  g_thread_pool_stop_unused_threads ();
+
+  max_idle_time = 10 * G_USEC_PER_SEC;
+
+  DEBUG_MSG (("[funcs] Setting max idle time to %d", 
+	      max_idle_time));
+  g_thread_pool_set_max_idle_time (max_idle_time);
+
+  DEBUG_MSG (("[funcs] Getting max idle time = %d", 
+	     g_thread_pool_get_max_idle_time ()));
+  g_assert (g_thread_pool_get_max_idle_time () == max_idle_time);
+
+  DEBUG_MSG (("[funcs] Setting max idle time to 0"));
+  g_thread_pool_set_max_idle_time (0);
+
+  DEBUG_MSG (("[funcs] Getting max idle time = %d", 
+	     g_thread_pool_get_max_idle_time ()));
+  g_assert (g_thread_pool_get_max_idle_time () == 0);
+}
+
+static void
+test_count_threads_foreach (GThread *thread, 
+			    guint   *count)
+{
+   ++*count;
+}
+
+static guint
+test_count_threads (void)
+{
+  guint count = 0;
+  
+  g_thread_foreach ((GFunc) test_count_threads_foreach, &count);
+  
+  /* Exclude main thread */
+  return count - 1;
+}
+
+static void
+test_thread_stop_unused (void)
+{ 
+   GThreadPool *pool;
+   guint i;
+   guint limit = 100;
+   
+   /* Spawn a few threads. */
+   g_thread_pool_set_max_unused_threads (-1);
+   pool = g_thread_pool_new ((GFunc) g_usleep, NULL, -1, FALSE, NULL);
+   
+   for (i = 0; i < limit; i++)
+     g_thread_pool_push (pool, GUINT_TO_POINTER (1000), NULL);
+
+   DEBUG_MSG (("[unused] ===> pushed %d threads onto the idle pool",
+	       limit));
+   
+   /* Wait for the threads to migrate. */
+   g_usleep (G_USEC_PER_SEC); 
+
+   DEBUG_MSG (("[unused] current threads %d",
+	       test_count_threads()));
+
+   DEBUG_MSG (("[unused] stopping unused threads"));
+   g_thread_pool_stop_unused_threads ();
+
+   DEBUG_MSG (("[unused] waiting ONE second for threads to die"));
+
+   /* Some time for threads to die. */
+   g_usleep (G_USEC_PER_SEC); 
+   
+   DEBUG_MSG (("[unused] stopped idle threads, %d remain, %d threads still exist",
+	       g_thread_pool_get_num_unused_threads (), 
+	       test_count_threads ()));
+   
+   g_assert (g_thread_pool_get_num_unused_threads () == test_count_threads ());
+   g_assert (g_thread_pool_get_num_unused_threads () == 0);
+   
+   g_thread_pool_set_max_unused_threads (MAX_THREADS);
+
+   DEBUG_MSG (("[unused] cleaning up thread pool"));
+   g_thread_pool_free (pool, FALSE, TRUE);
+}
 
 static void
 test_thread_pools_entry_func (gpointer data, gpointer user_data)
@@ -68,13 +173,15 @@ static void
 test_thread_pools (void)
 {
   GThreadPool *pool1, *pool2, *pool3;
+  guint runs;
   guint i;
   
   pool1 = g_thread_pool_new ((GFunc)test_thread_pools_entry_func, NULL, 3, FALSE, NULL);
   pool2 = g_thread_pool_new ((GFunc)test_thread_pools_entry_func, NULL, 5, TRUE, NULL);
   pool3 = g_thread_pool_new ((GFunc)test_thread_pools_entry_func, NULL, 7, TRUE, NULL);
 
-  for (i = 0; i < RUNS; i++)
+  runs = 300;
+  for (i = 0; i < runs; i++)
     {
       g_thread_pool_push (pool1, GUINT_TO_POINTER (i + 1), NULL);
       g_thread_pool_push (pool2, GUINT_TO_POINTER (i + 1), NULL);
@@ -86,7 +193,7 @@ test_thread_pools (void)
   g_thread_pool_free (pool2, FALSE, TRUE);
   g_thread_pool_free (pool3, FALSE, TRUE);
 
-  g_assert (RUNS * 3 == abs_thread_counter + leftover_task_counter);
+  g_assert (runs * 3 == abs_thread_counter + leftover_task_counter);
   g_assert (running_thread_counter == 0);  
 }
 
@@ -124,10 +231,11 @@ test_thread_sort_entry_func (gpointer data, gpointer user_data)
 	g_assert (last_thread_id <= thread_id);  
       }
 
-      /* here we remember one fail and if it concurrently fails, it
-	 can not be sorted. the last thread id might be < this thread
-	 id if something is added to the queue since threads were
-	 created */
+      /* Here we remember one fail and if it concurrently fails, it
+       * can not be sorted. the last thread id might be < this thread
+       * id if something is added to the queue since threads were
+       * created  
+       */
       last_failed = TRUE;
     } else {
       last_failed = FALSE;
@@ -145,12 +253,29 @@ static void
 test_thread_sort (gboolean sort)
 {
   GThreadPool *pool;
-  guint limit = 20;
+  guint limit;
+  guint max_threads;
   gint i;
 
+  limit = MAX_THREADS * 10;
+
+  if (sort) {
+    max_threads = 1;
+  } else {
+    max_threads = MAX_THREADS;
+  }
+
+  /* It is important that we only have a maximum of 1 thread for this
+   * test since the results can not be guranteed to be sorted if > 1.
+   * 
+   * Threads are scheduled by the operating system and are executed at
+   * random. It cannot be assumed that threads are executed in the
+   * order they are created. This was discussed in bug #334943.
+   */
+  
   pool = g_thread_pool_new (test_thread_sort_entry_func, 
 			    GINT_TO_POINTER (sort), 
-			    MAX_THREADS,
+			    max_threads, 
 			    FALSE,
 			    NULL);
 
@@ -165,10 +290,17 @@ test_thread_sort (gboolean sort)
   for (i = 0; i < limit; i++) {
     guint id;
 
-    id = g_random_int_range (1, limit*2);
-    g_thread_pool_push (pool, GUINT_TO_POINTER (id + 1), NULL);
+    id = g_random_int_range (1, limit) + 1;
+    g_thread_pool_push (pool, GUINT_TO_POINTER (id), NULL);
+    DEBUG_MSG (("%s ===> pushed new thread with id:%d, number "
+		"of threads:%d, unprocessed:%d",
+		sort ? "[  sorted]" : "[unsorted]", 
+		id, 
+		g_thread_pool_get_num_threads (pool),
+		g_thread_pool_unprocessed (pool)));
   }
 
+  g_assert (g_thread_pool_get_max_threads (pool) == max_threads);
   g_assert (g_thread_pool_get_num_threads (pool) == g_thread_pool_get_max_threads (pool));
 }
 
@@ -258,15 +390,21 @@ test_check_start_and_stop (gpointer user_data)
 
     switch (test_number) {
     case 1:
-      test_thread_pools ();   
+      test_thread_functions ();
       break;
     case 2:
-      test_thread_sort (FALSE);  
+      test_thread_stop_unused ();
       break;
     case 3:
-      test_thread_sort (TRUE);  
+      test_thread_pools ();   
       break;
     case 4:
+      test_thread_sort (FALSE);  
+      break;
+    case 5:
+      test_thread_sort (TRUE);  
+      break;
+    case 6:
       test_thread_idle_time ();   
       break;
     default:
@@ -280,7 +418,7 @@ test_check_start_and_stop (gpointer user_data)
     return TRUE;
   }
 
-  if (test_number == 1) {
+  if (test_number == 3) {
     G_LOCK (thread_counter_pools); 
     quit &= running_thread_counter <= 0;
     DEBUG_MSG (("***** POOL RUNNING THREAD COUNT:%ld", 
@@ -288,7 +426,7 @@ test_check_start_and_stop (gpointer user_data)
     G_UNLOCK (thread_counter_pools); 
   }
 
-  if (test_number == 2 || test_number == 3) {
+  if (test_number == 4 || test_number == 5) {
     G_LOCK (thread_counter_sort);
     quit &= sort_thread_counter <= 0;
     DEBUG_MSG (("***** POOL SORT THREAD COUNT:%ld", 
@@ -296,7 +434,7 @@ test_check_start_and_stop (gpointer user_data)
     G_UNLOCK (thread_counter_sort); 
   }
 
-  if (test_number == 4) {
+  if (test_number == 6) {
     guint idle;
 
     idle = g_thread_pool_get_num_unused_threads ();

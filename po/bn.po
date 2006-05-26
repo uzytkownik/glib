@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: glib 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-07 13:10-0500\n"
+"POT-Creation-Date: 2006-05-26 09:45-0400\n"
 "PO-Revision-Date: 2005-10-03 00:24+0600\n"
 "Last-Translator: Mahay Alam Khan <makl10n@yahoo.com>\n"
 "Language-Team: Bengali <gnome-translation@bengalinux.org>\n"
@@ -569,51 +569,51 @@ msgstr "পরিবর্তন করার জন্য দেয়া তথ�
 msgid "Character out of range for UTF-16"
 msgstr "অক্ষর ইউটিএফ-১৬ আয়তার বাইরে"
 
-#: glib/goption.c:468
+#: glib/goption.c:484
 msgid "Usage:"
 msgstr "ব্যবহার:"
 
-#: glib/goption.c:468
+#: glib/goption.c:484
 msgid "[OPTION...]"
 msgstr "[অপশন]"
 
-#: glib/goption.c:556
+#: glib/goption.c:572
 msgid "Help Options:"
 msgstr "সহায়ক তথ্যের অপশন:"
 
-#: glib/goption.c:557
+#: glib/goption.c:573
 msgid "Show help options"
 msgstr "সহায়ক তথ্যের অপশন দেখাও"
 
-#: glib/goption.c:562
+#: glib/goption.c:578
 msgid "Show all help options"
 msgstr "সমস্ত সহায়ক তথ্যের অপশন দেখাও"
 
-#: glib/goption.c:612
+#: glib/goption.c:628
 msgid "Application Options:"
 msgstr "অ্যাপলিকেশন অপশন:"
 
-#: glib/goption.c:653
+#: glib/goption.c:669
 #, c-format
 msgid "Cannot parse integer value '%s' for %s"
 msgstr "ইন্টিজার মান %s এর জন্য '%s' পার্স করতে পারেনা"
 
-#: glib/goption.c:663
+#: glib/goption.c:679
 #, c-format
 msgid "Integer value '%s' for %s out of range"
 msgstr "ইন্টিজার মান %s এর জন্য '%s' সীমার বাহিরে"
 
-#: glib/goption.c:926
+#: glib/goption.c:942
 #, fuzzy, c-format
 msgid "Error parsing option %s"
 msgstr "পরিবর্তন সময়কালীন ভুল: %s"
 
-#: glib/goption.c:959 glib/goption.c:1070
+#: glib/goption.c:973 glib/goption.c:1084
 #, c-format
 msgid "Missing argument for %s"
 msgstr "%s এর জন্য প্রেরিত মান নিরুদ্দেশ"
 
-#: glib/goption.c:1474
+#: glib/goption.c:1467
 #, c-format
 msgid "Unknown option %s"
 msgstr "অজানা অপশন %s"
@@ -650,8 +650,8 @@ msgid "Key file contains unsupported encoding '%s'"
 msgstr "কী ফাইল অসমর্থিত এনকোডিং '%s' ধারণ করছে"
 
 #: glib/gkeyfile.c:1017 glib/gkeyfile.c:1176 glib/gkeyfile.c:2177
-#: glib/gkeyfile.c:2242 glib/gkeyfile.c:2361 glib/gkeyfile.c:2497
-#: glib/gkeyfile.c:2649 glib/gkeyfile.c:2823 glib/gkeyfile.c:2880
+#: glib/gkeyfile.c:2242 glib/gkeyfile.c:2361 glib/gkeyfile.c:2496
+#: glib/gkeyfile.c:2649 glib/gkeyfile.c:2825 glib/gkeyfile.c:2882
 #, c-format
 msgid "Key file does not have group '%s'"
 msgstr "কী ফাইলের গ্রুপ '%s' নেই"
@@ -678,32 +678,32 @@ msgid ""
 "interpreted."
 msgstr "কী ফাইল '%2$s' গ্রুপে '%1$s' কী ধারণ করছে যার মান ইন্টারপ্রেট করা যাবেনা।"
 
-#: glib/gkeyfile.c:2192 glib/gkeyfile.c:2376 glib/gkeyfile.c:2891
+#: glib/gkeyfile.c:2192 glib/gkeyfile.c:2376 glib/gkeyfile.c:2893
 #, c-format
 msgid "Key file does not have key '%s' in group '%s'"
 msgstr "কী ফাইলের '%2$s' গ্রুপ এ অন্তর্ভুক্ত '%1$s' কী টি নেই"
 
-#: glib/gkeyfile.c:3067
+#: glib/gkeyfile.c:3066
 #, c-format
 msgid "Key file contains escape character at end of line"
 msgstr "কী ফাইল লাইনের শেষে এস্কেপ অক্ষর ধারণ করছে"
 
-#: glib/gkeyfile.c:3089
+#: glib/gkeyfile.c:3088
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "কী ফাইলে অবৈধ এস্কেপ সিকোয়েন্স '%s' আছে"
 
-#: glib/gkeyfile.c:3230
+#: glib/gkeyfile.c:3229
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "মান '%s' কে সংখ্যা হিসেবে ইন্টারপ্রেট করা যায় না।"
 
-#: glib/gkeyfile.c:3240
+#: glib/gkeyfile.c:3239
 #, c-format
 msgid "Integer value '%s' out of range"
 msgstr "ইন্টিজার মান '%s' সীমার বাহিরে"
 
-#: glib/gkeyfile.c:3270
+#: glib/gkeyfile.c:3269
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "মান '%s' কে বুলিয়ান হিসেবে ইন্টারপ্রেট করা যায় না।"

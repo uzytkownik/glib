@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: glib HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-07 13:10-0500\n"
+"POT-Creation-Date: 2006-05-26 09:45-0400\n"
 "PO-Revision-Date: 2006-01-09 19:58+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -580,51 +580,51 @@ msgstr "変換する入力で無効なシーケンスがあります"
 msgid "Character out of range for UTF-16"
 msgstr "UTF-16 の範囲外の文字です"
 
-#: glib/goption.c:468
+#: glib/goption.c:484
 msgid "Usage:"
 msgstr "用法:"
 
-#: glib/goption.c:468
+#: glib/goption.c:484
 msgid "[OPTION...]"
 msgstr "[オプション...]"
 
-#: glib/goption.c:556
+#: glib/goption.c:572
 msgid "Help Options:"
 msgstr "ヘルプのオプション:"
 
-#: glib/goption.c:557
+#: glib/goption.c:573
 msgid "Show help options"
 msgstr "ヘルプのオプションを表示する"
 
-#: glib/goption.c:562
+#: glib/goption.c:578
 msgid "Show all help options"
 msgstr "ヘルプのオプションを全て表示する"
 
-#: glib/goption.c:612
+#: glib/goption.c:628
 msgid "Application Options:"
 msgstr "アプリケーションのオプション:"
 
-#: glib/goption.c:653
+#: glib/goption.c:669
 #, c-format
 msgid "Cannot parse integer value '%s' for %s"
 msgstr "%2$s の整数値 '%1$s' を解析できません"
 
-#: glib/goption.c:663
+#: glib/goption.c:679
 #, c-format
 msgid "Integer value '%s' for %s out of range"
 msgstr "%2$s の整数値 '%1$s' は範囲外の値です"
 
-#: glib/goption.c:926
+#: glib/goption.c:942
 #, c-format
 msgid "Error parsing option %s"
 msgstr "オプション %s の解析中にエラー"
 
-#: glib/goption.c:959 glib/goption.c:1070
+#: glib/goption.c:973 glib/goption.c:1084
 #, c-format
 msgid "Missing argument for %s"
 msgstr "%s の引数がありません"
 
-#: glib/goption.c:1474
+#: glib/goption.c:1467
 #, c-format
 msgid "Unknown option %s"
 msgstr "%s は不明なオプションです"
@@ -664,8 +664,8 @@ msgid "Key file contains unsupported encoding '%s'"
 msgstr "キー・ファイルにサポートしてないエンコーディング '%s' があります"
 
 #: glib/gkeyfile.c:1017 glib/gkeyfile.c:1176 glib/gkeyfile.c:2177
-#: glib/gkeyfile.c:2242 glib/gkeyfile.c:2361 glib/gkeyfile.c:2497
-#: glib/gkeyfile.c:2649 glib/gkeyfile.c:2823 glib/gkeyfile.c:2880
+#: glib/gkeyfile.c:2242 glib/gkeyfile.c:2361 glib/gkeyfile.c:2496
+#: glib/gkeyfile.c:2649 glib/gkeyfile.c:2825 glib/gkeyfile.c:2882
 #, c-format
 msgid "Key file does not have group '%s'"
 msgstr "キー・ファイルにグループ '%s' がありません"
@@ -693,32 +693,32 @@ msgid ""
 msgstr ""
 "キー・ファイルのグループ '%2$s' にあるキー '%1$s' の値を解釈できませんでした"
 
-#: glib/gkeyfile.c:2192 glib/gkeyfile.c:2376 glib/gkeyfile.c:2891
+#: glib/gkeyfile.c:2192 glib/gkeyfile.c:2376 glib/gkeyfile.c:2893
 #, c-format
 msgid "Key file does not have key '%s' in group '%s'"
 msgstr "キー・ファイルにはグループ '%2$s' のキー '%1$s' がありません"
 
-#: glib/gkeyfile.c:3067
+#: glib/gkeyfile.c:3066
 #, c-format
 msgid "Key file contains escape character at end of line"
 msgstr "キー・ファイルの行末にエスケープ文字が含まれています"
 
-#: glib/gkeyfile.c:3089
+#: glib/gkeyfile.c:3088
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "キー・ファイルに無効なエスケープ・シーケンス '%s' が含まれています"
 
-#: glib/gkeyfile.c:3230
+#: glib/gkeyfile.c:3229
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "値 '%s' を数値として解釈できません"
 
-#: glib/gkeyfile.c:3240
+#: glib/gkeyfile.c:3239
 #, c-format
 msgid "Integer value '%s' out of range"
 msgstr "整数値 '%s' は範囲外の値です"
 
-#: glib/gkeyfile.c:3270
+#: glib/gkeyfile.c:3269
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "値 '%s' を論理値として解釈できません"
