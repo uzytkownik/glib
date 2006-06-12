@@ -2,14 +2,14 @@
 # Oriya translation of glib.glib-2-4.or.pot.
 # Copyright (C) 2004, 2006, Free Software Foundation, Inc.
 # This file is distributed under the same license as the glib.glib-2-4 package.
-# $Id: or.po,v 1.31 2006/06/05 17:34:52 matthiasc Exp $
+# $Id: or.po,v 1.32 2006/06/12 15:37:25 matthiasc Exp $
 # Subhransu Behera <arya_subhransu@yahoo.co.in>, 2004, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-05 12:15-0400\n"
+"POT-Creation-Date: 2006-06-12 11:18-0400\n"
 "PO-Revision-Date: 2006-03-10 10:51+0530\n"
 "Last-Translator: Subhransu Behera <arya_subhransu@yahoo.co.in>\n"
 "Language-Team: Oriya <oriya-group@lists.sarovar.org>\n"
@@ -61,7 +61,7 @@ msgstr ""
 #: glib/gbookmarkfile.c:2945 glib/gbookmarkfile.c:3135
 #: glib/gbookmarkfile.c:3211 glib/gbookmarkfile.c:3363
 #: glib/gbookmarkfile.c:3428 glib/gbookmarkfile.c:3518
-#: glib/gbookmarkfile.c:3641
+#: glib/gbookmarkfile.c:3645
 #, c-format
 msgid "No bookmark found for URI '%s'"
 msgstr ""
