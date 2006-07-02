@@ -2,14 +2,14 @@
 # Oriya translation of glib.glib-2-4.or.pot.
 # Copyright (C) 2004, 2006, Free Software Foundation, Inc.
 # This file is distributed under the same license as the glib.glib-2-4 package.
-# $Id: or.po,v 1.33 2006/06/20 15:09:06 matthiasc Exp $
+# $Id: or.po,v 1.34 2006/07/02 19:52:14 matthiasc Exp $
 # Subhransu Behera <arya_subhransu@yahoo.co.in>, 2004, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-20 10:48-0400\n"
+"POT-Creation-Date: 2006-07-02 15:19-0400\n"
 "PO-Revision-Date: 2006-03-10 10:51+0530\n"
 "Last-Translator: Subhransu Behera <arya_subhransu@yahoo.co.in>\n"
 "Language-Team: Oriya <oriya-group@lists.sarovar.org>\n"
