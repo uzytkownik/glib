@@ -3,14 +3,14 @@
 # Oriya translation of glib.glib-2-4.or.pot.
 # Copyright (C) 2004, 2006, Free Software Foundation, Inc.
 # This file is distributed under the same license as the glib.glib-2-4 package.
-# $Id: or.po,v 1.35 2006/07/03 10:44:07 sbehera Exp $
+# $Id: or.po,v 1.36 2006/07/22 18:21:46 matthiasc Exp $
 # Subhransu Behera <arya_subhransu@yahoo.co.in>, 2004, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-02 15:19-0400\n"
+"POT-Creation-Date: 2006-07-22 14:04-0400\n"
 "PO-Revision-Date: 2006-07-03 13:20+0530\n"
 "Last-Translator: Subhransu Behera <arya_subhransu@yahoo.co.in>\n"
 "Language-Team: Oriya <oriya-group@lists.sarovar.org>\n"
@@ -18,7 +18,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.9.1\n"
-"Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
 
 #: glib/gbookmarkfile.c:716 glib/gbookmarkfile.c:793 glib/gbookmarkfile.c:872
 #: glib/gbookmarkfile.c:919
@@ -45,6 +46,7 @@ msgid "Unexpected tag '%s' inside '%s'"
 msgstr "ଅପ୍ରତ୍ଯାଶିିତ '%s' ସୂଚକଟି '%s' ମଧ୍ଯରେ ଅଛି"
 
 #: glib/gbookmarkfile.c:1792
+#, c-format
 msgid "No valid bookmark file was be found in data dirs"
 msgstr "ତଥ୍ଯ ଡିରେକ୍ଟୋରି ମାନଙ୍କ ରେ କୌଣସି ବୈଧ ଫାଇଲ ମିଳିବ ନାହିଁ"
 
@@ -226,6 +228,7 @@ msgid "Template '%s' invalid, should not contain a '%s'"
 msgstr "'%s' ନମୁନା ଟି ଅବୈଧ ଅଟେ, '%s' ଧାରଣ କରିବା ଉଚିତ ନୁହେଁ"
 
 #: glib/gfileutils.c:1379
+#, c-format
 msgid "Template '%s' doesn't contain XXXXXX"
 msgstr "'%s' ନମୁନା ଟି XXXXXXକୁ ଧାରଣ କରିନାହିଁ"
 
@@ -285,7 +288,8 @@ msgid "Error on line %d: %s"
 msgstr "%d ଧାଡ଼ିରେ ତ୍ରୁଟି: %s"
 
 #: glib/gmarkup.c:429
-msgid "Empty entity '&;' seen; valid entities are: &amp; &quot; &lt; &gt; &apos;"
+msgid ""
+"Empty entity '&;' seen; valid entities are: &amp; &quot; &lt; &gt; &apos;"
 msgstr "ଖାଲି ବସ୍ତୁ '&;' ଦେଖା ଗଲା; ବୈଧ ବସ୍ତୁଗୁଡ଼ିକ ହେଲା: &amp; &quot; &lt; &gt; &apos;"
 
 #: glib/gmarkup.c:439
@@ -364,19 +368,23 @@ msgstr "ଦଲିଲ ଗୋଟିଏ ଉପାଦାନରେ ଆରମ୍ଭ �
 msgid ""
 "'%s' is not a valid character following a '<' character; it may not begin an "
 "element name"
-msgstr "'<' ଅକ୍ଷର ପଛରେ ଆସୁଥିବା '%s' ଅକ୍ଷର ବୈଧ ନୁହେଁ; ଏହା ଗୋଟିଏ ବସ୍ତୁର ନାମକୁ ଆରମ୍ଭ କରିପାରିବ ନାହିଁ"
+msgstr ""
+"'<' ଅକ୍ଷର ପଛରେ ଆସୁଥିବା '%s' ଅକ୍ଷର ବୈଧ ନୁହେଁ; ଏହା ଗୋଟିଏ ବସ୍ତୁର ନାମକୁ ଆରମ୍ଭ କରିପାରିବ ନାହିଁ"
 
 #: glib/gmarkup.c:1158
 #, c-format
 msgid ""
 "Odd character '%s', expected a '>' character to end the start tag of element "
 "'%s'"
-msgstr "ବିଚିତ୍ର ଅକ୍ଷର '%s', '%s' ଉପାଦାନର ପ୍ରାରମ୍ଭ ସୂଚକକୁ ସମାପ୍ତ କରିବା ପାଇଁ '>' ଅକ୍ଷର ପ୍ରତ୍ଯାଶିତ ଥିଲା"
+msgstr ""
+"ବିଚିତ୍ର ଅକ୍ଷର '%s', '%s' ଉପାଦାନର ପ୍ରାରମ୍ଭ ସୂଚକକୁ ସମାପ୍ତ କରିବା ପାଇଁ '>' ଅକ୍ଷର ପ୍ରତ୍ଯାଶିତ ଥିଲା"
 
 #: glib/gmarkup.c:1247
 #, c-format
-msgid "Odd character '%s', expected a '=' after attribute name '%s' of element '%s'"
-msgstr "ବିଚିତ୍ର ଅକ୍ଷର '%1$s', '%3$s' ଉପାଦାନର ଗୋଟିଏ ଗୁଣର ନାମ '%2$s' ପରେ '=' ପ୍ରତ୍ଯାଶିତ ଥିଲା"
+msgid ""
+"Odd character '%s', expected a '=' after attribute name '%s' of element '%s'"
+msgstr ""
+"ବିଚିତ୍ର ଅକ୍ଷର '%1$s', '%3$s' ଉପାଦାନର ଗୋଟିଏ ଗୁଣର ନାମ '%2$s' ପରେ '=' ପ୍ରତ୍ଯାଶିତ ଥିଲା"
 
 #: glib/gmarkup.c:1289
 #, c-format
@@ -412,7 +420,8 @@ msgstr ""
 msgid ""
 "'%s' is not a valid character following the close element name '%s'; the "
 "allowed character is '>'"
-msgstr "ବନ୍ଦ ଉପାଦାନ ନାମ '%2$s' ପଛରେ ଆସୁଥିବା '%1$s' ଅକ୍ଷର ବୈଧ ନୁହେଁ;  ଅନୁମତ ଅକ୍ଷର ହେଲା '>'"
+msgstr ""
+"ବନ୍ଦ ଉପାଦାନ ନାମ '%2$s' ପଛରେ ଆସୁଥିବା '%1$s' ଅକ୍ଷର ବୈଧ ନୁହେଁ;  ଅନୁମତ ଅକ୍ଷର ହେଲା '>'"
 
 #: glib/gmarkup.c:1574
 #, c-format
@@ -501,7 +510,8 @@ msgstr "ଗୋଟିଏ '\\' ଅକ୍ଷରର ଠିକ ପରେ ପାଠ୍
 #: glib/gshell.c:545
 #, c-format
 msgid "Text ended before matching quote was found for %c. (The text was '%s')"
-msgstr "%c ପାଇଁ ମେଳ ହେଉ ଥିବା ଉଦ୍ଧ୍ରୁତି ଚିହ୍ନ ମିଳିବା ପୂର୍ବରୁ ପାଠ୍ଯ ସମାପ୍ତ ହୋଇ ଗଲା. (ପାଠ୍ଯଟି ଥିଲା: '%s')"
+msgstr ""
+"%c ପାଇଁ ମେଳ ହେଉ ଥିବା ଉଦ୍ଧ୍ରୁତି ଚିହ୍ନ ମିଳିବା ପୂର୍ବରୁ ପାଠ୍ଯ ସମାପ୍ତ ହୋଇ ଗଲା. (ପାଠ୍ଯଟି ଥିଲା: '%s')"
 
 #: glib/gshell.c:557
 #, c-format
@@ -664,10 +674,12 @@ msgid "Integer value '%s' for %s out of range"
 msgstr "%s ପାଇଁ ପୂର୍ଣ ସଂଖ୍ଯା '%s' ର ମୂଲ୍ଯ ପରିସର ବାହାରେ"
 
 #: glib/goption.c:721
+#, c-format
 msgid "Cannot parse double value '%s' for %s"
 msgstr "'%s' ଦ୍ବ୍ଯର୍ଥକ ମୂଲ୍ଯକୁ %s ପାଇଁ ବିଶ୍ଳେଷିତ କରିପାରିଲା ନାହିଁ"
 
 #: glib/goption.c:729
+#, c-format
 msgid "Double value '%s' for %s out of range"
 msgstr "'%s' ଦ୍ବ୍ଯର୍ଥକ ମୂଲ୍ଯଟି %s ପାଇଁ ପରିସରର ବହିର୍ଭୂତ।"
 
@@ -703,7 +715,8 @@ msgstr "ଫାଇଲ ଟି ଖାଲି ଅଛି"
 
 #: glib/gkeyfile.c:695
 #, c-format
-msgid "Key file contains line '%s' which is not a key-value pair, group, or comment"
+msgid ""
+"Key file contains line '%s' which is not a key-value pair, group, or comment"
 msgstr "ମୁଖ୍ଯ ଫାଇଲ '%s' କୁ ଧାରଣ କରିଛି ଯାହାକି ଗୋଟିଏ ମୁଖ୍ଯ-ଗୁଣ ର ଯୋଡି, ସମୂହ, କିମ୍ବା ବାକ୍ଯ ନୁହେଁ"
 
 #: glib/gkeyfile.c:763
@@ -743,7 +756,8 @@ msgstr "ମୂଖ୍ଯ ଫାଇଲ ଧାରଣ କରିଥିବା '%s' ଚ
 msgid ""
 "Key file contains key '%s' in group '%s' which has value that cannot be "
 "interpreted."
-msgstr "ମୂଖ୍ଯ ଫାଇଲ ଧାରଣ କରିଥିବା '%s' ଚାବିକାଠି ଗୋଟିଏ '%s' ସମୂହ ସହିତ ଏଛି ଯାହାର ମୂଲ୍ଯ ନିରୂପଣ କରିହେବ ନାହିଁ"
+msgstr ""
+"ମୂଖ୍ଯ ଫାଇଲ ଧାରଣ କରିଥିବା '%s' ଚାବିକାଠି ଗୋଟିଏ '%s' ସମୂହ ସହିତ ଏଛି ଯାହାର ମୂଲ୍ଯ ନିରୂପଣ କରିହେବ ନାହିଁ"
 
 #: glib/gkeyfile.c:2401 glib/gkeyfile.c:2585 glib/gkeyfile.c:3102
 #, c-format
@@ -771,6 +785,7 @@ msgid "Integer value '%s' out of range"
 msgstr "ପୂର୍ଣ ମୂଲ୍ଯ '%s' ପରିସର ର ବାହାରେ ଅଛି"
 
 #: glib/gkeyfile.c:3476
+#, c-format
 msgid "Value '%s' cannot be interpreted as a float number."
 msgstr "'%s' ମୂଲ୍ଯକୁ ଗୋଟିଏ ଭାସମାନ ସଂଖ୍ଯା ଭାବରେ ବ୍ଯାଖ୍ଯା କରିହେବ ନାହିଁ"
 
@@ -778,4 +793,3 @@ msgstr "'%s' ମୂଲ୍ଯକୁ ଗୋଟିଏ ଭାସମାନ ସଂଖ�
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "'%s' ର ମୂଲ୍ଯ ଗୋଟିଏ ବୁଲିଆନ୍ ଭାବରେ ନିରୂପଣ କରିହେବ ନାହିଁ"
-
