@@ -1,4 +1,4 @@
-# translation of glib.HEAD.po to Russian
+# translation of glib.glib-2-12.po to
 # Copyright (C) 1998-2002, 2004, 2006 Free Software Foundation, Inc.
 #
 # Valek Filippov <frob@df.ru>, 2001-2002.
@@ -6,99 +6,98 @@
 # Leonid Kanter <leon@asplinux.ru>, 2004, 2006.
 msgid ""
 msgstr ""
-"Project-Id-Version: glib.HEAD\n"
+"Project-Id-Version: glib.glib-2-12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-15 20:27-0400\n"
-"PO-Revision-Date: 2006-02-01 18:37+0200\n"
+"POT-Creation-Date: 2006-08-30 02:02-0400\n"
+"PO-Revision-Date: 2006-08-24 18:17+0300\n"
 "Last-Translator: Leonid Kanter <leon@asplinux.ru>\n"
-"Language-Team: Russian <gnome-cyr@gnome.org>\n"
+"Language-Team:  <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11\n"
+"X-Generator: KBabel 1.11.2\n"
 "Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: glib/gbookmarkfile.c:716 glib/gbookmarkfile.c:793 glib/gbookmarkfile.c:872
 #: glib/gbookmarkfile.c:919
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected attribute '%s' for element '%s'"
-msgstr ""
-"Встретился лишний символ \"%s\", ожидался символ \"=\" после имени атрибута "
-"\"%s\" элемента \"%s\""
+msgstr "Неожиданный атрибут \"%s\" для элемента \"%s\""
 
 #: glib/gbookmarkfile.c:727 glib/gbookmarkfile.c:804 glib/gbookmarkfile.c:814
 #: glib/gbookmarkfile.c:930
 #, c-format
 msgid "Attribute '%s' of element '%s' not found"
-msgstr ""
+msgstr "Атрибут \"%s\" элемента \"%s\" не найден"
 
 #: glib/gbookmarkfile.c:1103 glib/gbookmarkfile.c:1168
 #: glib/gbookmarkfile.c:1232 glib/gbookmarkfile.c:1242
 #, c-format
 msgid "Unexpected tag '%s', tag '%s' expected"
-msgstr ""
+msgstr "Неожиданный тег \"%s\", ожидался тег \"%s\""
 
 #: glib/gbookmarkfile.c:1128 glib/gbookmarkfile.c:1142
 #: glib/gbookmarkfile.c:1210 glib/gbookmarkfile.c:1262
 #, c-format
 msgid "Unexpected tag '%s' inside '%s'"
-msgstr ""
+msgstr "Неожиданный тег \"%s\" внутри \"%s\""
 
 #: glib/gbookmarkfile.c:1792
-#, fuzzy, c-format
+#, c-format
 msgid "No valid bookmark file found in data dirs"
-msgstr "Не удается найти действительный файл ключа в каталогах данных"
+msgstr "Не удается найти действительный файл закладки в каталогах данных"
 
 #: glib/gbookmarkfile.c:1993
 #, c-format
 msgid "A bookmark for URI '%s' already exists"
-msgstr ""
+msgstr "Закладка для URI \"%s\" уже существует"
 
 #: glib/gbookmarkfile.c:2039 glib/gbookmarkfile.c:2196
 #: glib/gbookmarkfile.c:2281 glib/gbookmarkfile.c:2362
 #: glib/gbookmarkfile.c:2447 glib/gbookmarkfile.c:2530
 #: glib/gbookmarkfile.c:2608 glib/gbookmarkfile.c:2687
 #: glib/gbookmarkfile.c:2729 glib/gbookmarkfile.c:2826
-#: glib/gbookmarkfile.c:2950 glib/gbookmarkfile.c:3140
-#: glib/gbookmarkfile.c:3216 glib/gbookmarkfile.c:3369
-#: glib/gbookmarkfile.c:3434 glib/gbookmarkfile.c:3524
-#: glib/gbookmarkfile.c:3651
+#: glib/gbookmarkfile.c:2952 glib/gbookmarkfile.c:3142
+#: glib/gbookmarkfile.c:3218 glib/gbookmarkfile.c:3371
+#: glib/gbookmarkfile.c:3436 glib/gbookmarkfile.c:3526
+#: glib/gbookmarkfile.c:3653
 #, c-format
 msgid "No bookmark found for URI '%s'"
-msgstr ""
+msgstr "Не найдена закладка для URI \"%s\""
 
 #: glib/gbookmarkfile.c:2371
 #, c-format
 msgid "No MIME type defined in the bookmark for URI '%s'"
-msgstr ""
+msgstr "Тип MIME не определён в закладке для URI \"%s\""
 
 #: glib/gbookmarkfile.c:2456
 #, c-format
 msgid "No private flag has been defined in bookmark for URI '%s'"
-msgstr ""
+msgstr "Частные флаги не были определены в закладке для URI \"%s\""
 
 #: glib/gbookmarkfile.c:2835
 #, c-format
 msgid "No groups set in bookmark for URI '%s'"
-msgstr ""
+msgstr "Не установлены группы в закладке для URI \"%s\""
 
-#: glib/gbookmarkfile.c:3234 glib/gbookmarkfile.c:3379
+#: glib/gbookmarkfile.c:3236 glib/gbookmarkfile.c:3381
 #, c-format
 msgid "No application with name '%s' registered a bookmark for '%s'"
 msgstr ""
+"Ни одно из приложений с именем \"%s\" не зарегистрировало закладку для \"%s\""
 
-#: glib/gconvert.c:404 glib/gconvert.c:482 glib/giochannel.c:1150
+#: glib/gconvert.c:405 glib/gconvert.c:483 glib/giochannel.c:1150
 #, c-format
 msgid "Conversion from character set '%s' to '%s' is not supported"
 msgstr "Преобразование из набора символов \"%s\" в \"%s\" не поддерживается"
 
-#: glib/gconvert.c:408 glib/gconvert.c:486
+#: glib/gconvert.c:409 glib/gconvert.c:487
 #, c-format
 msgid "Could not open converter from '%s' to '%s'"
 msgstr "Не удалось открыть преобразователь из \"%s\" в \"%s\""
 
-#: glib/gconvert.c:602 glib/gconvert.c:991 glib/giochannel.c:1322
+#: glib/gconvert.c:603 glib/gconvert.c:992 glib/giochannel.c:1322
 #: glib/giochannel.c:1364 glib/giochannel.c:2206 glib/gutf8.c:943
 #: glib/gutf8.c:1392
 #, c-format
@@ -107,58 +106,58 @@ msgstr ""
 "Недопустимая последовательность байтов для преобразования содержится во "
 "входной строке"
 
-#: glib/gconvert.c:608 glib/gconvert.c:918 glib/giochannel.c:1329
+#: glib/gconvert.c:609 glib/gconvert.c:919 glib/giochannel.c:1329
 #: glib/giochannel.c:2218
 #, c-format
 msgid "Error during conversion: %s"
 msgstr "Произошла ошибка при преобразовании: %s"
 
-#: glib/gconvert.c:643 glib/gutf8.c:939 glib/gutf8.c:1143 glib/gutf8.c:1284
+#: glib/gconvert.c:644 glib/gutf8.c:939 glib/gutf8.c:1143 glib/gutf8.c:1284
 #: glib/gutf8.c:1388
 #, c-format
 msgid "Partial character sequence at end of input"
 msgstr "Неполный символ содержится в конце входной строки"
 
-#: glib/gconvert.c:893
+#: glib/gconvert.c:894
 #, c-format
 msgid "Cannot convert fallback '%s' to codeset '%s'"
 msgstr ""
 "Невозможно корректно преобразовать символ \"%s\" в символ из набора \"%s\""
 
-#: glib/gconvert.c:1702
+#: glib/gconvert.c:1703
 #, c-format
 msgid "The URI '%s' is not an absolute URI using the \"file\" scheme"
 msgstr ""
 "URI \"%s\" не является абсолютным идентификатором при использовании схемы "
 "\"file\""
 
-#: glib/gconvert.c:1712
+#: glib/gconvert.c:1713
 #, c-format
 msgid "The local file URI '%s' may not include a '#'"
 msgstr ""
 "Идентификатор URI локального файла \"%s\" не может включать символ \"#\""
 
-#: glib/gconvert.c:1729
+#: glib/gconvert.c:1730
 #, c-format
 msgid "The URI '%s' is invalid"
 msgstr "Идентификатор URI \"%s\" недопустим"
 
-#: glib/gconvert.c:1741
+#: glib/gconvert.c:1742
 #, c-format
 msgid "The hostname of the URI '%s' is invalid"
 msgstr "Имя узла недопустимо в идентификаторе URI \"%s\""
 
-#: glib/gconvert.c:1757
+#: glib/gconvert.c:1758
 #, c-format
 msgid "The URI '%s' contains invalidly escaped characters"
 msgstr "Идентификатор URI \"%s\" содержит недопустимо экранированный символ"
 
-#: glib/gconvert.c:1852
+#: glib/gconvert.c:1853
 #, c-format
 msgid "The pathname '%s' is not an absolute path"
 msgstr "Путь \"%s\" не является абсолютным"
 
-#: glib/gconvert.c:1862
+#: glib/gconvert.c:1863
 #, c-format
 msgid "Invalid hostname"
 msgstr "Имя узла недопустимо"
@@ -234,9 +233,9 @@ msgid "Template '%s' invalid, should not contain a '%s'"
 msgstr "Шаблон \"%s\" недопустим: он не должен содержать \"%s\""
 
 #: glib/gfileutils.c:1379
-#, fuzzy, c-format
+#, c-format
 msgid "Template '%s' doesn't contain XXXXXX"
-msgstr "Шаблон \"%s\" не заканчивается на XXXXXX"
+msgstr "Шаблон \"%s\" не содержит XXXXXX"
 
 #: glib/gfileutils.c:1854
 #, c-format
@@ -707,14 +706,14 @@ msgid "Integer value '%s' for %s out of range"
 msgstr "Целое значение '%s' для %s выходит за пределы"
 
 #: glib/goption.c:721
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot parse double value '%s' for %s"
-msgstr "Не удается разобрать целое значение '%s' для %s"
+msgstr "Не удается разобрать двойное значение '%s' для %s"
 
 #: glib/goption.c:729
-#, fuzzy, c-format
+#, c-format
 msgid "Double value '%s' for %s out of range"
-msgstr "Целое значение '%s' для %s выходит за пределы"
+msgstr "Двойное значение '%s' для %s выходит за пределы"
 
 #: glib/goption.c:1066
 #, c-format
@@ -746,7 +745,7 @@ msgstr "Не является обычным файлом"
 msgid "File is empty"
 msgstr "Файл пуст"
 
-#: glib/gkeyfile.c:695
+#: glib/gkeyfile.c:696
 #, c-format
 msgid ""
 "Key file contains line '%s' which is not a key-value pair, group, or comment"
@@ -754,42 +753,42 @@ msgstr ""
 "Файл ключа содержит строку '%s', которая не является ключом - парой величин, "
 "группой или комментарием"
 
-#: glib/gkeyfile.c:763
+#: glib/gkeyfile.c:767
 #, c-format
 msgid "Key file does not start with a group"
 msgstr "Файл ключа не начинается с группы"
 
-#: glib/gkeyfile.c:806
+#: glib/gkeyfile.c:811
 #, c-format
 msgid "Key file contains unsupported encoding '%s'"
 msgstr "Файл ключа содержит неподдерживаемую кодировку '%s'"
 
-#: glib/gkeyfile.c:1013 glib/gkeyfile.c:1172 glib/gkeyfile.c:2385
-#: glib/gkeyfile.c:2450 glib/gkeyfile.c:2569 glib/gkeyfile.c:2704
-#: glib/gkeyfile.c:2857 glib/gkeyfile.c:3033 glib/gkeyfile.c:3090
+#: glib/gkeyfile.c:1020 glib/gkeyfile.c:1179 glib/gkeyfile.c:2398
+#: glib/gkeyfile.c:2463 glib/gkeyfile.c:2582 glib/gkeyfile.c:2717
+#: glib/gkeyfile.c:2870 glib/gkeyfile.c:3046 glib/gkeyfile.c:3103
 #, c-format
 msgid "Key file does not have group '%s'"
 msgstr "Файл ключей не имеет группы '%s'"
 
-#: glib/gkeyfile.c:1184
+#: glib/gkeyfile.c:1191
 #, c-format
 msgid "Key file does not have key '%s'"
 msgstr "Файл ключа не содержит ключ '%s'"
 
-#: glib/gkeyfile.c:1285 glib/gkeyfile.c:1394
+#: glib/gkeyfile.c:1293 glib/gkeyfile.c:1405
 #, c-format
 msgid "Key file contains key '%s' with value '%s' which is not UTF-8"
 msgstr ""
 "Файл ключа содержит ключ '%s', значение которого '%s' не в кодировке UTF-8"
 
-#: glib/gkeyfile.c:1303 glib/gkeyfile.c:1412 glib/gkeyfile.c:1784
+#: glib/gkeyfile.c:1313 glib/gkeyfile.c:1425 glib/gkeyfile.c:1797
 #, c-format
 msgid "Key file contains key '%s' which has value that cannot be interpreted."
 msgstr ""
 "Файл ключа содержит ключ '%s', значение которого не может быть "
 "интерпретировано."
 
-#: glib/gkeyfile.c:2000 glib/gkeyfile.c:2213
+#: glib/gkeyfile.c:2013 glib/gkeyfile.c:2226
 #, c-format
 msgid ""
 "Key file contains key '%s' in group '%s' which has value that cannot be "
@@ -798,37 +797,37 @@ msgstr ""
 "Файл ключа содержит ключ '%s' в группе '%s', значение которого не может быть "
 "интерпретировано."
 
-#: glib/gkeyfile.c:2400 glib/gkeyfile.c:2584 glib/gkeyfile.c:3101
+#: glib/gkeyfile.c:2413 glib/gkeyfile.c:2597 glib/gkeyfile.c:3114
 #, c-format
 msgid "Key file does not have key '%s' in group '%s'"
 msgstr "Файл ключа не имеет ключа '%s' в группе '%s'"
 
-#: glib/gkeyfile.c:3274
+#: glib/gkeyfile.c:3287
 #, c-format
 msgid "Key file contains escape character at end of line"
 msgstr "Файл ключа содержит символ escape в конце файла"
 
-#: glib/gkeyfile.c:3296
+#: glib/gkeyfile.c:3309
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "Файл ключа содержит неверную escape-последовательность '%s'"
 
-#: glib/gkeyfile.c:3437
+#: glib/gkeyfile.c:3451
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "Значение '%s'  не может быть интерпретировано как числовое."
 
-#: glib/gkeyfile.c:3447
+#: glib/gkeyfile.c:3465
 #, c-format
 msgid "Integer value '%s' out of range"
 msgstr "Целое значение '%s' выходит за пределы"
 
-#: glib/gkeyfile.c:3475
-#, fuzzy, c-format
+#: glib/gkeyfile.c:3498
+#, c-format
 msgid "Value '%s' cannot be interpreted as a float number."
-msgstr "Значение '%s'  не может быть интерпретировано как числовое."
+msgstr "Значение '%s'  не может быть интерпретировано как плавающее."
 
-#: glib/gkeyfile.c:3495
+#: glib/gkeyfile.c:3525
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "Значение '%s'  не может быть интерпретировано как булево."

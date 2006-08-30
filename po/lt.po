@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: glib HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-15 20:27-0400\n"
-"PO-Revision-Date: 2006-02-25 10:54+0200\n"
+"POT-Creation-Date: 2006-08-30 02:02-0400\n"
+"PO-Revision-Date: 2006-08-26 22:57+0300\n"
 "Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
@@ -18,138 +18,136 @@ msgstr ""
 
 #: glib/gbookmarkfile.c:716 glib/gbookmarkfile.c:793 glib/gbookmarkfile.c:872
 #: glib/gbookmarkfile.c:919
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected attribute '%s' for element '%s'"
-msgstr ""
-"Neįprastas simbolis „%1$s“, tikėtasi sulaukti „=“ po elemento „%3$s“ požymio "
-"vardo „%2$s“"
+msgstr "Netikėtas požymis „%s“ elementui „%s“"
 
 #: glib/gbookmarkfile.c:727 glib/gbookmarkfile.c:804 glib/gbookmarkfile.c:814
 #: glib/gbookmarkfile.c:930
 #, c-format
 msgid "Attribute '%s' of element '%s' not found"
-msgstr ""
+msgstr "Elemento „%2$s“ požymis „%1$s“ nerastas"
 
 #: glib/gbookmarkfile.c:1103 glib/gbookmarkfile.c:1168
 #: glib/gbookmarkfile.c:1232 glib/gbookmarkfile.c:1242
 #, c-format
 msgid "Unexpected tag '%s', tag '%s' expected"
-msgstr ""
+msgstr "Netikėta žymė „%s“, tikėtasi žymės „%s“"
 
 #: glib/gbookmarkfile.c:1128 glib/gbookmarkfile.c:1142
 #: glib/gbookmarkfile.c:1210 glib/gbookmarkfile.c:1262
 #, c-format
 msgid "Unexpected tag '%s' inside '%s'"
-msgstr ""
+msgstr "Netikėta žymė „%s“ viduje „%s“"
 
 #: glib/gbookmarkfile.c:1792
-#, fuzzy, c-format
+#, c-format
 msgid "No valid bookmark file found in data dirs"
-msgstr "Duomenų aplankuose nepavyko rasti tinkamos raktų rinkmenos"
+msgstr "Duomenų aplankuose nerasta tinkamos žymelių rinkmenos"
 
 #: glib/gbookmarkfile.c:1993
 #, c-format
 msgid "A bookmark for URI '%s' already exists"
-msgstr ""
+msgstr "URI „%s“ žymelė jau egzistuoja"
 
 #: glib/gbookmarkfile.c:2039 glib/gbookmarkfile.c:2196
 #: glib/gbookmarkfile.c:2281 glib/gbookmarkfile.c:2362
 #: glib/gbookmarkfile.c:2447 glib/gbookmarkfile.c:2530
 #: glib/gbookmarkfile.c:2608 glib/gbookmarkfile.c:2687
 #: glib/gbookmarkfile.c:2729 glib/gbookmarkfile.c:2826
-#: glib/gbookmarkfile.c:2950 glib/gbookmarkfile.c:3140
-#: glib/gbookmarkfile.c:3216 glib/gbookmarkfile.c:3369
-#: glib/gbookmarkfile.c:3434 glib/gbookmarkfile.c:3524
-#: glib/gbookmarkfile.c:3651
+#: glib/gbookmarkfile.c:2952 glib/gbookmarkfile.c:3142
+#: glib/gbookmarkfile.c:3218 glib/gbookmarkfile.c:3371
+#: glib/gbookmarkfile.c:3436 glib/gbookmarkfile.c:3526
+#: glib/gbookmarkfile.c:3653
 #, c-format
 msgid "No bookmark found for URI '%s'"
-msgstr ""
+msgstr "Žymelė URI „%s“ nerasta"
 
 #: glib/gbookmarkfile.c:2371
 #, c-format
 msgid "No MIME type defined in the bookmark for URI '%s'"
-msgstr ""
+msgstr "URI „%s“ žymelėje neapibrėžtas MIME tipas"
 
 #: glib/gbookmarkfile.c:2456
 #, c-format
 msgid "No private flag has been defined in bookmark for URI '%s'"
-msgstr ""
+msgstr "URI „%s“ žymelėje neapibrėžta privati vėliavėlė"
 
 #: glib/gbookmarkfile.c:2835
 #, c-format
 msgid "No groups set in bookmark for URI '%s'"
-msgstr ""
+msgstr "URI „%s“ žymelėje nenurodyta jokia grupė"
 
-#: glib/gbookmarkfile.c:3234 glib/gbookmarkfile.c:3379
+#: glib/gbookmarkfile.c:3236 glib/gbookmarkfile.c:3381
 #, c-format
 msgid "No application with name '%s' registered a bookmark for '%s'"
-msgstr ""
+msgstr "Nėra programos pavadinimu „%s“ registravusios „%s“ žymelę"
 
-#: glib/gconvert.c:404 glib/gconvert.c:482 glib/giochannel.c:1150
+#: glib/gconvert.c:405 glib/gconvert.c:483 glib/giochannel.c:1150
 #, c-format
 msgid "Conversion from character set '%s' to '%s' is not supported"
 msgstr "Keitimas iš koduotės „%s“ į koduotę „%s“ nepalaikomas"
 
-#: glib/gconvert.c:408 glib/gconvert.c:486
+#: glib/gconvert.c:409 glib/gconvert.c:487
 #, c-format
 msgid "Could not open converter from '%s' to '%s'"
 msgstr "Nepavyko atverti keitiklio iš „%s“ į „%s“"
 
-#: glib/gconvert.c:602 glib/gconvert.c:991 glib/giochannel.c:1322
+#: glib/gconvert.c:603 glib/gconvert.c:992 glib/giochannel.c:1322
 #: glib/giochannel.c:1364 glib/giochannel.c:2206 glib/gutf8.c:943
 #: glib/gutf8.c:1392
 #, c-format
 msgid "Invalid byte sequence in conversion input"
 msgstr "Klaidinga baitų seka keitimo įvedime"
 
-#: glib/gconvert.c:608 glib/gconvert.c:918 glib/giochannel.c:1329
+#: glib/gconvert.c:609 glib/gconvert.c:919 glib/giochannel.c:1329
 #: glib/giochannel.c:2218
 #, c-format
 msgid "Error during conversion: %s"
 msgstr "Klaida keitimo metu: %s"
 
-#: glib/gconvert.c:643 glib/gutf8.c:939 glib/gutf8.c:1143 glib/gutf8.c:1284
+#: glib/gconvert.c:644 glib/gutf8.c:939 glib/gutf8.c:1143 glib/gutf8.c:1284
 #: glib/gutf8.c:1388
 #, c-format
 msgid "Partial character sequence at end of input"
 msgstr "Nepilna simbolio seka įvedimo pabaigoje"
 
-#: glib/gconvert.c:893
+#: glib/gconvert.c:894
 #, c-format
 msgid "Cannot convert fallback '%s' to codeset '%s'"
 msgstr "Negalima keisti atgalinio varianto „%s“ į koduotę „%s“"
 
-#: glib/gconvert.c:1702
+#: glib/gconvert.c:1703
 #, c-format
 msgid "The URI '%s' is not an absolute URI using the \"file\" scheme"
 msgstr "Adresas „%s“ nėra absoliutus adresas naudojantis „file“ schemą"
 
-#: glib/gconvert.c:1712
+#: glib/gconvert.c:1713
 #, c-format
 msgid "The local file URI '%s' may not include a '#'"
 msgstr "Vietinės rinkmenos adresas „%s“ negali turėti simbolio „#“"
 
-#: glib/gconvert.c:1729
+#: glib/gconvert.c:1730
 #, c-format
 msgid "The URI '%s' is invalid"
 msgstr "Adresas „%s“ yra klaidingas"
 
-#: glib/gconvert.c:1741
+#: glib/gconvert.c:1742
 #, c-format
 msgid "The hostname of the URI '%s' is invalid"
 msgstr "Kompiuterio vardas „%s“ adrese yra klaidingas"
 
-#: glib/gconvert.c:1757
+#: glib/gconvert.c:1758
 #, c-format
 msgid "The URI '%s' contains invalidly escaped characters"
 msgstr "Adrese „%s“ yra klaidingai perkoduoti symboliai"
 
-#: glib/gconvert.c:1852
+#: glib/gconvert.c:1853
 #, c-format
 msgid "The pathname '%s' is not an absolute path"
 msgstr "Kelias „%s“ nėra absoliutus"
 
-#: glib/gconvert.c:1862
+#: glib/gconvert.c:1863
 #, c-format
 msgid "Invalid hostname"
 msgstr "Klaidingas kompiuterio vardas"
@@ -226,9 +224,9 @@ msgid "Template '%s' invalid, should not contain a '%s'"
 msgstr "Šablonas „%s“ klaidingas, jame negali būti „%s“"
 
 #: glib/gfileutils.c:1379
-#, fuzzy, c-format
+#, c-format
 msgid "Template '%s' doesn't contain XXXXXX"
-msgstr "Šablono „%s“ gale nėra XXXXXX"
+msgstr "Šablone „%s“ nėra XXXXXX"
 
 #: glib/gfileutils.c:1854
 #, c-format
@@ -693,14 +691,14 @@ msgid "Integer value '%s' for %s out of range"
 msgstr "Sveikoji reikšmė „%s“, reikalinga %s, viršija ribas"
 
 #: glib/goption.c:721
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot parse double value '%s' for %s"
-msgstr "Nepavyko apdoroti sveikosios reikšmės „%s“, reikalingos %s"
+msgstr "Nepavyko apdoroti dvigubos reikšmės „%s“, reikalingos %s"
 
 #: glib/goption.c:729
-#, fuzzy, c-format
+#, c-format
 msgid "Double value '%s' for %s out of range"
-msgstr "Sveikoji reikšmė „%s“, reikalinga %s, viršija ribas"
+msgstr "Dviguboji reikšmė „%s“, reikalinga %s, viršija ribas"
 
 #: glib/goption.c:1066
 #, c-format
@@ -732,7 +730,7 @@ msgstr "Nėra paprasta rinkmena"
 msgid "File is empty"
 msgstr "Rinkmena yra tuščia"
 
-#: glib/gkeyfile.c:695
+#: glib/gkeyfile.c:696
 #, c-format
 msgid ""
 "Key file contains line '%s' which is not a key-value pair, group, or comment"
@@ -740,41 +738,41 @@ msgstr ""
 "Raktų rinkmenoje yra eilutė „%s“, kuri nėra raktas-reikšmė pora, grupė ar "
 "komentaras"
 
-#: glib/gkeyfile.c:763
+#: glib/gkeyfile.c:767
 #, c-format
 msgid "Key file does not start with a group"
 msgstr "Raktų rinkmena neprasideda grupe"
 
-#: glib/gkeyfile.c:806
+#: glib/gkeyfile.c:811
 #, c-format
 msgid "Key file contains unsupported encoding '%s'"
 msgstr "Raktų rinkmenoje yra nepalaikoma koduotė „%s“"
 
-#: glib/gkeyfile.c:1013 glib/gkeyfile.c:1172 glib/gkeyfile.c:2385
-#: glib/gkeyfile.c:2450 glib/gkeyfile.c:2569 glib/gkeyfile.c:2704
-#: glib/gkeyfile.c:2857 glib/gkeyfile.c:3033 glib/gkeyfile.c:3090
+#: glib/gkeyfile.c:1020 glib/gkeyfile.c:1179 glib/gkeyfile.c:2398
+#: glib/gkeyfile.c:2463 glib/gkeyfile.c:2582 glib/gkeyfile.c:2717
+#: glib/gkeyfile.c:2870 glib/gkeyfile.c:3046 glib/gkeyfile.c:3103
 #, c-format
 msgid "Key file does not have group '%s'"
 msgstr "Raktų rinkmena neturi grupės „%s“"
 
-#: glib/gkeyfile.c:1184
+#: glib/gkeyfile.c:1191
 #, c-format
 msgid "Key file does not have key '%s'"
 msgstr "Raktų rinkmena neturi rakto „%s“"
 
-#: glib/gkeyfile.c:1285 glib/gkeyfile.c:1394
+#: glib/gkeyfile.c:1293 glib/gkeyfile.c:1405
 #, c-format
 msgid "Key file contains key '%s' with value '%s' which is not UTF-8"
 msgstr "Raktų rinkmenoje yra raktas „%s“ su reikšme „%s“, kuri nėra UTF-8"
 
-#: glib/gkeyfile.c:1303 glib/gkeyfile.c:1412 glib/gkeyfile.c:1784
+#: glib/gkeyfile.c:1313 glib/gkeyfile.c:1425 glib/gkeyfile.c:1797
 #, c-format
 msgid "Key file contains key '%s' which has value that cannot be interpreted."
 msgstr ""
 "Raktų rinkmenoje yra raktas „%s“, kuriame yra reikšmė, kurios negalima "
 "suprasti."
 
-#: glib/gkeyfile.c:2000 glib/gkeyfile.c:2213
+#: glib/gkeyfile.c:2013 glib/gkeyfile.c:2226
 #, c-format
 msgid ""
 "Key file contains key '%s' in group '%s' which has value that cannot be "
@@ -783,37 +781,38 @@ msgstr ""
 "Raktų rinkmenoje yra raktas „%s“ grupėje „%s“, kuriame yra reikšmė, kurios "
 "negalima suprasti."
 
-#: glib/gkeyfile.c:2400 glib/gkeyfile.c:2584 glib/gkeyfile.c:3101
+#: glib/gkeyfile.c:2413 glib/gkeyfile.c:2597 glib/gkeyfile.c:3114
 #, c-format
 msgid "Key file does not have key '%s' in group '%s'"
 msgstr "Raktų rinkmenoje nėra rakto „%s“ grupėje „%s“"
 
-#: glib/gkeyfile.c:3274
+#: glib/gkeyfile.c:3287
 #, c-format
 msgid "Key file contains escape character at end of line"
 msgstr "Raktų rinkmenoje, eilutės pabaigoje yra pabėgimo simbolis"
 
-#: glib/gkeyfile.c:3296
+#: glib/gkeyfile.c:3309
 #, c-format
 msgid "Key file contains invalid escape sequence '%s'"
 msgstr "Raktų rinkmenoje yra klaidinga pabėgimo tvarka „%s“"
 
-#: glib/gkeyfile.c:3437
+#: glib/gkeyfile.c:3451
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "Reikšmės „%s“ negalima interpretuoti kaip skaičiaus."
 
-#: glib/gkeyfile.c:3447
+#: glib/gkeyfile.c:3465
 #, c-format
 msgid "Integer value '%s' out of range"
 msgstr "Sveikoji reikšmė „%s“ viršija ribas"
 
-#: glib/gkeyfile.c:3475
-#, fuzzy, c-format
+#: glib/gkeyfile.c:3498
+#, c-format
 msgid "Value '%s' cannot be interpreted as a float number."
-msgstr "Reikšmės „%s“ negalima interpretuoti kaip skaičiaus."
+msgstr ""
+"Reikšmės „%s“ negalima interpretuoti kaip slankiojo kablelio skaičiaus."
 
-#: glib/gkeyfile.c:3495
+#: glib/gkeyfile.c:3525
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "Reikšmės „%s“ negalima interpretuoti kaip loginės."

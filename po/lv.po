@@ -1,152 +1,156 @@
+# translation of lv.po to Latvian
 # glib for Latvian.
-# Copyright (C) 2002 Free Software Foundation, Inc.
-# Artis Trops <hornet@navigator.lv>, 2002.
+# Copyright (C) 2002, 2006 Free Software Foundation, Inc.
 #
+# Artis Trops <hornet@navigator.lv>, 2002.
+# Raivis Dejus <orvils@gmail.com>, 2006.
 msgid ""
 msgstr ""
-"Project-Id-Version: glib\n"
+"Project-Id-Version: lv\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-15 20:27-0400\n"
-"PO-Revision-Date: 2002-12-19 01:04+0200\n"
-"Last-Translator: Artis Trops <hornet@navigator.lv>\n"
-"Language-Team: Latvian <ll10nt@os.lv>\n"
+"POT-Creation-Date: 2006-08-30 02:02-0400\n"
+"PO-Revision-Date: 2006-08-25 13:44+0300\n"
+"Last-Translator: Raivis Dejus <orvils@gmail.com>\n"
+"Language-Team: Latvian <locale@laka.lv>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.2\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
+"2);\n"
 
 #: glib/gbookmarkfile.c:716 glib/gbookmarkfile.c:793 glib/gbookmarkfile.c:872
 #: glib/gbookmarkfile.c:919
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected attribute '%s' for element '%s'"
-msgstr ""
-"Savāda rakstzīme '%s', gaidīju '=' aiz atribūta nosaukuma '%s' elementam '%s'"
+msgstr "Neparedzēts atribūts '%s' elementam '%s'"
 
 #: glib/gbookmarkfile.c:727 glib/gbookmarkfile.c:804 glib/gbookmarkfile.c:814
 #: glib/gbookmarkfile.c:930
 #, c-format
 msgid "Attribute '%s' of element '%s' not found"
-msgstr ""
+msgstr "Attribūts '%s' no elementa '%s' nav atrasts"
 
 #: glib/gbookmarkfile.c:1103 glib/gbookmarkfile.c:1168
 #: glib/gbookmarkfile.c:1232 glib/gbookmarkfile.c:1242
 #, c-format
 msgid "Unexpected tag '%s', tag '%s' expected"
-msgstr ""
+msgstr "Negaidīts tags '%s', gaidīja tagu '%s'"
 
 #: glib/gbookmarkfile.c:1128 glib/gbookmarkfile.c:1142
 #: glib/gbookmarkfile.c:1210 glib/gbookmarkfile.c:1262
 #, c-format
 msgid "Unexpected tag '%s' inside '%s'"
-msgstr ""
+msgstr "Negaidīts tags '%s' iekš '%s'"
 
 #: glib/gbookmarkfile.c:1792
 #, c-format
 msgid "No valid bookmark file found in data dirs"
-msgstr ""
+msgstr "Datu direktorijās nav atrasts neviens derīgs grāmatzīmju fails"
 
 #: glib/gbookmarkfile.c:1993
 #, c-format
 msgid "A bookmark for URI '%s' already exists"
-msgstr ""
+msgstr "Grāmatzīme priekš '%s' jau eksistē"
 
 #: glib/gbookmarkfile.c:2039 glib/gbookmarkfile.c:2196
 #: glib/gbookmarkfile.c:2281 glib/gbookmarkfile.c:2362
 #: glib/gbookmarkfile.c:2447 glib/gbookmarkfile.c:2530
 #: glib/gbookmarkfile.c:2608 glib/gbookmarkfile.c:2687
 #: glib/gbookmarkfile.c:2729 glib/gbookmarkfile.c:2826
-#: glib/gbookmarkfile.c:2950 glib/gbookmarkfile.c:3140
-#: glib/gbookmarkfile.c:3216 glib/gbookmarkfile.c:3369
-#: glib/gbookmarkfile.c:3434 glib/gbookmarkfile.c:3524
-#: glib/gbookmarkfile.c:3651
+#: glib/gbookmarkfile.c:2952 glib/gbookmarkfile.c:3142
+#: glib/gbookmarkfile.c:3218 glib/gbookmarkfile.c:3371
+#: glib/gbookmarkfile.c:3436 glib/gbookmarkfile.c:3526
+#: glib/gbookmarkfile.c:3653
 #, c-format
 msgid "No bookmark found for URI '%s'"
-msgstr ""
+msgstr "Priekš '%s' netika atrasta neviena grāmatzīme"
 
 #: glib/gbookmarkfile.c:2371
 #, c-format
 msgid "No MIME type defined in the bookmark for URI '%s'"
-msgstr ""
+msgstr "Grāmatzīmē priekš '%s' nav definēts MIME tips"
 
 #: glib/gbookmarkfile.c:2456
 #, c-format
 msgid "No private flag has been defined in bookmark for URI '%s'"
-msgstr ""
+msgstr "Grāmatzīmē priekš '%s' nav definēts privilēģiju karodziņš"
 
 #: glib/gbookmarkfile.c:2835
 #, c-format
 msgid "No groups set in bookmark for URI '%s'"
-msgstr ""
+msgstr "Grāmatzīmē priekš '%s' nav definētas grupas"
 
-#: glib/gbookmarkfile.c:3234 glib/gbookmarkfile.c:3379
+#: glib/gbookmarkfile.c:3236 glib/gbookmarkfile.c:3381
 #, c-format
 msgid "No application with name '%s' registered a bookmark for '%s'"
-msgstr ""
+msgstr "Ar '%s' grāmatzīmi nav saistīts programmas nosaukums '%s'"
 
-#: glib/gconvert.c:404 glib/gconvert.c:482 glib/giochannel.c:1150
+#: glib/gconvert.c:405 glib/gconvert.c:483 glib/giochannel.c:1150
 #, c-format
 msgid "Conversion from character set '%s' to '%s' is not supported"
 msgstr "Konversija no rakstzīmju kopas '%s' uz '%s' nav atbalstīta"
 
-#: glib/gconvert.c:408 glib/gconvert.c:486
-#, fuzzy, c-format
+#: glib/gconvert.c:409 glib/gconvert.c:487
+#, c-format
 msgid "Could not open converter from '%s' to '%s'"
-msgstr "Nevarēju atvērt konvertātoru no '%s' uz '%s': %s"
+msgstr "Nevarēju atvērt konvertātoru no '%s' uz '%s'"
 
-#: glib/gconvert.c:602 glib/gconvert.c:991 glib/giochannel.c:1322
+#: glib/gconvert.c:603 glib/gconvert.c:992 glib/giochannel.c:1322
 #: glib/giochannel.c:1364 glib/giochannel.c:2206 glib/gutf8.c:943
 #: glib/gutf8.c:1392
 #, c-format
 msgid "Invalid byte sequence in conversion input"
 msgstr "Nepareiza baitu secība konversijas ievadē"
 
-#: glib/gconvert.c:608 glib/gconvert.c:918 glib/giochannel.c:1329
+#: glib/gconvert.c:609 glib/gconvert.c:919 glib/giochannel.c:1329
 #: glib/giochannel.c:2218
 #, c-format
 msgid "Error during conversion: %s"
 msgstr "Kļūda konversējot: %s"
 
-#: glib/gconvert.c:643 glib/gutf8.c:939 glib/gutf8.c:1143 glib/gutf8.c:1284
+#: glib/gconvert.c:644 glib/gutf8.c:939 glib/gutf8.c:1143 glib/gutf8.c:1284
 #: glib/gutf8.c:1388
 #, c-format
 msgid "Partial character sequence at end of input"
 msgstr "Daļēja simbolu secība ievades beigās"
 
-#: glib/gconvert.c:893
+#: glib/gconvert.c:894
 #, c-format
 msgid "Cannot convert fallback '%s' to codeset '%s'"
 msgstr "Nevar pārveidot atkritienu '%s' uz rakstzīmju kopu '%s'"
 
-#: glib/gconvert.c:1702
-#, fuzzy, c-format
+#: glib/gconvert.c:1703
+#, c-format
 msgid "The URI '%s' is not an absolute URI using the \"file\" scheme"
-msgstr "URI '%s' nav absolūtais URI, lietojot failu shēmu"
+msgstr "URI '%s' nav absolūtais URI, lietojot \"failu\" shēmu"
 
-#: glib/gconvert.c:1712
+#: glib/gconvert.c:1713
 #, c-format
 msgid "The local file URI '%s' may not include a '#'"
 msgstr "Lokālā faila URI '%s' nedrīkst saturēt '#'"
 
-#: glib/gconvert.c:1729
+#: glib/gconvert.c:1730
 #, c-format
 msgid "The URI '%s' is invalid"
 msgstr "URI '%s' ir nepareizs"
 
-#: glib/gconvert.c:1741
+#: glib/gconvert.c:1742
 #, c-format
 msgid "The hostname of the URI '%s' is invalid"
 msgstr "Hostdatora nosaukuma URI '%s' ir nepareizs"
 
-#: glib/gconvert.c:1757
+#: glib/gconvert.c:1758
 #, c-format
 msgid "The URI '%s' contains invalidly escaped characters"
 msgstr "URI '%s' satur nepareizi izvairīgas rakstzīmes"
 
-#: glib/gconvert.c:1852
+#: glib/gconvert.c:1853
 #, c-format
 msgid "The pathname '%s' is not an absolute path"
 msgstr "Ceļvārds '%s' nav absolutais ceļš"
 
-#: glib/gconvert.c:1862
+#: glib/gconvert.c:1863
 #, c-format
 msgid "Invalid hostname"
 msgstr "Nepareizs hostdatora nosaukums"
@@ -187,9 +191,9 @@ msgid "Failed to open file '%s': fdopen() failed: %s"
 msgstr "Nevarēju atvērt '%s': fdopen() neizdevās: %s"
 
 #: glib/gfileutils.c:905
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to rename file '%s' to '%s': g_rename() failed: %s"
-msgstr "Nevarēju atvērt '%s': fdopen() neizdevās: %s"
+msgstr "Neizdevās pārsaukt failu '%s' par '%s': g_rename() neizdevās: %s"
 
 #: glib/gfileutils.c:946 glib/gfileutils.c:1404
 #, c-format
@@ -197,24 +201,24 @@ msgid "Failed to create file '%s': %s"
 msgstr "Neizdevās izveidot failu '%s': %s"
 
 #: glib/gfileutils.c:960
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open file '%s' for writing: fdopen() failed: %s"
-msgstr "Nevarēju atvērt '%s': fdopen() neizdevās: %s"
+msgstr "Nevarēju atvērt '%s' rakstīšanai: fdopen() neizdevās: %s"
 
 #: glib/gfileutils.c:985
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write file '%s': fwrite() failed: %s"
-msgstr "Nevarēju atvērt '%s': fdopen() neizdevās: %s"
+msgstr "Nevarēju ierakstīt failā '%s': fwrite() neizdevās: %s"
 
 #: glib/gfileutils.c:1004
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to close file '%s': fclose() failed: %s"
-msgstr "Nevarēju atvērt '%s': fdopen() neizdevās: %s"
+msgstr "Nevarēju aizvērt failu '%s': fclose() neizdevās: %s"
 
 #: glib/gfileutils.c:1122
 #, c-format
 msgid "Existing file '%s' could not be removed: g_unlink() failed: %s"
-msgstr ""
+msgstr "Esošo failu '%s' nevarēja aizvākt: g_unlink() neizdevās %s"
 
 #: glib/gfileutils.c:1366
 #, c-format
@@ -222,24 +226,24 @@ msgid "Template '%s' invalid, should not contain a '%s'"
 msgstr "Veidne '%s' nepareizs, nedrīkstētu saturēt '%s'"
 
 #: glib/gfileutils.c:1379
-#, fuzzy, c-format
+#, c-format
 msgid "Template '%s' doesn't contain XXXXXX"
-msgstr "Veidne '%s' nebeidzas ar XXXXXX"
+msgstr "Veidne '%s' nesatur XXXXXX"
 
 #: glib/gfileutils.c:1854
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to read the symbolic link '%s': %s"
-msgstr "Neizdevās izveidot failu '%s': %s"
+msgstr "Neizdevās ielasīt simbolsaiti '%s': %s"
 
 #: glib/gfileutils.c:1875
 #, c-format
 msgid "Symbolic links not supported"
-msgstr ""
+msgstr "Simbolsaites nav atbalstītas"
 
 #: glib/giochannel.c:1154
-#, fuzzy, c-format
+#, c-format
 msgid "Could not open converter from '%s' to '%s': %s"
-msgstr "Nevarēju atvērt konvertātoru no `%s' uz '%s': %s"
+msgstr "Nevarēju atvērt konvertātoru no '%s' uz '%s': %s"
 
 #: glib/giochannel.c:1499
 #, c-format
@@ -262,14 +266,14 @@ msgid "Can't do a raw read in g_io_channel_read_to_end"
 msgstr "Nevaru izpildīt jēllasīšanu iekš g_io_channel_read_to_end"
 
 #: glib/gmappedfile.c:116
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open file '%s': open() failed: %s"
-msgstr "Nevarēju atvērt '%s': fdopen() neizdevās: %s"
+msgstr "Nevarēju atvērt '%s': open() neizdevās: %s"
 
 #: glib/gmappedfile.c:193
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to map file '%s': mmap() failed: %s"
-msgstr "Nevarēju atvērt '%s': fdopen() neizdevās: %s"
+msgstr "Nevarēju nokartēt failu '%s': mmap() neizdevās: %s"
 
 #: glib/gmarkup.c:227
 #, c-format
@@ -318,18 +322,18 @@ msgstr ""
 "sākt entītiju - aizvieto & zīmes ar &amp;"
 
 #: glib/gmarkup.c:574
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Failed to parse '%-.*s', which should have been a digit inside a character "
 "reference (&#234; for example) - perhaps the digit is too large"
 msgstr ""
-"Nevarēju parsēt '%s', kur vajadzētu būt ciparam iekš rakstzīmes atsauces "
+"Nevarēju parsēt '%-.*s', kur vajadzētu būt ciparam iekš rakstzīmes atsauces "
 "(&#234; piemēram) - iespējams, ka cipars ir pārāk liels"
 
 #: glib/gmarkup.c:599
-#, fuzzy, c-format
+#, c-format
 msgid "Character reference '%-.*s' does not encode a permitted character"
-msgstr "Rakstzīmes atsauce '%s' nešifrē atļautu rakstzīmi"
+msgstr "Rakstzīmes atsauce '%-.*s' nešifrē atļautu rakstzīmi"
 
 #: glib/gmarkup.c:614
 msgid "Empty character reference; should include a digit such as &#454;"
@@ -367,7 +371,7 @@ msgid ""
 "element name"
 msgstr ""
 "'%s' nav atļauta rakstzīme, sekojoša aiz rakstzīmes '<'; tā nedrīkst iesākt "
-"elementa vārdu."
+"elementa vārdu"
 
 #: glib/gmarkup.c:1158
 #, c-format
@@ -546,31 +550,31 @@ msgid "Failed to execute child process (%s)"
 msgstr "Nevarēju izpildīt bērnprocesu (%s)"
 
 #: glib/gspawn-win32.c:468 glib/gspawn-win32.c:524
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid program name: %s"
-msgstr "Nepareizs hostdatora nosaukums"
+msgstr "Nepareizs programmas nosaukums: %s"
 
 #: glib/gspawn-win32.c:478 glib/gspawn-win32.c:534 glib/gspawn-win32.c:777
 #: glib/gspawn-win32.c:832 glib/gspawn-win32.c:1367
 #, c-format
 msgid "Invalid string in argument vector at %d: %s"
-msgstr ""
+msgstr "Nepareiza simbolu virkne argumetnu vektorā pie %d: %s"
 
 #: glib/gspawn-win32.c:489 glib/gspawn-win32.c:545 glib/gspawn-win32.c:791
 #: glib/gspawn-win32.c:845 glib/gspawn-win32.c:1400
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid string in environment: %s"
-msgstr "Nepareiza secība konversijas ievadē "
+msgstr "Nepareiza simbolu virkne vidē: %s"
 
 #: glib/gspawn-win32.c:773 glib/gspawn-win32.c:828 glib/gspawn-win32.c:1348
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid working directory: %s"
-msgstr "Kļūda atverot direktoriju '%s': %s"
+msgstr "Nepareiza darba direktorija: %s"
 
 #: glib/gspawn-win32.c:887
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to execute helper program (%s)"
-msgstr "Nevarēju izpildīt palīga programmu"
+msgstr "Nevarēju izpildīt palīga programmu (%s)"
 
 #: glib/gspawn-win32.c:1087
 #, c-format
@@ -644,175 +648,158 @@ msgstr "Rakstzīme nav UTF-16 laukā"
 
 #: glib/goption.c:495
 msgid "Usage:"
-msgstr ""
+msgstr "Izmantošana:"
 
 #: glib/goption.c:495
 msgid "[OPTION...]"
-msgstr ""
+msgstr "[OPCIJA...]"
 
 #: glib/goption.c:586
 msgid "Help Options:"
-msgstr ""
+msgstr "Palīdzības opcijas:"
 
 #: glib/goption.c:587
 msgid "Show help options"
-msgstr ""
+msgstr "Paradīt palīga opcijas"
 
 #: glib/goption.c:592
 msgid "Show all help options"
-msgstr ""
+msgstr "Paradīt visas palīga opcijas"
 
 #: glib/goption.c:642
 msgid "Application Options:"
-msgstr ""
+msgstr "Aplikācijas opcijas:"
 
 #: glib/goption.c:686 glib/goption.c:756
 #, c-format
 msgid "Cannot parse integer value '%s' for %s"
-msgstr ""
+msgstr "Nevaru parsēt skaitlisku vērtību '%s' priekš %s"
 
 #: glib/goption.c:696 glib/goption.c:764
 #, c-format
 msgid "Integer value '%s' for %s out of range"
-msgstr ""
+msgstr "Skaitliskā vērtība '%s' priekš %s ir pārāk liela"
 
 #: glib/goption.c:721
 #, c-format
 msgid "Cannot parse double value '%s' for %s"
-msgstr ""
+msgstr "Nevaru parsēt double vērtību '%s' priekš %s"
 
 #: glib/goption.c:729
 #, c-format
 msgid "Double value '%s' for %s out of range"
-msgstr ""
+msgstr "Double vērtība '%s' priekš '%s' ir ārpus diapazona"
 
 #: glib/goption.c:1066
-#, fuzzy, c-format
+#, c-format
 msgid "Error parsing option %s"
-msgstr "Kļūda konversējot: %s"
+msgstr "Kļūda parsējot opciju %s"
 
 #: glib/goption.c:1097 glib/goption.c:1208
 #, c-format
 msgid "Missing argument for %s"
-msgstr ""
+msgstr "Trūkst argumenta priekš %s"
 
 #: glib/goption.c:1597
 #, c-format
 msgid "Unknown option %s"
-msgstr ""
+msgstr "Nezināma opcija %s"
 
 #: glib/gkeyfile.c:337
 #, c-format
 msgid "Valid key file could not be found in data dirs"
-msgstr ""
+msgstr "Datu direktorijās nevarēja atrast derīgu atslēgas failu"
 
 #: glib/gkeyfile.c:372
 #, c-format
 msgid "Not a regular file"
-msgstr ""
+msgstr "Nav parasts fails"
 
 #: glib/gkeyfile.c:380
 #, c-format
 msgid "File is empty"
-msgstr ""
+msgstr "Fails ir tukšs"
 
-#: glib/gkeyfile.c:695
+#: glib/gkeyfile.c:696
 #, c-format
 msgid ""
 "Key file contains line '%s' which is not a key-value pair, group, or comment"
 msgstr ""
+"Atslēgas fails satur rindiņu '%s', kas nav atslēgas-vērtības pāris, grupa "
+"vai komentārs"
 
-#: glib/gkeyfile.c:763
+#: glib/gkeyfile.c:767
 #, c-format
 msgid "Key file does not start with a group"
-msgstr ""
+msgstr "Atslēgas fails nesākas ar grupu"
 
-#: glib/gkeyfile.c:806
+#: glib/gkeyfile.c:811
 #, c-format
 msgid "Key file contains unsupported encoding '%s'"
-msgstr ""
+msgstr "Atslēgas fails satur neatbalstītu kodējumi '%s'"
 
-#: glib/gkeyfile.c:1013 glib/gkeyfile.c:1172 glib/gkeyfile.c:2385
-#: glib/gkeyfile.c:2450 glib/gkeyfile.c:2569 glib/gkeyfile.c:2704
-#: glib/gkeyfile.c:2857 glib/gkeyfile.c:3033 glib/gkeyfile.c:3090
+#: glib/gkeyfile.c:1020 glib/gkeyfile.c:1179 glib/gkeyfile.c:2398
+#: glib/gkeyfile.c:2463 glib/gkeyfile.c:2582 glib/gkeyfile.c:2717
+#: glib/gkeyfile.c:2870 glib/gkeyfile.c:3046 glib/gkeyfile.c:3103
 #, c-format
 msgid "Key file does not have group '%s'"
-msgstr ""
+msgstr "Atslēgas failam nav grupas '%s'"
 
-#: glib/gkeyfile.c:1184
+#: glib/gkeyfile.c:1191
 #, c-format
 msgid "Key file does not have key '%s'"
-msgstr ""
+msgstr "Atslēgas failam nav atslēgas '%s'"
 
-#: glib/gkeyfile.c:1285 glib/gkeyfile.c:1394
+#: glib/gkeyfile.c:1293 glib/gkeyfile.c:1405
 #, c-format
 msgid "Key file contains key '%s' with value '%s' which is not UTF-8"
-msgstr ""
+msgstr "Atslēgas fails satur atslēgu '%s' ar vērtību '%s', kas nav UTF-8"
 
-#: glib/gkeyfile.c:1303 glib/gkeyfile.c:1412 glib/gkeyfile.c:1784
+#: glib/gkeyfile.c:1313 glib/gkeyfile.c:1425 glib/gkeyfile.c:1797
 #, c-format
 msgid "Key file contains key '%s' which has value that cannot be interpreted."
-msgstr ""
+msgstr "Atslēgu datnē ir atslēga '%s' ar vērtību, kura nevar būt interpretēta."
 
-#: glib/gkeyfile.c:2000 glib/gkeyfile.c:2213
+#: glib/gkeyfile.c:2013 glib/gkeyfile.c:2226
 #, c-format
 msgid ""
 "Key file contains key '%s' in group '%s' which has value that cannot be "
 "interpreted."
 msgstr ""
+"Atslēgu datnē ir atslēga '%s', grupā '%s' ar vērtību, kura nevar būt "
+"interpretēta."
 
-#: glib/gkeyfile.c:2400 glib/gkeyfile.c:2584 glib/gkeyfile.c:3101
+#: glib/gkeyfile.c:2413 glib/gkeyfile.c:2597 glib/gkeyfile.c:3114
 #, c-format
 msgid "Key file does not have key '%s' in group '%s'"
-msgstr ""
+msgstr "Atslēgas failam nav atslēgas '%s' grupā '%s'"
 
-#: glib/gkeyfile.c:3274
+#: glib/gkeyfile.c:3287
 #, c-format
 msgid "Key file contains escape character at end of line"
-msgstr ""
+msgstr "Atslēgas fails rindiņas beigāš satur atgrieses simbolu"
 
-#: glib/gkeyfile.c:3296
-#, fuzzy, c-format
+#: glib/gkeyfile.c:3309
+#, c-format
 msgid "Key file contains invalid escape sequence '%s'"
-msgstr "URI '%s' satur nepareizi izvairīgas rakstzīmes"
+msgstr "Atslēgas fails satur nepareizu atgriezes secību '%s'"
 
-#: glib/gkeyfile.c:3437
+#: glib/gkeyfile.c:3451
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
-msgstr ""
+msgstr "Vērtība '%s' nevar būt interpretēta kā skaitlis."
 
-#: glib/gkeyfile.c:3447
+#: glib/gkeyfile.c:3465
 #, c-format
 msgid "Integer value '%s' out of range"
-msgstr ""
+msgstr "Skaitliskā vērtība '%s' ir pārāk liela"
 
-#: glib/gkeyfile.c:3475
+#: glib/gkeyfile.c:3498
 #, c-format
 msgid "Value '%s' cannot be interpreted as a float number."
-msgstr ""
+msgstr "Vērtība '%s' nevar tikt interpretēta kā skaitlis ar peldošu komatu."
 
-#: glib/gkeyfile.c:3495
+#: glib/gkeyfile.c:3525
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
-msgstr ""
-
-#, fuzzy
-#~ msgid "Could not change file mode: fork() failed: %s"
-#~ msgstr "Nevarēju atvērt '%s': fdopen() neizdevās: %s"
-
-#, fuzzy
-#~ msgid "Could not change file mode: waitpid() failed: %s"
-#~ msgstr "Nevarēju atrast %lu baitus, lai nolasītu failu \"%s\""
-
-#, fuzzy
-#~ msgid "Could not change file mode: chmod() failed: %s"
-#~ msgstr "Nevarēju atvērt '%s': fdopen() neizdevās: %s"
-
-#~ msgid "Conversion from character set `%s' to `%s' is not supported"
-#~ msgstr "Konvertācija no rakstzīmju kopas '%s' uz '%s' nav atbalstīta"
-
-#~ msgid "Incorrect message size"
-#~ msgstr "Nepareizs ziņas izmērs"
-
-#~ msgid "Socket error"
-#~ msgstr "Kontakta kļūda"
+msgstr "Vērtība '%s' nevar tikt interpretēta kā loģiskā vērtība."

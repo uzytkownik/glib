@@ -856,6 +856,12 @@ AC_MSG_RESULT(unsigned $glib_size_type)
 
 # Check for some functions
 AC_CHECK_FUNCS(lstat strerror strsignal memmove vsnprintf stpcpy strcasecmp strncasecmp poll getcwd nanosleep vasprintf setenv unsetenv getc_unlocked readlink symlink)
+AC_CHECK_FUNCS(clock_gettime, [], [
+  AC_CHECK_LIB(rt, clock_gettime, [
+    AC_DEFINE(HAVE_CLOCK_GETTIME, 1)
+    LIBS="$LIBS -lrt"
+  ])
+])
 
 AC_CHECK_HEADERS(crt_externs.h)
 AC_CHECK_FUNCS(_NSGetEnviron)
@@ -1547,7 +1553,7 @@ int main()
    void *ret;
    pthread_create (&t, $1, func, 0);
    pthread_join (t, &ret);
-   exit (check_me != 42 || ret != &check_me);
+   return (check_me != 42 || ret != &check_me);
 }])
 
 dnl
@@ -1587,6 +1593,7 @@ if test x"$have_threads" != xno; then
           if test $glib_flag_works = yes ; then
              G_THREAD_CFLAGS=-$flag
 	     G_THREAD_LIBS=-$flag
+	     break;
           fi
         done
          ;;

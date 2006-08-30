@@ -1,3 +1,31 @@
+2006-08-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.12.3 ===
+
+	* NEWS: Updates
+
+2006-08-27  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Fix the pthread compiler flag detection more.
+
+	* configure.in: Check for clock_gettime.
+	* glib/gtimer.c: Use Posix monotonic clocks instead of 
+	gettimeofday when available.  (#336114, William Jon McCann)
+
+2006-08-25  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Fix the pthread compiler flag detection.
+
+	* glib/gunicode.h: 
+	* glib/gutf8.c (_g_utf8_make_valid): Rename make_valid_utf8
+	from gconvert.c, move it to gutf8.c, and export it privately.
+
+	* glib/gconvert.c (g_filename_display_name): Adjust callers.
+
+	* glib/gkeyfile.c: Use _g_utf8_make_valid() in a number of
+	places to ensure error messages are valid UTF-8.  (#351853,
+	Simon Budig)
+
 2006-08-20  Tor Lillqvist  <tml@novell.com>
 
 	* glib/gnulib/vasnprintf.c (vasnprintf): Fix crash when printing
