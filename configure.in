@@ -27,8 +27,8 @@ m4_include(m4macros/glib-gettext.m4)dnl
 #
 m4_define([glib_major_version], [2])
 m4_define([glib_minor_version], [12])
-m4_define([glib_micro_version], [3])
-m4_define([glib_interface_age], [3])
+m4_define([glib_micro_version], [4])
+m4_define([glib_interface_age], [4])
 m4_define([glib_binary_age],
           [m4_eval(100 * glib_minor_version + glib_micro_version)])
 m4_define([glib_version],
@@ -427,7 +427,7 @@ dnl
 dnl gettext support
 dnl
 
-ALL_LINGUAS="am ar az be bg bn bn_IN bs ca cs cy da de el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr hu id is it ja ka ko ku lt lv mk ml mn ms nb ne nl nn or pa pl pt pt_BR ro ru rw sk sl sq sr sr@Latn sr@ije sv ta te th tl tr tt uk vi wa xh yi zh_CN zh_HK zh_TW"
+ALL_LINGUAS="am ar az be bg bn bn_IN bs ca cs cy da de dz el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr hu hy id is it ja ka ko ku lt lv mk ml mn ms nb ne nl nn or pa pl pt pt_BR ro ru rw sk sl sq sr sr@Latn sr@ije sv ta te th tl tr tt uk vi wa xh yi zh_CN zh_HK zh_TW"
 GLIB_GNU_GETTEXT
 
 if test "$gt_cv_have_gettext" != "yes" ; then
@@ -855,7 +855,35 @@ fi
 AC_MSG_RESULT(unsigned $glib_size_type)
 
 # Check for some functions
-AC_CHECK_FUNCS(lstat strerror strsignal memmove vsnprintf stpcpy strcasecmp strncasecmp poll getcwd nanosleep vasprintf setenv unsetenv getc_unlocked readlink symlink)
+AC_CHECK_FUNCS(lstat strerror strsignal memmove vsnprintf stpcpy strcasecmp strncasecmp poll getcwd vasprintf setenv unsetenv getc_unlocked readlink symlink)
+# Check for high-resolution sleep functions
+AC_CHECK_FUNCS(nanosleep nsleep)
+
+AC_CHECK_FUNCS(clock_gettime, [], [
+  AC_CHECK_LIB(rt, clock_gettime, [
+    AC_DEFINE(HAVE_CLOCK_GETTIME, 1)
+    LIBS="$LIBS -lrt"
+  ])
+])
+
+AC_CACHE_CHECK(for monotonic clocks,
+    glib_cv_monotonic_clock,AC_TRY_RUN([
+#include <time.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+      int main() {
+#if defined(_POSIX_MONOTONIC_CLOCK) && _POSIX_MONOTONIC_CLOCK >= 0 && defined(CLOCK_MONOTONIC)
+        return 0;
+#else
+        return 1;
+#endif
+      }],glib_cv_monotonic_clock=yes,glib_cv_monotonic_clock=no))
+
+GLIB_ASSERT_SET(glib_cv_monotonic_clock)
+if test "$glib_cv_monotonic_clock" = "yes"; then
+  AC_DEFINE(HAVE_MONOTONIC_CLOCK,1,[Have a monotonic clock])
+fi
 
 AC_CHECK_HEADERS(crt_externs.h)
 AC_CHECK_FUNCS(_NSGetEnviron)
@@ -1092,6 +1120,7 @@ dnl we currently check for all three va_copy possibilities, so we get
 dnl all results in config.log for bug reports.
 AC_CACHE_CHECK([for an implementation of va_copy()],glib_cv_va_copy,[
 	AC_LINK_IFELSE([#include <stdarg.h>
+#include <stdlib.h>
 	void f (int i, ...) {
 	va_list args1, args2;
 	va_start (args1, i);
@@ -1109,6 +1138,7 @@ AC_CACHE_CHECK([for an implementation of va_copy()],glib_cv_va_copy,[
 ])
 AC_CACHE_CHECK([for an implementation of __va_copy()],glib_cv___va_copy,[
 	AC_LINK_IFELSE([#include <stdarg.h>
+#include <stdlib.h>
 	void f (int i, ...) {
 	va_list args1, args2;
 	va_start (args1, i);
@@ -1138,6 +1168,7 @@ fi
 
 AC_CACHE_CHECK([whether va_lists can be copied by value],glib_cv_va_val_copy,[
 	AC_TRY_RUN([#include <stdarg.h>
+#include <stdlib.h>
 	void f (int i, ...) {
 	va_list args1, args2;
 	va_start (args1, i);
@@ -1547,7 +1578,7 @@ int main()
    void *ret;
    pthread_create (&t, $1, func, 0);
    pthread_join (t, &ret);
-   exit (check_me != 42 || ret != &check_me);
+   return (check_me != 42 || ret != &check_me);
 }])
 
 dnl
@@ -1587,6 +1618,7 @@ if test x"$have_threads" != xno; then
           if test $glib_flag_works = yes ; then
              G_THREAD_CFLAGS=-$flag
 	     G_THREAD_LIBS=-$flag
+	     break;
           fi
         done
          ;;
