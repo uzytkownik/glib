@@ -173,7 +173,7 @@ gunichar *g_unicode_canonical_decomposition (gunichar  ch,
  */
 GLIB_VAR const gchar * const g_utf8_skip;
 
-#define g_utf8_next_char(p) (char *)((p) + g_utf8_skip[*(guchar *)(p)])
+#define g_utf8_next_char(p) (char *)((p) + g_utf8_skip[*(const guchar *)(p)])
 
 gunichar g_utf8_get_char           (const gchar  *p);
 gunichar g_utf8_get_char_validated (const  gchar *p,
@@ -291,6 +291,11 @@ gchar *g_utf8_collate_key_for_filename (const gchar *str,
 
 gboolean g_unichar_get_mirror_char (gunichar ch,
                                     gunichar *mirrored_ch);
+
+/* private */
+
+gchar *_g_utf8_make_valid (const gchar *name);
+
 
 G_END_DECLS
 

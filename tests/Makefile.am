@@ -55,7 +55,7 @@ patterntest_LDADD = $(libglib)
 testgdate_LDADD = $(libglib)
 testgdateparser_LDADD = $(libglib)
 unicode_normalize_LDADD = $(libglib)
-errorcheck_mutex_test_LDADD = $(libglib) $(libgthread)
+errorcheck_mutex_test_LDADD = $(libglib) $(libgthread) $(G_THREAD_LIBS) 
 if ENABLE_TIMELOOP
 timeloop_LDADD = $(libglib)
 timeloop_closure_LDADD = $(libglib) $(libgobject)
@@ -121,7 +121,7 @@ TESTS = $(test_programs) $(test_scripts)
 TESTS_ENVIRONMENT = srcdir=$(srcdir) \
 	LIBCHARSET_ALIAS_DIR=$(top_builddir)/glib/libcharset \
 	MALLOC_CHECK_=2	\
-	MALLOC_PERTURB_=$$(($$RANDOM % 256))
+	MALLOC_PERTURB_=$$(($${RANDOM:-256} % 256))
 
 progs_ldadd = $(EFENCE) $(libglib) $(EFENCE)
 thread_ldadd = $(libgthread) $(G_THREAD_LIBS) $(progs_ldadd)

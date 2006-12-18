@@ -1,3 +1,28 @@
+Fri Dec 15 2006  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtype.c (instance_real_class_get): Dereference the pointer
+	before dropping the lock.  (#378078, Jonathan Matthew)
+
+2006-10-01  Matthias Clasen  <mclasen@redhat.com>
+	
+	* === Released 2.12.4 ===
+
+Sat Sep 30 2006  Matthias Clasen  <mclasen@redhat.com>
+
+	* pltcheck.sh: Script to check PLT entries.
+
+	* Makefile.am (TESTS): Run pltcheck.sh
+
+	* gtype.c:
+	* gsignal.c:
+	* gobject.c:
+	* gvaluetypes.c: Move all includes before gobjectalias.h.
+	(#3545422, Behdad Esfahbod)
+
+2006-08-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.12.3 ===
+
 Wed Aug 16 13:55:08 2006  Tim Janik  <timj@imendio.com>
 
 	* gobject.c: conditionally thaw the notify queue after construction,

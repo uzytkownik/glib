@@ -24,7 +24,7 @@ gobjectaliasdef.c: gobject.symbols
 
 if OS_LINUX
 if HAVE_GNUC_VISIBILITY
-TESTS = abicheck.sh
+TESTS = abicheck.sh pltcheck.sh
 endif
 endif
 
@@ -223,7 +223,8 @@ EXTRA_DIST += 			\
 	glib-genmarshal.1	\
 	glib-mkenums.in		\
 	glib-mkenums.1		\
-	abicheck.sh
+	abicheck.sh		\
+	pltcheck.sh
 
 BUILT_EXTRA_DIST = \
 	makefile.msc		\

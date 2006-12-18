@@ -18,7 +18,6 @@
  */
 #include        <config.h>
 #include	"gtype.h"
-#include	"gobjectalias.h"
 
 /*
  * MT safe
@@ -29,6 +28,7 @@
 #include	"gbsearcharray.h"
 #include	<string.h>
 
+#include	"gobjectalias.h"
 
 /* NOTE: some functions (some internal variants and exported ones)
  * invalidate data portions of the TypeNodes. if external functions/callbacks
@@ -1511,11 +1511,13 @@ static inline GTypeClass*
 instance_real_class_get (gpointer instance)
 {
   InstanceRealClass key, *node;
+  GTypeClass *class;
   key.instance = instance;
   G_LOCK (instance_real_class);
   node = instance_real_class_bsa ? g_bsearch_array_lookup (instance_real_class_bsa, &instance_real_class_bconfig, &key) : NULL;
+  class = node ? node->class : NULL;
   G_UNLOCK (instance_real_class);
-  return node ? node->class : NULL;
+  return class;
 }
 
 GTypeInstance*
