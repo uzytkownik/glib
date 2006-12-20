@@ -1,3 +1,95 @@
+Overview of Changes from GLib 2.12.5 to GLib 2.12.6
+===================================================
+
+* Fix a configure test that was added in 2.12.5 to
+  not declare every poll() broken  
+
+* Make GKeyFile accept keys that are commonly used
+
+* Bugs fixed
+ 354707 No return() in non-void function
+ 387260 hang in zenity
+ 387823 glib 2.12.5 is breaking hal
+  
+* New and updated translations (ca,gu,mk,th)
+
+
+Overview of Changes from GLib 2.12.4 to GLib 2.12.5
+===================================================
+
+* Various portability fixes
+
+* Bugs fixed
+ 302672	poll is completely broken on Mac OS X 10.4
+ 362328 errorcheck_mutex_test fails to compile due to missing -pthread
+ 316434	glib-2.6.6 fails to compile on AIX 5.1 due to assembler errors
+ 172406	gconvert.c, function open_converter
+ 327800	Hang during self-test of threads
+ 343825	Double expansion in m4macros/glib-gettext.m4 will fail with 
+        newer autoconf
+ 380801	build on Solaris does not work out of the box
+ 386252	HEAD broken with last commit
+ 138153	g_utf8_next_char problem with gcc -Wcast-qual
+ 161288	glib doesn't configure well on Mac OS < 10.3
+ 321977	GIOChannel ref_count private variable should be gint instead 
+        of guint
+ 343191	GKeyFile silently loses values
+ 346373	test failures in glib-2.10.3 on NetBSD
+ 347944	make check fails 2 test on Solaris 9
+ 355955	Hash tables in gwin32.c do not g_strdup their keys
+ 357585	Calls to set_cloexec inefficient on Solaris
+ 359190	gtimer.c failes to compile on solaris-2.9
+ 378078	extremely unlikely read-after-free in instance_real_class_get
+ 379207	gthreadpool.h causes warning with GCC and -Wshadow
+ 385132	solaris gettext support fix
+ 385910	Suprising behaviour with duplicate groups in GKeyFile
+ 386838	mapping-test freezes
+ 315061	compiler specific flag in gthread-2.0.pc
+ 362543	Compilation fail when configured with --disable-visibility
+ 362918	monotonic clock test uses AC_TRY_RUN
+ 369908	g_key_file_get_string not stripping final space
+ 373864	sanity_check is a bash script 
+
+* Translation updates (ar,en_CA,es,he,nb,pl,sq)
+
+
+Overview of Changes from GLib 2.12.3 to GLib 2.12.4
+===================================================
+
+* Fix build problems related to Posix timers.
+
+* Bugs fixed
+ 321974 nanosleep on AIX / g_timer API using high 
+        resolution timers
+ 353584 va_end called on caller supplied va_list
+ 353580 va_copy detection breaks if user sets 
+        CFLAGS=-Werror-implicit-function-declaration
+ 354522 Small problem with PLT hiding 6 symbols
+ 358421 typos in gmain.c
+
+* New and updated translations (bn,bn_IN,dz,el,en_GB,
+  et,fa,hi,hy,it,ka,nn,pt_BR,ro,sl,sr,sr@Latn,ta)
+
+
+Overview of Changes from GLib 2.12.2 to GLib 2.12.3
+===================================================
+
+* Use Posix monotonic clocks instead of gettimeofday() 
+  for GTimer when available.
+
+* Make the construction of singleton objects work
+  witout warnings.
+
+* Bugs fixed
+ 351583 API documentation issues with 2.15 release
+ 336114 desktop locks immediately after changing 
+        the system clock
+ 351853 GKeyFile creates non-UTF-8 error messages
+
+* Translation updates (fr,hu,ja,ku,lt,lv,ml,or,
+  pt,ru,sv,vi,zh_CN)
+
+
 Overview of Changes from GLib 2.12.1 to GLib 2.12.2
 ===================================================
 

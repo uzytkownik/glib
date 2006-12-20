@@ -1,3 +1,260 @@
+2006-12-20  Matthias Clasen  <mclasen@redhat.com>
+	
+	* === Released 2.12.6 ===
+
+	* NEWS: Updates
+
+2006-12-19  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gkeyfile.c (g_key_file_is_key_name): Accept
+	'/', '+' and '.' in key names, since gnome-vfs uses
+	mime types as keys in some cache.
+
+2006-12-18  Matthias Clasen  <mclasen@redhat.com>
+	
+	* configure.in: Fix the broken poll test.  (#387260,
+	Christian Persch)
+
+	* glib/gmain.c (child_watch_helper_thread): Readd a
+	return which was removed as dead code a while ago.
+	icc may consider it dead, but gcc doesn't like non-void
+	functions without a return...  (#354707)
+
+	* configure.in: Bump version to 2.12.6
+
+	* === Released 2.12.5 ===
+
+	* NEWS: Updates
+
+	* tests/Makefile.am: Try a different fix for bug 346373.
+
+2006-12-18  Matthias Clasen  <mclasen@redhat.com>
+
+	Fix bug 161288:
+	
+	* configure.in: Check for wcslen.
+	
+	* glib/gnulib/vasnprintf.c: Handle wcslen missing.
+
+2006-12-18  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gkeyfile.c: Accept '@' in locale names.
+
+	* tests/keyfile-test.c: Add a test for sr@Latn. 
+
+	* glib/gkeyfile.c: Tighten up the check for allowed
+	key and group names.  (#343191, Tommi Komulainen)
+
+	* tests/keyfile-test.c: Test handling of key and group names.
+
+	* tests/Makefile.am: Don't use $RANDOM if the shell doesn't
+	have it.  (#346373, Thomas Klausner)
+	
+2006-12-17  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gconvert.c:
+	* glib/gutf8.c (_g_charset_get_aliases): Put the G_GNUC_INTERNAL
+	where gcc doesn't complain about it. 
+
+	* glib/ghash.c: Make ref_count an int to avoid compiler
+	warnings.
+
+	* configure.in: Use AC_LANG_SOURCE for the clock test.
+
+	* glib/gthreadpool.h:
+	* glib/gthreadpool.c (g_thread_pool_free): Don't use "wait"
+	as parameter name.  (#379207, Christian Biere)
+
+	* configure.in: Make montonic clock test work again. Does
+	AC_COMPILE_IFELSE not get confdefs ? 
+
+	* tests/run-markup-tests.sh: Don't use diff -u  (#380801,
+	Marek Rouchal)
+
+	* glib/gspawn.c: Fix the recent fdwalk()-related changes
+	to not break mapping-test.  (#386838, Marco Barisione)
+
+2006-12-16  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Use AC_COMPILE_IFELSE for the monotonic
+	clock test.  (#362918, Han-Wen Nienhuys, Jeremy Lainé)
+
+2006-12-15  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/giochannel.h: Make ref_count a gint to avoid
+	compiler warnings.  (#321977, Andrew Paprocki)
+
+	* configure.in: On Solaris, set CFLAGS and LDFLAGS that
+	work both with Sun cc and gcc.  (#315061, Lazlo Peter)
+
+	* glib/gspawn.c: Undefine READ_OK to fix the build on
+	old versions of Darwin.  (#327800)
+
+	* glib/guniprop.c (interval_compare): Avoid a compiler 
+	warning. 
+
+	* glib/gspawn.c (do_exec): Call set_cloexec() with
+	the right parameters.  (#386252, Guillaume Desmottes)
+
+2006-12-15  Matthias Clasen  <mclasen@redhat.com>
+
+	Fix #357585, Padraig O'Briain.
+	
+	* configure.in: Check for fdwalk.
+	
+	* glib/gspawn.c (do_exec): Use fdwalk() to close all
+	file descriptors. 
+
+	* glib/gspawn.c (fdwalk): Fallback implementation of
+	fdwalk.
+
+2006-12-14  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gconvert.c (open_converter): Don't use alloca
+	and avoid allocating memory for small keys that are 
+	already cached.  (#172406, Morten Welinder)
+
+2006-12-14  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gkeyfile.c (g_key_file_add_group): If the group
+	is already there, make it current.  (#385910, Joe Halliwell)
+
+	* tests/keyfile-test.c: Add a test for duplicate groups/keys.
+
+2006-12-13  Matthias Clasen  <mclasen@redhat.com>
+
+	* m4macros/glib-gettext.m4: Require AC_CANONICAL_HOST in
+	GLIB_WITH_NLS.  (#385132, Laszlo Peter)
+
+2006-12-12  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Add a check for broken poll on Mac OS X.
+
+	* glib/gmain.c: Use poll emulation on OS X.  (#302672, Toby Peterson,
+	patch by Dave Vasilevsky)
+
+2006-12-11  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gatomic.c: Don't use local numeric labels in
+	inline assembler on AIX.  (#316434, Hans Rosenfeld)
+
+	* glib/gunicode.h (g_utf8_next_char): Cast to const char *,
+	not char *.  (#138153, Nikolai Weibull)
+
+2006-11-15  Matthias Clasen  <mclasen@redhat.com>
+
+	* m4macros/glib-gettext.m4: Apply a patch from James
+	Henstridge for compatibility with automake 2.60 (#343825)
+
+2006-11-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	* sanity_check: Replace bash-specific == with sh-understood =.
+	Fixes bug #373864.
+
+2006-10-16  Behdad Esfahbod  <behdad@gnome.org>
+
+	* glib/gnulib/Makefile.am: Add $(GLIB_DEBUG_FLAGS).  (#362543,
+	Peter Kjellerstedt)
+
+2006-10-15  Sebastian Wilhelmi  <seppi@seppi.de>
+
+	* tests/Makefile.am: Compile errorcheck-mutex-test with thread
+	libraries explicitly. (#362328, Javier Villavicencio)
+
+2006-10-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* tests/run-markup-tests.sh: Small portability fix.  (#347944,
+	Dan McMahill)
+
+2006-10-07  Tor Lillqvist  <tml@novell.com>
+
+	* glib/gwin32.c (get_package_directory_from_module)
+	(g_win32_get_package_installation_directory): g_strdup the keys
+	that we are passed before adding them to the hash tables, to guard
+	against the caller freeing them. (#355955, Andreas Köhler)
+
+2006-10-06  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gtimer.c: Fix a typo.  (#359190)
+
+2006-10-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Bump version
+	
+	* === Released 2.12.4 ===
+
+	* NEWS: Updates
+
+	* glib/gtimer.c (g_usleep): Use nsleep to implement
+	g_usleep on AIX.  (#321974, Andrew Paprocki)
+
+	* configure.in: Check for nsleep
+
+	* glib/gmain.c: Fix typos in doc comments.  
+	(#358421, Tom Tromey)
+
+2006-09-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/pltcheck.sh: A script to check PLT entries.
+	* glib/Makefile.am (TESTS): Run pltcheck.sh
+
+	* glib/*: Fix includes to correct some issues with
+	PLT entries.  (#354522, Behdad Esfahbod)
+
+2006-09-10  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gstdio.c (g_rename): Initialize save_errno.
+	(#355206, Mike Edenfield)
+
+2006-09-01  Abel Cheung  <abel@oaka.org>
+
+	* configure.in: Added 'dz' 'hy' to ALL_LINGUAS.
+
+2006-09-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Check for CLOCK_MONOTONIC.
+
+	* glib/gtimer.c: Only use clock_gettime if we
+	have a monotonic clock.
+
+2006-08-31  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Add missing includes to a few test
+	programs.  (#353580, Chris Wilson)
+
+2006-08-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gmarkup.c (g_markup_vprintf_escaped): Don't call
+	va_end on caller-provided va_args.  (#353584, Chris Wilson)
+
+	* Bump version
+
+	* === Released 2.12.3 ===
+
+	* NEWS: Updates
+
+2006-08-27  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Fix the pthread compiler flag detection more.
+
+	* configure.in: Check for clock_gettime.
+	* glib/gtimer.c: Use Posix monotonic clocks instead of 
+	gettimeofday when available.  (#336114, William Jon McCann)
+
+2006-08-25  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Fix the pthread compiler flag detection.
+
+	* glib/gunicode.h: 
+	* glib/gutf8.c (_g_utf8_make_valid): Rename make_valid_utf8
+	from gconvert.c, move it to gutf8.c, and export it privately.
+
+	* glib/gconvert.c (g_filename_display_name): Adjust callers.
+
+	* glib/gkeyfile.c: Use _g_utf8_make_valid() in a number of
+	places to ensure error messages are valid UTF-8.  (#351853,
+	Simon Budig)
+
 2006-08-20  Tor Lillqvist  <tml@novell.com>
 
 	* glib/gnulib/vasnprintf.c (vasnprintf): Fix crash when printing

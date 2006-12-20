@@ -1,72 +1,77 @@
-# translation of glib.po to Arabic
+# translation of glib.glib-2-12.ar.po to Arabic
 # translation of glib.po to
-# Copyright (C) 2001,2002,2003 Free Software Foundation, Inc.
-# Isam Bayazidi <bayazidi@arabeyes.org>, 2001,2002.
-# Arafat Medini <lumina@silverpen.de>, 2003
+# Copyright (C) 2001,2002,2003, 2006 Free Software Foundation, Inc.
 #
+# Isam Bayazidi <bayazidi@arabeyes.org>, 2001,2002.
+# Arafat Medini <lumina@silverpen.de>, 2003.
+# Djihed Afifi <djihed@gmail.com>, 2006.
+# Khaled Hosny <khaledhosny@eglug.org>, 2006.
 msgid ""
 msgstr ""
-"Project-Id-Version: glib\n"
+"Project-Id-Version: glib.glib-2-12.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-15 20:27-0400\n"
-"PO-Revision-Date: 2003-12-19 01:22+0100\n"
-"Last-Translator: Arafat Medini <lumina@silverpen.de>\n"
-"Language-Team: Arabic <doc@arabeyes.org>\n"
+"POT-Creation-Date: 2006-12-20 11:41-0500\n"
+"PO-Revision-Date: 2006-11-30 20:08+0200\n"
+"Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
+"Language-Team: Arabic <support@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && "
+"n<=10 ? 2 : 3\n"
 
 #: glib/gbookmarkfile.c:716 glib/gbookmarkfile.c:793 glib/gbookmarkfile.c:872
 #: glib/gbookmarkfile.c:919
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected attribute '%s' for element '%s'"
-msgstr "رمز غريب '%s', توقعت '=' بعد اسم الصفة  '%s' للعنصر '%s'"
+msgstr "صفة غير متوقّعة '%s' للعنصر '%s'"
 
 #: glib/gbookmarkfile.c:727 glib/gbookmarkfile.c:804 glib/gbookmarkfile.c:814
 #: glib/gbookmarkfile.c:930
 #, c-format
 msgid "Attribute '%s' of element '%s' not found"
-msgstr ""
+msgstr "الصفة '%s' للعنصر '%s' غير موجودة"
 
 #: glib/gbookmarkfile.c:1103 glib/gbookmarkfile.c:1168
 #: glib/gbookmarkfile.c:1232 glib/gbookmarkfile.c:1242
 #, c-format
 msgid "Unexpected tag '%s', tag '%s' expected"
-msgstr ""
+msgstr "بطاقة غير متوقعة '%s'، توقّعت البطاقة '%s'"
 
 #: glib/gbookmarkfile.c:1128 glib/gbookmarkfile.c:1142
 #: glib/gbookmarkfile.c:1210 glib/gbookmarkfile.c:1262
 #, c-format
 msgid "Unexpected tag '%s' inside '%s'"
-msgstr ""
+msgstr "بطاقة غير متوقّعة '%s' داخل '%s'"
 
 #: glib/gbookmarkfile.c:1792
 #, c-format
 msgid "No valid bookmark file found in data dirs"
-msgstr ""
+msgstr "لا يوجد ملف علامة موقع صحيح في أدلّة البيانات"
 
 #: glib/gbookmarkfile.c:1993
 #, c-format
 msgid "A bookmark for URI '%s' already exists"
-msgstr ""
+msgstr "توجد بالفعل علامة موقع للعنوان '%s'"
 
 #: glib/gbookmarkfile.c:2039 glib/gbookmarkfile.c:2196
 #: glib/gbookmarkfile.c:2281 glib/gbookmarkfile.c:2362
 #: glib/gbookmarkfile.c:2447 glib/gbookmarkfile.c:2530
 #: glib/gbookmarkfile.c:2608 glib/gbookmarkfile.c:2687
 #: glib/gbookmarkfile.c:2729 glib/gbookmarkfile.c:2826
-#: glib/gbookmarkfile.c:2950 glib/gbookmarkfile.c:3140
-#: glib/gbookmarkfile.c:3216 glib/gbookmarkfile.c:3369
-#: glib/gbookmarkfile.c:3434 glib/gbookmarkfile.c:3524
-#: glib/gbookmarkfile.c:3651
+#: glib/gbookmarkfile.c:2952 glib/gbookmarkfile.c:3142
+#: glib/gbookmarkfile.c:3218 glib/gbookmarkfile.c:3371
+#: glib/gbookmarkfile.c:3436 glib/gbookmarkfile.c:3526
+#: glib/gbookmarkfile.c:3653
 #, c-format
 msgid "No bookmark found for URI '%s'"
-msgstr ""
+msgstr "لا توجد علامة موقع للعنوان '%s'"
 
 #: glib/gbookmarkfile.c:2371
 #, c-format
 msgid "No MIME type defined in the bookmark for URI '%s'"
-msgstr ""
+msgstr "لم يعرّف نوع MIME في علامة موقع العنوان '%s'"
 
 #: glib/gbookmarkfile.c:2456
 #, c-format
@@ -76,78 +81,78 @@ msgstr ""
 #: glib/gbookmarkfile.c:2835
 #, c-format
 msgid "No groups set in bookmark for URI '%s'"
-msgstr ""
+msgstr "لم تحدد أي مجموعات في علامة موقع '%s'"
 
-#: glib/gbookmarkfile.c:3234 glib/gbookmarkfile.c:3379
+#: glib/gbookmarkfile.c:3236 glib/gbookmarkfile.c:3381
 #, c-format
 msgid "No application with name '%s' registered a bookmark for '%s'"
-msgstr ""
+msgstr "لم يسجل أي تطبيق بالإسم '%s' علامة موقع لـ '%s'"
 
-#: glib/gconvert.c:404 glib/gconvert.c:482 glib/giochannel.c:1150
+#: glib/gconvert.c:423 glib/gconvert.c:501 glib/giochannel.c:1150
 #, c-format
 msgid "Conversion from character set '%s' to '%s' is not supported"
 msgstr "التحويل من مجموعة المحارف '%s' إلى '%s' غير مدعوم"
 
-#: glib/gconvert.c:408 glib/gconvert.c:486
-#, fuzzy, c-format
+#: glib/gconvert.c:427 glib/gconvert.c:505
+#, c-format
 msgid "Could not open converter from '%s' to '%s'"
-msgstr "لم يمكن فتح المحول من '%s' الى '%s': %s"
+msgstr "لم يمكن فتح المحول من '%s' الى '%s'"
 
-#: glib/gconvert.c:602 glib/gconvert.c:991 glib/giochannel.c:1322
+#: glib/gconvert.c:621 glib/gconvert.c:1010 glib/giochannel.c:1322
 #: glib/giochannel.c:1364 glib/giochannel.c:2206 glib/gutf8.c:943
 #: glib/gutf8.c:1392
 #, c-format
 msgid "Invalid byte sequence in conversion input"
 msgstr "سلسلة بايتات غير سليمة في مدخلات التحويل"
 
-#: glib/gconvert.c:608 glib/gconvert.c:918 glib/giochannel.c:1329
+#: glib/gconvert.c:627 glib/gconvert.c:937 glib/giochannel.c:1329
 #: glib/giochannel.c:2218
 #, c-format
 msgid "Error during conversion: %s"
 msgstr "خطأ أثناء التحويل: %s"
 
-#: glib/gconvert.c:643 glib/gutf8.c:939 glib/gutf8.c:1143 glib/gutf8.c:1284
+#: glib/gconvert.c:662 glib/gutf8.c:939 glib/gutf8.c:1143 glib/gutf8.c:1284
 #: glib/gutf8.c:1388
 #, c-format
 msgid "Partial character sequence at end of input"
 msgstr "سلسلة حرفيات جزئي عند نهاية المدخل"
 
-#: glib/gconvert.c:893
+#: glib/gconvert.c:912
 #, c-format
 msgid "Cannot convert fallback '%s' to codeset '%s'"
 msgstr "لم يمكن تحويل fallback '%s' الى مجموعة المحارف '%s'"
 
-#: glib/gconvert.c:1702
-#, fuzzy, c-format
+#: glib/gconvert.c:1721
+#, c-format
 msgid "The URI '%s' is not an absolute URI using the \"file\" scheme"
-msgstr "الـURI '%s' ليس URI كامل باستخدام مخطط الملفات"
+msgstr "العنوان '%s' ليس عنوانا مطلقا باستخدام المخطط \"file\""
 
-#: glib/gconvert.c:1712
+#: glib/gconvert.c:1731
 #, c-format
 msgid "The local file URI '%s' may not include a '#'"
 msgstr "ملف الـ URI المحلي '%s' قد لا يحتوي على '#'"
 
-#: glib/gconvert.c:1729
+#: glib/gconvert.c:1748
 #, c-format
 msgid "The URI '%s' is invalid"
 msgstr "الـURI '%s' غير سليم"
 
-#: glib/gconvert.c:1741
+#: glib/gconvert.c:1760
 #, c-format
 msgid "The hostname of the URI '%s' is invalid"
 msgstr "اسم مستضيف الـURI '%s' غير سليم"
 
-#: glib/gconvert.c:1757
+#: glib/gconvert.c:1776
 #, c-format
 msgid "The URI '%s' contains invalidly escaped characters"
 msgstr "الـURI '%s' يحتوي على حروف هربت بطريقة غير سليمة "
 
-#: glib/gconvert.c:1852
+#: glib/gconvert.c:1871
 #, c-format
 msgid "The pathname '%s' is not an absolute path"
 msgstr "اسم المسار '%s' ليس مسارا كاملا"
 
-#: glib/gconvert.c:1862
+#: glib/gconvert.c:1881
 #, c-format
 msgid "Invalid hostname"
 msgstr "اسم المستضيف غير سليم"
@@ -188,9 +193,9 @@ msgid "Failed to open file '%s': fdopen() failed: %s"
 msgstr "فشل فتح الملف '%s': فشل fdopen(): %s"
 
 #: glib/gfileutils.c:905
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to rename file '%s' to '%s': g_rename() failed: %s"
-msgstr "فشل فتح الملف '%s': فشل fdopen(): %s"
+msgstr "فشل إعادة تسمية الملف '%s' إلى '%s': فشل g_rename(): %s"
 
 #: glib/gfileutils.c:946 glib/gfileutils.c:1404
 #, c-format
@@ -198,24 +203,24 @@ msgid "Failed to create file '%s': %s"
 msgstr "فشل انشاء الملف '%s': %s"
 
 #: glib/gfileutils.c:960
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open file '%s' for writing: fdopen() failed: %s"
-msgstr "فشل فتح الملف '%s': فشل fdopen(): %s"
+msgstr "فشل فتح الملف '%s' للكتابة: فشل fdopen(): %s"
 
 #: glib/gfileutils.c:985
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write file '%s': fwrite() failed: %s"
-msgstr "فشل فتح الملف '%s': فشل fdopen(): %s"
+msgstr "فشلت في كتابة الملف '%s': فشل fwrite(): %s"
 
 #: glib/gfileutils.c:1004
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to close file '%s': fclose() failed: %s"
-msgstr "فشل فتح الملف '%s': فشل fdopen(): %s"
+msgstr "فشلت في غلق الملف '%s': فشل fclose(): %s"
 
 #: glib/gfileutils.c:1122
 #, c-format
 msgid "Existing file '%s' could not be removed: g_unlink() failed: %s"
-msgstr ""
+msgstr "لا يمكن حذف الملف الموجود مسبقا '%s': فشل g_unlink(): %s"
 
 #: glib/gfileutils.c:1366
 #, c-format
@@ -223,9 +228,9 @@ msgid "Template '%s' invalid, should not contain a '%s'"
 msgstr "القالب '%s' غير سليم, لا يجب أن يحتوي على '%s'"
 
 #: glib/gfileutils.c:1379
-#, fuzzy, c-format
+#, c-format
 msgid "Template '%s' doesn't contain XXXXXX"
-msgstr "القالب '%s' لا ينتهي بـXXXXXX"
+msgstr "لا يحتوي القالب '%s' على XXXXXX"
 
 #: glib/gfileutils.c:1854
 #, c-format
@@ -238,9 +243,9 @@ msgid "Symbolic links not supported"
 msgstr "الوصلات الرمزية غير مدعومة"
 
 #: glib/giochannel.c:1154
-#, fuzzy, c-format
+#, c-format
 msgid "Could not open converter from '%s' to '%s': %s"
-msgstr "لم يمكن فتح المحول من `%s' الى `%s': %s"
+msgstr "لم يمكن فتح المحول من '%s' الى '%s': %s"
 
 #: glib/giochannel.c:1499
 #, c-format
@@ -263,32 +268,32 @@ msgid "Can't do a raw read in g_io_channel_read_to_end"
 msgstr "لا يمكن عمل قراءة خام في g_io_channel_read_to_end"
 
 #: glib/gmappedfile.c:116
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open file '%s': open() failed: %s"
-msgstr "فشل فتح الملف '%s': فشل fdopen(): %s"
+msgstr "فشل فتح الملف '%s': فشل open(): %s"
 
 #: glib/gmappedfile.c:193
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to map file '%s': mmap() failed: %s"
-msgstr "فشل فتح الملف '%s': فشل fdopen(): %s"
+msgstr ""
 
-#: glib/gmarkup.c:227
+#: glib/gmarkup.c:226
 #, c-format
 msgid "Error on line %d char %d: %s"
 msgstr "خطأ في السطر %d الرمز %d: %s"
 
-#: glib/gmarkup.c:325
+#: glib/gmarkup.c:324
 #, c-format
 msgid "Error on line %d: %s"
 msgstr "خطأ في السطر %d: %s"
 
-#: glib/gmarkup.c:429
+#: glib/gmarkup.c:428
 msgid ""
 "Empty entity '&;' seen; valid entities are: &amp; &quot; &lt; &gt; &apos;"
 msgstr ""
 "كيان فارغ '&;' تمت رؤيته، الكيانات السليمة هي:&amp; &quot; &lt; &gt; &apos; "
 
-#: glib/gmarkup.c:439
+#: glib/gmarkup.c:438
 #, c-format
 msgid ""
 "Character '%s' is not valid at the start of an entity name; the & character "
@@ -298,17 +303,17 @@ msgstr ""
 "الرمز '%s' غير سليم عند بداية اسم الكيان; الرمز & يبدأ كيانا, ان كان علامة "
 "اﻻمبارساند هذه غير موضوعة على انها كيان, تخطاها باعتبارها &amp;"
 
-#: glib/gmarkup.c:473
+#: glib/gmarkup.c:472
 #, c-format
 msgid "Character '%s' is not valid inside an entity name"
 msgstr "الرمز '%s' غير موجود داخل اسم أي كيان"
 
-#: glib/gmarkup.c:510
+#: glib/gmarkup.c:509
 #, c-format
 msgid "Entity name '%s' is not known"
 msgstr "اسم الكيان '%s' غير معروف"
 
-#: glib/gmarkup.c:521
+#: glib/gmarkup.c:520
 msgid ""
 "Entity did not end with a semicolon; most likely you used an ampersand "
 "character without intending to start an entity - escape ampersand as &amp;"
@@ -316,7 +321,7 @@ msgstr ""
 "اسم الكيان لم ينته بفاصلة منقوطة; الأرجح أنك استخدمت علامة امبارساند دون أن "
 "تنوي بدء كيان - تخطا العلامة عن طريق اعتبارها &amp;"
 
-#: glib/gmarkup.c:574
+#: glib/gmarkup.c:573
 #, fuzzy, c-format
 msgid ""
 "Failed to parse '%-.*s', which should have been a digit inside a character "
@@ -325,16 +330,16 @@ msgstr ""
 "فشل اعراب '%s', الذي كان يجب أن يكون رقما داخل مرجع الرمز (&#234; مثلا) - "
 "ربما الرقم عريض جدا"
 
-#: glib/gmarkup.c:599
-#, fuzzy, c-format
+#: glib/gmarkup.c:598
+#, c-format
 msgid "Character reference '%-.*s' does not encode a permitted character"
-msgstr "مرجع الرمز '%s' لا يقوم بتشفير رمز مسموح به"
+msgstr "مرجع المحرف '%-.*s'  لا يقوم بترميز محرف مسموح به"
 
-#: glib/gmarkup.c:614
+#: glib/gmarkup.c:613
 msgid "Empty character reference; should include a digit such as &#454;"
 msgstr "مرجع رمز فارغ; يجب أن يتضمن رقما مثل &#454;"
 
-#: glib/gmarkup.c:624
+#: glib/gmarkup.c:623
 msgid ""
 "Character reference did not end with a semicolon; most likely you used an "
 "ampersand character without intending to start an entity - escape ampersand "
@@ -343,43 +348,43 @@ msgstr ""
 "مرجع الرمز لم ينته بفاصلة منقوطة; الأرجح أنك استخدمت علامة امبارساند دون أن "
 "تنوي بدء كيان - تخطا العلامت عن طريق اعتبارها &amp;"
 
-#: glib/gmarkup.c:710
+#: glib/gmarkup.c:709
 msgid "Unfinished entity reference"
 msgstr "مرجع كيان غير منتهى منه"
 
-#: glib/gmarkup.c:716
+#: glib/gmarkup.c:715
 msgid "Unfinished character reference"
 msgstr "مرجع رمز غير منتهى منه"
 
-#: glib/gmarkup.c:959 glib/gmarkup.c:987 glib/gmarkup.c:1018
+#: glib/gmarkup.c:958 glib/gmarkup.c:986 glib/gmarkup.c:1017
 msgid "Invalid UTF-8 encoded text"
 msgstr "نص UTF-8 مشفر غير سليم"
 
-#: glib/gmarkup.c:1054
+#: glib/gmarkup.c:1053
 msgid "Document must begin with an element (e.g. <book>)"
 msgstr "يجب أن يبدأ المستند بعنصر (<book> مثلا)"
 
-#: glib/gmarkup.c:1094
+#: glib/gmarkup.c:1093
 #, c-format
 msgid ""
 "'%s' is not a valid character following a '<' character; it may not begin an "
 "element name"
 msgstr "'%s' رمز غير سليم بعد الرمز '<';  ربما لا يبدأ هذا الرمز اسم عنصر"
 
-#: glib/gmarkup.c:1158
+#: glib/gmarkup.c:1157
 #, c-format
 msgid ""
 "Odd character '%s', expected a '>' character to end the start tag of element "
 "'%s'"
 msgstr "رمز غريب '%s',  توقعت رمز '>' لإنهاء بداية علامة العنصر '%s'"
 
-#: glib/gmarkup.c:1247
+#: glib/gmarkup.c:1246
 #, c-format
 msgid ""
 "Odd character '%s', expected a '=' after attribute name '%s' of element '%s'"
 msgstr "رمز غريب '%s', توقعت '=' بعد اسم الصفة  '%s' للعنصر '%s'"
 
-#: glib/gmarkup.c:1289
+#: glib/gmarkup.c:1288
 #, c-format
 msgid ""
 "Odd character '%s', expected a '>' or '/' character to end the start tag of "
@@ -389,7 +394,7 @@ msgstr ""
 "رمز غريب '%s', توقعت الرمز '>' أو '/' لإنهاء علامة البداية للعنصر '%s', أو "
 "بشكل اختياري صفة; ربما استخدمت رمزاً غير صالح في اسم صفة"
 
-#: glib/gmarkup.c:1378
+#: glib/gmarkup.c:1377
 #, c-format
 msgid ""
 "Odd character '%s', expected an open quote mark after the equals sign when "
@@ -398,39 +403,39 @@ msgstr ""
 "رمز غريب '%s', توقعت علامة اقتباس مفتوحة بعد علامة التساوي عند إعطاء قيمة من "
 "الصفة '%s' للعنصر '%s'"
 
-#: glib/gmarkup.c:1523
+#: glib/gmarkup.c:1522
 #, c-format
 msgid ""
 "'%s' is not a valid character following the characters '</'; '%s' may not "
 "begin an element name"
 msgstr "'%s' رمز غير صالح بعد الرموز '</'; '%s'   ربما لن يبدأ اسم عنصر"
 
-#: glib/gmarkup.c:1563
+#: glib/gmarkup.c:1562
 #, c-format
 msgid ""
 "'%s' is not a valid character following the close element name '%s'; the "
 "allowed character is '>'"
 msgstr "'%s' رمز غير صالح بعد اغلاق اسم العنصر '%s'; الرمز المسموح به هو '>'"
 
-#: glib/gmarkup.c:1574
+#: glib/gmarkup.c:1573
 #, c-format
 msgid "Element '%s' was closed, no element is currently open"
 msgstr "العنصر '%s' كان مغلقا، لا عنصر مفتوح حاليا"
 
-#: glib/gmarkup.c:1583
+#: glib/gmarkup.c:1582
 #, c-format
 msgid "Element '%s' was closed, but the currently open element is '%s'"
 msgstr "العنصر '%s' كان مغلقا, لكن العنصر المفتوح حاليا هو '%s'"
 
-#: glib/gmarkup.c:1749
+#: glib/gmarkup.c:1748
 msgid "Document was empty or contained only whitespace"
 msgstr "المستند كان فارغا أو كان يحتوي فقط على مساحات فارغة"
 
-#: glib/gmarkup.c:1763
+#: glib/gmarkup.c:1762
 msgid "Document ended unexpectedly just after an open angle bracket '<'"
 msgstr "انتهى المستند بشكل غير متوقع بعد قوس بزاوية '<'"
 
-#: glib/gmarkup.c:1771 glib/gmarkup.c:1815
+#: glib/gmarkup.c:1770 glib/gmarkup.c:1814
 #, c-format
 msgid ""
 "Document ended unexpectedly with elements still open - '%s' was the last "
@@ -439,7 +444,7 @@ msgstr ""
 "انتهى المستند بشكل غير متوقع مع عناصر لا زالت مفتوحة - '%s' كان آخر عنصر "
 "مفتوح"
 
-#: glib/gmarkup.c:1779
+#: glib/gmarkup.c:1778
 #, c-format
 msgid ""
 "Document ended unexpectedly, expected to see a close angle bracket ending "
@@ -447,19 +452,19 @@ msgid ""
 msgstr ""
 "انتهى المستند بشكل غير متوقع، كنت توقعت رؤية قوس ذا زاوية لينهي العلامة<%s/>"
 
-#: glib/gmarkup.c:1785
+#: glib/gmarkup.c:1784
 msgid "Document ended unexpectedly inside an element name"
 msgstr "انتهى المستند بشكل غير متوقع داخل اسم عنصر"
 
-#: glib/gmarkup.c:1790
+#: glib/gmarkup.c:1789
 msgid "Document ended unexpectedly inside an attribute name"
 msgstr "انتهى المستند بشكل غير متوقع داخل اسم صفة"
 
-#: glib/gmarkup.c:1795
+#: glib/gmarkup.c:1794
 msgid "Document ended unexpectedly inside an element-opening tag."
 msgstr "انتهى المستند بشكل غير متوقع بعد علامة فتح عنصر"
 
-#: glib/gmarkup.c:1801
+#: glib/gmarkup.c:1800
 msgid ""
 "Document ended unexpectedly after the equals sign following an attribute "
 "name; no attribute value"
@@ -467,16 +472,16 @@ msgstr ""
 "انتهى المستند بشكل غير متوقع بعد علامة التساوي اثر اسم صفة; لا توجد قيمة "
 "للصفة"
 
-#: glib/gmarkup.c:1808
+#: glib/gmarkup.c:1807
 msgid "Document ended unexpectedly while inside an attribute value"
 msgstr "انتهى المستند بشكل غير متوقع وهو داخلَ قيمة صفة"
 
-#: glib/gmarkup.c:1823
+#: glib/gmarkup.c:1822
 #, c-format
 msgid "Document ended unexpectedly inside the close tag for element '%s'"
 msgstr "انتهى المستند بشكل غير متوقع داخل علامة انهاء للعنصر '%s'"
 
-#: glib/gmarkup.c:1829
+#: glib/gmarkup.c:1828
 msgid "Document ended unexpectedly inside a comment or processing instruction"
 msgstr "انتهى المستند بشكل غير متوقع داخل تعليق أو تعليمات معالجة"
 
@@ -506,106 +511,106 @@ msgstr "انتهى النص قبل ايجاد المُقتَبَس لـ%c (ال�
 msgid "Text was empty (or contained only whitespace)"
 msgstr "النص كان فارغا (أو كان يحتوي على فراغ أبيض)"
 
-#: glib/gspawn-win32.c:273
+#: glib/gspawn-win32.c:272
 #, c-format
 msgid "Failed to read data from child process"
 msgstr "فشلت قراءة البيانات من العملية الإبنة"
 
-#: glib/gspawn-win32.c:288 glib/gspawn.c:1361
+#: glib/gspawn-win32.c:287 glib/gspawn.c:1379
 #, c-format
 msgid "Failed to create pipe for communicating with child process (%s)"
 msgstr "فشل عمل أنبوب للاتصال بالعملية الإبنة (%s)"
 
-#: glib/gspawn-win32.c:326 glib/gspawn.c:1025
+#: glib/gspawn-win32.c:325 glib/gspawn.c:1043
 #, c-format
 msgid "Failed to read from child pipe (%s)"
 msgstr "فشلت القراءة من الأنبوب الإبن (%s)"
 
-#: glib/gspawn-win32.c:352 glib/gspawn.c:1230
+#: glib/gspawn-win32.c:351 glib/gspawn.c:1248
 #, c-format
 msgid "Failed to change to directory '%s' (%s)"
 msgstr "فشل التغيير الى الدليل '%s' (%s)"
 
-#: glib/gspawn-win32.c:358 glib/gspawn-win32.c:578
+#: glib/gspawn-win32.c:357 glib/gspawn-win32.c:577
 #, c-format
 msgid "Failed to execute child process (%s)"
 msgstr "فشل تنفيذ العملية الإبنة (%s)"
 
-#: glib/gspawn-win32.c:468 glib/gspawn-win32.c:524
-#, fuzzy, c-format
+#: glib/gspawn-win32.c:467 glib/gspawn-win32.c:523
+#, c-format
 msgid "Invalid program name: %s"
-msgstr "اسم المستضيف غير سليم"
+msgstr "اسم برنامج غير صحيح: %s"
 
-#: glib/gspawn-win32.c:478 glib/gspawn-win32.c:534 glib/gspawn-win32.c:777
-#: glib/gspawn-win32.c:832 glib/gspawn-win32.c:1367
+#: glib/gspawn-win32.c:477 glib/gspawn-win32.c:533 glib/gspawn-win32.c:776
+#: glib/gspawn-win32.c:831 glib/gspawn-win32.c:1366
 #, c-format
 msgid "Invalid string in argument vector at %d: %s"
 msgstr ""
 
-#: glib/gspawn-win32.c:489 glib/gspawn-win32.c:545 glib/gspawn-win32.c:791
-#: glib/gspawn-win32.c:845 glib/gspawn-win32.c:1400
-#, fuzzy, c-format
+#: glib/gspawn-win32.c:488 glib/gspawn-win32.c:544 glib/gspawn-win32.c:790
+#: glib/gspawn-win32.c:844 glib/gspawn-win32.c:1399
+#, c-format
 msgid "Invalid string in environment: %s"
-msgstr "سلسلة غير سليمة في مُدخلات التحويل"
+msgstr ""
 
-#: glib/gspawn-win32.c:773 glib/gspawn-win32.c:828 glib/gspawn-win32.c:1348
-#, fuzzy, c-format
+#: glib/gspawn-win32.c:772 glib/gspawn-win32.c:827 glib/gspawn-win32.c:1347
+#, c-format
 msgid "Invalid working directory: %s"
-msgstr "خطأ أثناء فتح الدليل '%s': %s"
+msgstr "دليل شبكة غير سليم: %s"
 
-#: glib/gspawn-win32.c:887
-#, fuzzy, c-format
+#: glib/gspawn-win32.c:886
+#, c-format
 msgid "Failed to execute helper program (%s)"
-msgstr "فشل تنفيذ التطبيق المعين"
+msgstr "فشل تنفيذ البرنامج المساعد (%s)"
 
-#: glib/gspawn-win32.c:1087
+#: glib/gspawn-win32.c:1086
 #, c-format
 msgid ""
 "Unexpected error in g_io_channel_win32_poll() reading data from a child "
 "process"
 msgstr "خطأ غير متوقع في g_io_channel_win32_poll() أثناء القراءة من عملية ابنة"
 
-#: glib/gspawn.c:165
+#: glib/gspawn.c:168
 #, c-format
 msgid "Failed to read data from child process (%s)"
 msgstr "فشلت قراءة البيانات من العملية الإبنة (%s)"
 
-#: glib/gspawn.c:297
+#: glib/gspawn.c:300
 #, c-format
 msgid "Unexpected error in select() reading data from a child process (%s)"
 msgstr "خطأ غير متوقع في select() أثناء قراءة البيانات من العملية الإبنة (%s)"
 
-#: glib/gspawn.c:380
+#: glib/gspawn.c:383
 #, c-format
 msgid "Unexpected error in waitpid() (%s)"
 msgstr "خطأ غير متوقع في waitpid() (%s)"
 
-#: glib/gspawn.c:1090
+#: glib/gspawn.c:1108
 #, c-format
 msgid "Failed to fork (%s)"
 msgstr "فشل تفريق (%s)"
 
-#: glib/gspawn.c:1240
+#: glib/gspawn.c:1258
 #, c-format
 msgid "Failed to execute child process \"%s\" (%s)"
 msgstr "فشل تنفيذ العملية الإبنة \"%s\" (%s)"
 
-#: glib/gspawn.c:1250
+#: glib/gspawn.c:1268
 #, c-format
 msgid "Failed to redirect output or input of child process (%s)"
 msgstr "فشل اعادة توجيه المخرج أو المدخل للعملية الإبنة (%s)"
 
-#: glib/gspawn.c:1259
+#: glib/gspawn.c:1277
 #, c-format
 msgid "Failed to fork child process (%s)"
 msgstr "فشل تفريق العملية الإبنة (%s)"
 
-#: glib/gspawn.c:1267
+#: glib/gspawn.c:1285
 #, c-format
 msgid "Unknown error executing child process \"%s\""
 msgstr "خطأ غير معروف أثناء تنفيذ العملية الإبنة \"%s\""
 
-#: glib/gspawn.c:1289
+#: glib/gspawn.c:1307
 #, c-format
 msgid "Failed to read enough data from child pid pipe (%s)"
 msgstr "فشلت قراءة بيانات كافية من أنبوب child pid (%s)"
@@ -628,27 +633,27 @@ msgstr "الحرف خارج حدود UTF-16"
 
 #: glib/goption.c:495
 msgid "Usage:"
-msgstr ""
+msgstr "الاستخدام:"
 
 #: glib/goption.c:495
 msgid "[OPTION...]"
-msgstr ""
+msgstr "[OPTION...]"
 
 #: glib/goption.c:586
 msgid "Help Options:"
-msgstr ""
+msgstr "خيارات المساعدة:"
 
 #: glib/goption.c:587
 msgid "Show help options"
-msgstr ""
+msgstr "اعرض خيارات المساعدة"
 
 #: glib/goption.c:592
 msgid "Show all help options"
-msgstr ""
+msgstr "اعرض كل خيارات المساعدة"
 
 #: glib/goption.c:642
 msgid "Application Options:"
-msgstr ""
+msgstr "خيارات التطبيق:"
 
 #: glib/goption.c:686 glib/goption.c:756
 #, c-format
@@ -671,9 +676,9 @@ msgid "Double value '%s' for %s out of range"
 msgstr ""
 
 #: glib/goption.c:1066
-#, fuzzy, c-format
+#, c-format
 msgid "Error parsing option %s"
-msgstr "خطأ أثناء التحويل: %s"
+msgstr ""
 
 #: glib/goption.c:1097 glib/goption.c:1208
 #, c-format
@@ -683,123 +688,109 @@ msgstr ""
 #: glib/goption.c:1597
 #, c-format
 msgid "Unknown option %s"
-msgstr ""
+msgstr "خيار مجهول %s"
 
-#: glib/gkeyfile.c:337
+#: glib/gkeyfile.c:341
 #, c-format
 msgid "Valid key file could not be found in data dirs"
-msgstr ""
+msgstr "لا يمكن إيجاد ملف مفتاح صحيح في دليل البيانات"
 
-#: glib/gkeyfile.c:372
+#: glib/gkeyfile.c:376
 #, c-format
 msgid "Not a regular file"
-msgstr ""
+msgstr "ليس ملفا اعتياديا"
 
-#: glib/gkeyfile.c:380
+#: glib/gkeyfile.c:384
 #, c-format
 msgid "File is empty"
-msgstr ""
+msgstr "الملف فارغ"
 
-#: glib/gkeyfile.c:695
+#: glib/gkeyfile.c:700
 #, c-format
 msgid ""
 "Key file contains line '%s' which is not a key-value pair, group, or comment"
 msgstr ""
 
-#: glib/gkeyfile.c:763
+#: glib/gkeyfile.c:758
+#, fuzzy, c-format
+msgid "Invalid group name: %s"
+msgstr "اسم برنامج غير صحيح: %s"
+
+#: glib/gkeyfile.c:780
 #, c-format
 msgid "Key file does not start with a group"
-msgstr ""
+msgstr "لا يبدأ ملف المفتاح بمجموعة"
 
 #: glib/gkeyfile.c:806
+#, fuzzy, c-format
+msgid "Invalid key name: %s"
+msgstr "اسم برنامج غير صحيح: %s"
+
+#: glib/gkeyfile.c:833
 #, c-format
 msgid "Key file contains unsupported encoding '%s'"
-msgstr ""
+msgstr "يحتوي ملف المفتاع على ترميز غير مدعوم '%s'"
 
-#: glib/gkeyfile.c:1013 glib/gkeyfile.c:1172 glib/gkeyfile.c:2385
-#: glib/gkeyfile.c:2450 glib/gkeyfile.c:2569 glib/gkeyfile.c:2704
-#: glib/gkeyfile.c:2857 glib/gkeyfile.c:3033 glib/gkeyfile.c:3090
+#: glib/gkeyfile.c:1042 glib/gkeyfile.c:1201 glib/gkeyfile.c:2402
+#: glib/gkeyfile.c:2469 glib/gkeyfile.c:2590 glib/gkeyfile.c:2725
+#: glib/gkeyfile.c:2878 glib/gkeyfile.c:3058 glib/gkeyfile.c:3115
 #, c-format
 msgid "Key file does not have group '%s'"
-msgstr ""
+msgstr "لا يحتوي ملف المفتاح على المجموعة '%s'"
 
-#: glib/gkeyfile.c:1184
+#: glib/gkeyfile.c:1213
 #, c-format
 msgid "Key file does not have key '%s'"
-msgstr ""
+msgstr "لا يحتوي ملف المفتاح على المفتاح '%s'"
 
-#: glib/gkeyfile.c:1285 glib/gkeyfile.c:1394
+#: glib/gkeyfile.c:1315 glib/gkeyfile.c:1425
 #, c-format
 msgid "Key file contains key '%s' with value '%s' which is not UTF-8"
-msgstr ""
+msgstr "يحتوي ملف المفتاح على المفتاح '%s' ذو القيمة '%s' التي ليست UTF-8"
 
-#: glib/gkeyfile.c:1303 glib/gkeyfile.c:1412 glib/gkeyfile.c:1784
+#: glib/gkeyfile.c:1335 glib/gkeyfile.c:1445 glib/gkeyfile.c:1813
 #, c-format
 msgid "Key file contains key '%s' which has value that cannot be interpreted."
 msgstr ""
 
-#: glib/gkeyfile.c:2000 glib/gkeyfile.c:2213
-#, c-format
+#: glib/gkeyfile.c:2025 glib/gkeyfile.c:2234
+#, fuzzy, c-format
 msgid ""
 "Key file contains key '%s' in group '%s' which has value that cannot be "
 "interpreted."
-msgstr ""
+msgstr "الرئيسية ملف مفتاح '٪' او مجموعة 'او' ٪ القيمه التي لا يمكن تفسيرها."
 
-#: glib/gkeyfile.c:2400 glib/gkeyfile.c:2584 glib/gkeyfile.c:3101
+#: glib/gkeyfile.c:2417 glib/gkeyfile.c:2605 glib/gkeyfile.c:3126
 #, c-format
 msgid "Key file does not have key '%s' in group '%s'"
-msgstr ""
+msgstr "لا يحتوي ملف المفتاح على مفتاح '%s' في المجموعة '%s'"
 
-#: glib/gkeyfile.c:3274
+#: glib/gkeyfile.c:3346
 #, c-format
 msgid "Key file contains escape character at end of line"
 msgstr ""
 
-#: glib/gkeyfile.c:3296
-#, fuzzy, c-format
+#: glib/gkeyfile.c:3368
+#, c-format
 msgid "Key file contains invalid escape sequence '%s'"
-msgstr "الـURI '%s' يحتوي على حروف هربت بطريقة غير سليمة "
+msgstr ""
 
-#: glib/gkeyfile.c:3437
+#: glib/gkeyfile.c:3510
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
-msgstr ""
+msgstr "لا يمكن تفسير القيمة '%s' كعدد."
 
-#: glib/gkeyfile.c:3447
+#: glib/gkeyfile.c:3524
 #, c-format
 msgid "Integer value '%s' out of range"
-msgstr ""
+msgstr "قيمة عدد صحيح '%s' خارج المدى"
 
-#: glib/gkeyfile.c:3475
+#: glib/gkeyfile.c:3557
 #, c-format
 msgid "Value '%s' cannot be interpreted as a float number."
-msgstr ""
+msgstr "لا يمكن تفسير القيمة '%s' ككسر عشري."
 
-#: glib/gkeyfile.c:3495
+#: glib/gkeyfile.c:3584
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
-msgstr ""
-
-#, fuzzy
-#~ msgid "Could not change file mode: fork() failed: %s"
-#~ msgstr "فشل فتح الملف '%s': فشل fdopen(): %s"
-
-#, fuzzy
-#~ msgid "Could not change file mode: waitpid() failed: %s"
-#~ msgstr "لم يمكن تحديد %lu بايتس لقرائة الملف \"%s\""
-
-#, fuzzy
-#~ msgid "Could not change file mode: chmod() failed: %s"
-#~ msgstr "فشل فتح الملف '%s': فشل fdopen(): %s"
-
-#~ msgid "Conversion from character set `%s' to `%s' is not supported"
-#~ msgstr "التحويل من مجموعة المحارف `%s' الى `%s' غير مدعوم"
-
-#~ msgid "Incorrect message size"
-#~ msgstr "حجم رسالة غير صحيح"
-
-#~ msgid "Socket error"
-#~ msgstr "خطأ في المقبس"
-
-#~ msgid "Channel set flags unsupported"
-#~ msgstr "Channel set flags غير مدعوم"
+msgstr "لا يمكن تفسير القيمة '%s' كعدد منطقي."

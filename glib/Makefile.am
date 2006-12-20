@@ -24,7 +24,7 @@ galiasdef.c: glib.symbols
 
 if OS_LINUX
 if HAVE_GNUC_VISIBILITY
-TESTS = abicheck.sh
+TESTS = abicheck.sh pltcheck.sh
 endif
 endif
 
@@ -42,6 +42,7 @@ EXTRA_DIST = 			\
 	gen-unicode-tables.pl	\
 	makegalias.pl		\
 	abicheck.sh		\
+	pltcheck.sh		\
 	glib.symbols		\
 	$(MIRRORING_TAB_SOURCES)
 

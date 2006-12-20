@@ -30,15 +30,15 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <string.h>
+#include <stdlib.h>   /* for fdwalk */
 
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif /* HAVE_SYS_SELECT_H */
 
 #include "glib.h"
-#include "galias.h"
-
 #include "glibintl.h"
+#include "galias.h"
 
 static gint g_execute (const gchar  *file,
                        gchar **argv,
@@ -128,6 +128,9 @@ close_and_invalidate (gint *fd)
 
   return ret;
 }
+
+/* Some versions of OS X define READ_OK in public headers */
+#undef READ_OK
 
 typedef enum
 {
@@ -850,11 +853,31 @@ write_err_and_exit (gint fd, gint msg)
   _exit (1);
 }
 
-static void
-set_cloexec (gint fd)
+static int 
+set_cloexec (void *data, gint fd)
 {
-  fcntl (fd, F_SETFD, FD_CLOEXEC);
+  if (fd >= GPOINTER_TO_INT(data))
+    fcntl (fd, F_SETFD, FD_CLOEXEC);
+
+  return 0;
 }
+
+#ifndef HAVE_FDWALK
+static int
+fdwalk (int (*cb)(void *data, int fd), void *data)
+{
+  gint open_max;
+  gint fd;
+  gint res;
+
+  res = 0;
+  open_max = sysconf (_SC_OPEN_MAX);
+  for (fd = 0; fd < open_max && res == 0; fd++)
+    res = cb (data, fd);
+
+  return res;
+}
+#endif
 
 static gint
 sane_dup2 (gint fd1, gint fd2)
@@ -905,17 +928,12 @@ do_exec (gint                  child_err_report_fd,
    */
   if (close_descriptors)
     {
-      gint open_max;
-      gint i;
-      
-      open_max = sysconf (_SC_OPEN_MAX);
-      for (i = 3; i < open_max; i++)
-        set_cloexec (i);
+      fdwalk (set_cloexec, GINT_TO_POINTER(3));
     }
   else
     {
       /* We need to do child_err_report_fd anyway */
-      set_cloexec (child_err_report_fd);
+      set_cloexec (GINT_TO_POINTER(0), child_err_report_fd);
     }
   
   /* Redirect pipes as required */
