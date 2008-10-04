@@ -81,6 +81,7 @@ typedef gint            (*GCompareFunc)         (gconstpointer  a,
 typedef gint            (*GCompareDataFunc)     (gconstpointer  a,
                                                  gconstpointer  b,
 						 gpointer       user_data);
+typedef gpointer        (*GCopyFunc)            (gconstpointer  data);
 typedef gboolean        (*GEqualFunc)           (gconstpointer  a,
                                                  gconstpointer  b);
 typedef void            (*GDestroyNotify)       (gpointer       data);

@@ -70,7 +70,14 @@ gboolean g_tree_lookup_extended (GTree            *tree,
 void     g_tree_foreach         (GTree            *tree,
                                  GTraverseFunc	   func,
                                  gpointer	   user_data);
-
+GTree   *g_tree_copy            (GTree            *tree,
+				 GCopyFunc         copy_key,
+				 GCopyFunc         copy_value);
+GTree   *g_tree_copy_extended   (GTree            *tree,
+				 GCopyFunc         copy_key,
+				 GCopyFunc         copy_value,
+				 GDestroyFunc      new_key_destory_func,
+				 GDestroyFunc      new_value_destroy_func);
 #ifndef G_DISABLE_DEPRECATED
 void     g_tree_traverse        (GTree            *tree,
                                  GTraverseFunc     traverse_func,
