@@ -1208,6 +1208,59 @@ g_hash_table_foreach (GHashTable *hash_table,
     }
 }
 
+GHashTable*
+g_hash_table_clone (GHashTable     *hash_table,
+		    GCopyFunc       copy_key,
+		    GCopyFunc       copy_value)
+{
+  return g_hash_table_clone_extended (hash_table, copy_key, copy_value,
+				      NULL, NULL);
+}
+
+GHashTable*
+g_hash_table_clone_extended (GHashTable     *self,
+			     GCopyFunc       copy_key,
+			     GCopyFunc       copy_value,
+			     GDestroyNotify  new_key_destroy,
+			     GDestroyNotify  new_value_destroy)
+{
+  GHashTable *cloned;
+  gint        iter;
+
+  cloned = g_slice_new (GHashTable);
+  cloned->size = self->size;
+  cloned->mod = self->mod;
+  cloned->mask = self->mask;
+  cloned->nnodes = self->nnodes;
+  cloned->noccupied = self->noccupied;
+  cloned->hash_func = self->hash_func;
+  cloned->key_equal_func = self->key_equal_func;
+  cloned->ref_count = 1;
+#ifndef G_DISABLE_ASSERT
+  cloned->version  = 0;
+#endif
+  cloned->key_destroy_func =
+    (new_key_destroy != NULL ? new_key_destroy : self->key_destroy_func);
+  cloned->value_destroy_func =
+    (new_value_destroy != NULL ? new_value_destroy : self->value_destroy_func);
+  cloned->nodes = g_memdup (self->nodes, sizeof (GHashNode) * cloned->size);
+
+  for (i = 0; i < self->size; i++)
+    {
+      GHashNode *node = cloned->nodes[i];
+
+      if (node->key_hash >= 2)
+	{
+	  node->key =
+	    (copy_key != NULL ? copy_key(node->key) : node->key);
+	  node->value =
+	    (copy_value != NULL ? copy_value(node->value) : node->value);
+	}
+    }
+
+  return cloned;
+}
+
 /**
  * g_hash_table_find:
  * @hash_table: a #GHashTable.

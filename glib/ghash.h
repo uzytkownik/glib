@@ -94,6 +94,14 @@ guint	    g_hash_table_foreach_remove	   (GHashTable	   *hash_table,
 guint	    g_hash_table_foreach_steal	   (GHashTable	   *hash_table,
 					    GHRFunc	    func,
 					    gpointer	    user_data);
+GHashTable *g_hash_table_clone             (GHashTable     *hash_table,
+					    GCopyFunc       copy_key,
+					    GCopyFunc       copy_value)
+GHashTable *g_hash_table_clone_extended    (GHashTable     *hash_table,
+					    GCopyFunc       copy_key,
+					    GCopyFunc       copy_value,
+					    GDestroyNotify  new_key_destroy,
+					    GDestroyNotify  new_value_destroy);
 guint	    g_hash_table_size		   (GHashTable	   *hash_table);
 GList *     g_hash_table_get_keys          (GHashTable     *hash_table);
 GList *     g_hash_table_get_values        (GHashTable     *hash_table);
