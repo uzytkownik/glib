@@ -834,9 +834,9 @@ g_tree_copy (GTree     *tree,
 }
 
 static GTreeNode*
-g_tree_node_clone (GTreeNode *node,
-		   GCopyFunc  copy_key,
-		   GCopyFunc  copy_value)
+g_tree_node_copy (GTreeNode *node,
+		  GCopyFunc  copy_key,
+		  GCopyFunc  copy_value)
 {
   GTreeNode *new_node;
 
@@ -848,8 +848,8 @@ g_tree_node_clone (GTreeNode *node,
     (copy_key != NULL ? copy_key (node->key) : node->key);
   new_node->value =
     (copy_value != NULL ? copy_value (node->value) : node->value);
-  new_node->left = g_tree_node_clone (node->left, copy_key, copy_value);
-  new_node->right = g_tree_node_clone (node->right, copy_key, copy_value);
+  new_node->left = g_tree_node_copy (node->left, copy_key, copy_value);
+  new_node->right = g_tree_node_copy (node->right, copy_key, copy_value);
   new_node->balance = node->balance;
   new_node->left_child = node->left_child;
   new_node->right_child = node->right_child;
@@ -867,7 +867,7 @@ g_tree_copy_extended (GTree        *tree,
   GTree *new_tree;
 
   new_tree = g_slice_new(GTree);
-  new_tree->root = g_tree_node_clone (tree->root, copy_key, copy_value);
+  new_tree->root = g_tree_node_copy (tree->root, copy_key, copy_value);
   new_tree->key_compare = tree->key_compare;
   new_tree->key_destroy_func =
     (new_key_destory_func != NULL ? new_key_destory_func
