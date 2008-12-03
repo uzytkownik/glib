@@ -41,14 +41,14 @@
 
 G_DEFINE_TYPE (GUnixResolver, g_unix_resolver, G_TYPE_THREADED_RESOLVER)
 
-static gboolean g_unix_resolver_watch (GIOChannel *iochannel,
-                                       GIOCondition condition,
-                                       gpointer user_data);
+static gboolean g_unix_resolver_watch (GIOChannel   *iochannel,
+                                       GIOCondition  condition,
+                                       gpointer      user_data);
 
 static void
 g_unix_resolver_init (GUnixResolver *gur)
 {
-  int fd;
+  gint fd;
   GIOChannel *io;
 
   /* FIXME: how many workers? */
@@ -122,13 +122,14 @@ typedef struct {
 } GUnixResolverRequest;
 
 static void g_unix_resolver_request_free (GUnixResolverRequest *req);
-static void request_cancelled (GCancellable *cancellable, gpointer user_data);
+static void request_cancelled (GCancellable *cancellable,
+                               gpointer      user_data);
 
 static GUnixResolverRequest *
-g_unix_resolver_request_new (GUnixResolver *gur,
-                             gpointer resolvable,
+g_unix_resolver_request_new (GUnixResolver      *gur,
+                             gpointer            resolvable,
                              _g_asyncns_query_t *qy,
-                             GCancellable *cancellable,
+                             GCancellable       *cancellable,
                              GSimpleAsyncResult *async_result)
 {
   GUnixResolverRequest *req;
@@ -166,7 +167,7 @@ g_unix_resolver_request_free (GUnixResolverRequest *req)
 
 static void
 g_unix_resolver_request_complete (GUnixResolverRequest *req,
-                                  gboolean need_idle)
+                                  gboolean              need_idle)
 {
   if (req->cancellable)
     {
@@ -189,7 +190,8 @@ g_unix_resolver_request_complete (GUnixResolverRequest *req,
 }
 
 static void
-request_cancelled (GCancellable *cancellable, gpointer user_data)
+request_cancelled (GCancellable *cancellable,
+                   gpointer      user_data)
 {
   GUnixResolverRequest *req = user_data;
   GError *error = NULL;
@@ -205,8 +207,9 @@ request_cancelled (GCancellable *cancellable, gpointer user_data)
 }
 
 static gboolean
-g_unix_resolver_watch (GIOChannel *iochannel, GIOCondition condition,
-                       gpointer user_data)
+g_unix_resolver_watch (GIOChannel   *iochannel,
+                       GIOCondition  condition,
+                       gpointer      user_data)
 {
   GUnixResolver *gur = user_data;
   _g_asyncns_query_t *qy;
@@ -231,10 +234,13 @@ g_unix_resolver_watch (GIOChannel *iochannel, GIOCondition condition,
 }
 
 static void
-resolve_async (GUnixResolver *gur, gpointer resolvable,
-               _g_asyncns_query_t *qy, GCancellable *cancellable,
-               GAsyncReadyCallback callback, gpointer user_data,
-               gpointer tag)
+resolve_async (GUnixResolver       *gur,
+               gpointer             resolvable,
+               _g_asyncns_query_t  *qy,
+               GCancellable        *cancellable,
+               GAsyncReadyCallback  callback,
+               gpointer             user_data,
+               gpointer             tag)
 {
   GSimpleAsyncResult *result;
   GUnixResolverRequest *req;
@@ -246,14 +252,16 @@ resolve_async (GUnixResolver *gur, gpointer resolvable,
 }
 
 static void
-lookup_name_async (GResolver *resolver, GNetworkAddress *addr,
-		   GCancellable *cancellable, GAsyncReadyCallback callback,
-		   gpointer user_data)
+lookup_name_async (GResolver           *resolver,
+                   GNetworkAddress     *addr,
+		   GCancellable        *cancellable,
+                   GAsyncReadyCallback  callback,
+		   gpointer             user_data)
 {
   GUnixResolver *gur = G_UNIX_RESOLVER (resolver);
   _g_asyncns_query_t *qy;
   struct addrinfo hints;
-  char service[8];
+  gchar service[8];
 
   g_network_address_get_addrinfo_hints (addr, service, &hints);
   qy = _g_asyncns_getaddrinfo (gur->asyncns,
@@ -264,13 +272,14 @@ lookup_name_async (GResolver *resolver, GNetworkAddress *addr,
 }
 
 static gboolean
-lookup_name_finish (GResolver *resolver, GAsyncResult *result,
-		    GError **error)
+lookup_name_finish (GResolver     *resolver,
+                    GAsyncResult  *result,
+		    GError       **error)
 {
   GSimpleAsyncResult *simple;
   GUnixResolverRequest *req;
   struct addrinfo *res;
-  int retval;
+  gint retval;
   gboolean success;
 
   g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
@@ -291,14 +300,16 @@ lookup_name_finish (GResolver *resolver, GAsyncResult *result,
 
 
 static void
-lookup_address_async (GResolver *resolver, GNetworkAddress *addr,
-		      GCancellable *cancellable, GAsyncReadyCallback callback,
-		      gpointer user_data)
+lookup_address_async (GResolver           *resolver,
+                      GNetworkAddress     *addr,
+		      GCancellable        *cancellable,
+                      GAsyncReadyCallback  callback,
+		      gpointer             user_data)
 {
   GUnixResolver *gur = G_UNIX_RESOLVER (resolver);
   _g_asyncns_query_t *qy;
   GSockaddr *sockaddr;
-  int socklen;
+  gint socklen;
 
   sockaddr = g_network_address_get_sockaddrs (addr)[0];
   socklen = g_sockaddr_size (sockaddr);
@@ -310,13 +321,14 @@ lookup_address_async (GResolver *resolver, GNetworkAddress *addr,
 }
 
 static gboolean
-lookup_address_finish (GResolver *resolver, GAsyncResult *result,
-		       GError **error)
+lookup_address_finish (GResolver     *resolver,
+                       GAsyncResult  *result,
+		       GError       **error)
 {
   GSimpleAsyncResult *simple;
   GUnixResolverRequest *req;
-  char host[NI_MAXHOST];
-  int retval;
+  gchar host[NI_MAXHOST];
+  gint retval;
 
   g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
   simple = G_SIMPLE_ASYNC_RESULT (result);
@@ -333,13 +345,15 @@ lookup_address_finish (GResolver *resolver, GAsyncResult *result,
 
 
 static void
-lookup_service_async (GResolver *resolver, GNetworkService *srv,
-		      GCancellable *cancellable, GAsyncReadyCallback callback,
-		      gpointer user_data)
+lookup_service_async (GResolver           *resolver,
+                      GNetworkService     *srv,
+		      GCancellable        *cancellable,
+                      GAsyncReadyCallback  callback,
+		      gpointer             user_data)
 {
   GUnixResolver *gur = G_UNIX_RESOLVER (resolver);
   _g_asyncns_query_t *qy;
-  char *dname;
+  gchar *dname;
 
   dname = g_network_service_get_rrname (srv);
   qy = _g_asyncns_res_query (gur->asyncns, dname, C_IN, T_SRV);
@@ -349,13 +363,14 @@ lookup_service_async (GResolver *resolver, GNetworkService *srv,
 }
 
 static gboolean
-lookup_service_finish (GResolver *resolver, GAsyncResult *result,
-		       GError **error)
+lookup_service_finish (GResolver     *resolver,
+                       GAsyncResult  *result,
+		       GError       **error)
 {
   GSimpleAsyncResult *simple;
   GUnixResolverRequest *req;
   guchar *answer;
-  int len, herr;
+  gint len, herr;
   gboolean success;
 
   g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);

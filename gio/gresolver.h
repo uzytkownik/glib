@@ -97,12 +97,12 @@ GResolver       *g_resolver_get_default            (void);
 void             g_resolver_set_default            (GResolver           *resolver);
 
 GNetworkAddress *g_resolver_lookup_name            (GResolver           *resolver,
-						    const char          *hostname,
+						    const gchar         *hostname,
 						    gushort              port,
 						    GCancellable        *cancellable,
 						    GError             **error);
 void             g_resolver_lookup_name_async      (GResolver           *resolver,
-						    const char          *hostname,
+						    const gchar         *hostname,
 						    gushort              port,
 						    GCancellable        *cancellable,
 						    GAsyncReadyCallback  callback,
@@ -125,15 +125,15 @@ GNetworkAddress *g_resolver_lookup_address_finish  (GResolver           *resolve
 						    GError             **error);
 
 GNetworkService *g_resolver_lookup_service         (GResolver           *resolver,
-						    const char          *service,
-						    const char          *protocol,
-						    const char          *domain,
+						    const gchar         *service,
+						    const gchar         *protocol,
+						    const gchar         *domain,
 						    GCancellable        *cancellable,
 						    GError             **error);
 void             g_resolver_lookup_service_async   (GResolver           *resolver,
-						    const char          *service,
-						    const char          *protocol,
-						    const char          *domain,
+						    const gchar         *service,
+						    const gchar         *protocol,
+						    const gchar         *domain,
 						    GCancellable        *cancellable,
 						    GAsyncReadyCallback  callback,
 						    gpointer             user_data);

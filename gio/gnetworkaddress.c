@@ -41,7 +41,7 @@
  **/
 
 static GResolverError
-g_resolver_error_from_addrinfo_error (int err)
+g_resolver_error_from_addrinfo_error (gint err)
 {
   switch (err)
     {
@@ -71,7 +71,7 @@ g_resolver_error_from_addrinfo_error (int err)
  **/
 
 struct _GNetworkAddressPrivate {
-  char *hostname, *ascii_name;
+  gchar *hostname, *ascii_name;
   gushort port;
   GSockaddr **sockaddrs;
 };
@@ -100,7 +100,7 @@ static void
 g_network_address_finalize (GObject *object)
 {
   GNetworkAddress *addr = G_NETWORK_ADDRESS (object);
-  int i;
+  gint i;
 
   g_free (addr->priv->hostname);
   g_free (addr->priv->ascii_name);
@@ -164,10 +164,10 @@ g_network_address_init (GNetworkAddress *addr)
                                             GNetworkAddressPrivate);
 }
 
-static void g_network_address_set_hostname (GNetworkAddress *addr,
-                                            const char *hostname);
-static void g_network_address_set_sockaddrs (GNetworkAddress *addr,
-                                             GSockaddr **sockaddrs);
+static void g_network_address_set_hostname  (GNetworkAddress  *addr,
+                                             const gchar      *hostname);
+static void g_network_address_set_sockaddrs (GNetworkAddress  *addr,
+                                             GSockaddr       **sockaddrs);
 
 static void
 g_network_address_set_property (GObject      *object,
@@ -244,7 +244,7 @@ g_network_address_get_property (GObject    *object,
 
 static void
 g_network_address_set_hostname (GNetworkAddress *addr,
-                                const char *hostname)
+                                const gchar     *hostname)
 {
   g_return_if_fail (hostname != NULL);
 
@@ -265,17 +265,17 @@ g_network_address_set_hostname (GNetworkAddress *addr,
  * response.
  */
 gboolean
-g_network_address_set_from_nameinfo (GNetworkAddress *addr,
-                                     const char *name,
-                                     int gni_retval,
-                                     GError **error)
+g_network_address_set_from_nameinfo (GNetworkAddress  *addr,
+                                     const gchar      *name,
+                                     gint              gni_retval,
+                                     GError          **error)
 {
   g_return_val_if_fail (G_IS_NETWORK_ADDRESS (addr), FALSE);
   g_return_val_if_fail (addr->priv->sockaddrs != NULL, FALSE);
 
   if (gni_retval != 0)
     {
-      char *phys;
+      gchar *phys;
 
       phys = g_sockaddr_to_string (addr->priv->sockaddrs[0]);
       g_set_error (error, G_RESOLVER_ERROR,
@@ -291,10 +291,10 @@ g_network_address_set_from_nameinfo (GNetworkAddress *addr,
 }
 
 static void
-g_network_address_set_sockaddrs (GNetworkAddress *addr,
-                                 GSockaddr **sockaddrs)
+g_network_address_set_sockaddrs (GNetworkAddress  *addr,
+                                 GSockaddr       **sockaddrs)
 {
-  int n;
+  gint n;
   gushort port;
 
   g_return_if_fail (sockaddrs != NULL && sockaddrs[0] != NULL);
@@ -322,7 +322,8 @@ g_network_address_set_sockaddrs (GNetworkAddress *addr,
 /* Private method to prepare args to getaddrinfo() */
 void
 g_network_address_get_addrinfo_hints (GNetworkAddress *addr,
-                                      char service[8], struct addrinfo *hints)
+                                      gchar            service[8],
+                                      struct addrinfo *hints)
 {
   g_snprintf (service, sizeof (service), "%u", addr->priv->port);
   memset (hints, 0, sizeof (struct addrinfo));
@@ -344,14 +345,14 @@ g_network_address_get_addrinfo_hints (GNetworkAddress *addr,
  * a getaddrinfo() response.
  */
 gboolean
-g_network_address_set_from_addrinfo  (GNetworkAddress *addr,
-                                      struct addrinfo *res,
-                                      int gai_retval,
-                                      GError **error)
+g_network_address_set_from_addrinfo  (GNetworkAddress  *addr,
+                                      struct addrinfo  *res,
+                                      gint              gai_retval,
+                                      GError          **error)
 {
   struct addrinfo *ai;
   GSockaddr **sockaddrs;
-  int n;
+  gint n;
 
   g_return_val_if_fail (G_IS_NETWORK_ADDRESS (addr), FALSE);
 
@@ -389,7 +390,7 @@ g_network_address_set_from_addrinfo  (GNetworkAddress *addr,
  * Return value: @addr's display hostname, or %NULL if @addr has
  * only IP addresses
  **/
-const char *
+const gchar *
 g_network_address_get_hostname (GNetworkAddress *addr)
 {
   g_return_val_if_fail (G_IS_NETWORK_ADDRESS (addr), NULL);
@@ -412,7 +413,7 @@ g_network_address_get_hostname (GNetworkAddress *addr)
  * Return value: @addr's ASCII hostname, or %NULL if @addr has
  * only IP addresses
  **/
-const char *
+const gchar *
 g_network_address_get_ascii_name (GNetworkAddress *addr)
 {
   g_return_val_if_fail (G_IS_NETWORK_ADDRESS (addr), NULL);
@@ -503,10 +504,11 @@ g_sockaddr_get_type (void)
  * IPv4 or IPv6 address.
  **/
 GSockaddr *
-g_sockaddr_new_from_string (const char *ip_addr, gushort port)
+g_sockaddr_new_from_string (const gchar *ip_addr,
+                            gushort      port)
 {
 #ifdef G_OS_WIN32
-  int len;
+  gint len;
 #endif
   struct sockaddr_storage sa;
   struct sockaddr_in *sin = (struct sockaddr_in *)&sa;
@@ -598,11 +600,11 @@ g_sockaddr_get_port (GSockaddr *sockaddr)
  *
  * Return value: the string form of @sockaddr, which must be freed
  **/
-char *
+gchar *
 g_sockaddr_to_string (GSockaddr *sockaddr)
 {
   struct sockaddr *sa = (struct sockaddr *)sockaddr;
-  char buffer[INET6_ADDRSTRLEN];
+  gchar buffer[INET6_ADDRSTRLEN];
 #ifdef G_OS_WIN32
   DWORD buflen = sizeof (buffer);
 #else

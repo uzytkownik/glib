@@ -70,7 +70,7 @@
 #define PUNYCODE_IS_BASIC(cp) ((guint)(cp) < 0x80)
 
 /* Encode/decode a single base-36 digit */
-static inline char
+static inline gchar
 encode_digit (guint dig)
 {
   if (dig < 26)
@@ -80,7 +80,7 @@ encode_digit (guint dig)
 }
 
 static inline guint
-decode_digit (char dig)
+decode_digit (gchar dig)
 {
   if (dig >= 'A' && dig <= 'Z')
     return dig - 'A';
@@ -94,7 +94,9 @@ decode_digit (char dig)
 
 /* Punycode bias adaptation algorithm, RFC 3492 section 6.1 */
 static guint
-adapt (guint delta, guint numpoints, gboolean firsttime)
+adapt (guint    delta,
+       guint    numpoints,
+       gboolean firsttime)
 {
   guint k;
 
@@ -117,8 +119,9 @@ adapt (guint delta, guint numpoints, gboolean firsttime)
  * here.
  */
 static gboolean
-punycode_encode (const char *input_utf8, gsize input_utf8_length,
-		 GString *output)
+punycode_encode (const gchar *input_utf8,
+                 gsize        input_utf8_length,
+		 GString     *output)
 {
   guint delta, handled_chars, num_basic_chars, bias, j, q, k, t, digit;
   gunichar n, m, *input;
@@ -212,11 +215,12 @@ punycode_encode (const char *input_utf8, gsize input_utf8_length,
 /* Scan @str for "junk" and return a cleaned-up string if any junk
  * is found. Else return %NULL.
  */
-static char *
-remove_junk (const char *str, int len)
+static gchar *
+remove_junk (const gchar *str,
+             gint         len)
 {
   GString *cleaned = NULL;
-  const char *p;
+  const gchar *p;
   gunichar ch;
 
   for (p = str; len == -1 ? *p : p < str + len; p = g_utf8_next_char (p))
@@ -241,9 +245,10 @@ remove_junk (const char *str, int len)
 }
 
 static inline gboolean
-contains_uppercase_letters (const char *str, int len)
+contains_uppercase_letters (const gchar *str,
+                            gint         len)
 {
-  const char *p;
+  const gchar *p;
 
   for (p = str; len == -1 ? *p : p < str + len; p = g_utf8_next_char (p))
     {
@@ -254,9 +259,10 @@ contains_uppercase_letters (const char *str, int len)
 }
 
 static inline gboolean
-contains_non_ascii (const char *str, int len)
+contains_non_ascii (const gchar *str,
+                    gint         len)
 {
-  const char *p;
+  const gchar *p;
 
   for (p = str; len == -1 ? *p : p < str + len; p++)
     {
@@ -299,10 +305,11 @@ idna_is_prohibited (gunichar ch)
 }
 
 /* RFC 3491 IDN cleanup algorithm. */
-static char *
-nameprep (const char *hostname, int len)
+static gchar *
+nameprep (const gchar *hostname,
+          gint         len)
 {
-  char *name, *tmp = NULL, *p;
+  gchar *name, *tmp = NULL, *p;
 
   /* It would be nice if we could do this without repeatedly
    * allocating strings and converting back and forth between
@@ -319,7 +326,7 @@ nameprep (const char *hostname, int len)
       len = -1;
     }
   else
-    name = (char *)hostname;
+    name = (gchar *)hostname;
 
   /* Convert to lowercase */
   if (contains_uppercase_letters (name, len))
@@ -333,7 +340,7 @@ nameprep (const char *hostname, int len)
   /* If there are no UTF8 characters, we're done. */
   if (!contains_non_ascii (name, len))
     {
-      if (name == (char *)hostname)
+      if (name == (gchar *)hostname)
         return len == -1 ? g_strdup (hostname) : g_strndup (hostname, len);
       else
         return name;
@@ -388,10 +395,10 @@ nameprep (const char *hostname, int len)
  * Return value: an ASCII hostname, which must be freed, or %NULL if
  * @hostname is in some way invalid.
  **/
-char *
-g_hostname_to_ascii (const char *hostname)
+gchar *
+g_hostname_to_ascii (const gchar *hostname)
 {
-  char *name, *label, *p;
+  gchar *name, *label, *p;
   GString *out;
   gssize llen, oldlen;
   gboolean unicode;
@@ -455,7 +462,7 @@ g_hostname_to_ascii (const char *hostname)
  * Return value: %TRUE if @hostname contains any non-ASCII characters
  **/
 gboolean
-g_hostname_is_non_ascii (const char *hostname)
+g_hostname_is_non_ascii (const gchar *hostname)
 {
   return contains_non_ascii (hostname, -1);
 }
@@ -464,13 +471,15 @@ g_hostname_is_non_ascii (const char *hostname)
  * read the RFC if you want to understand what this is actually doing.
  */
 static gboolean
-punycode_decode (const char *input, gsize input_length, GString *output)
+punycode_decode (const gchar *input,
+                 gsize        input_length,
+                 GString     *output)
 {
   GArray *output_chars;
   gunichar n;
   guint i, bias;
   guint oldi, w, k, digit, t;
-  const char *split;
+  const gchar *split;
 
   n = PUNYCODE_INITIAL_N;
   i = 0;
@@ -558,8 +567,8 @@ punycode_decode (const char *input, gsize input_length, GString *output)
  * Return value: a UTF-8 hostname, which must be freed, or %NULL if
  * @hostname is in some way invalid.
  **/
-char *
-g_hostname_to_unicode (const char *hostname)
+gchar *
+g_hostname_to_unicode (const gchar *hostname)
 {
   GString *out;
   gssize llen;
@@ -581,7 +590,7 @@ g_hostname_to_unicode (const char *hostname)
 	}
       else
         {
-          char *canonicalized = nameprep (hostname, llen);
+          gchar *canonicalized = nameprep (hostname, llen);
 
           g_string_append (out, canonicalized);
           g_free (canonicalized);
@@ -613,7 +622,7 @@ g_hostname_to_unicode (const char *hostname)
  * segments.
  **/
 gboolean
-g_hostname_is_ascii_encoded (const char *hostname)
+g_hostname_is_ascii_encoded (const gchar *hostname)
 {
   while (1)
     {
@@ -635,7 +644,7 @@ g_hostname_is_ascii_encoded (const char *hostname)
  * Return value: %TRUE if @hostname is an IP address
  **/
 gboolean
-g_hostname_is_ip_address (const char *hostname)
+g_hostname_is_ip_address (const gchar *hostname)
 {
   GSockaddr *sockaddr = g_sockaddr_new_from_string (hostname, 0);
 

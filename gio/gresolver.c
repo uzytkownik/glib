@@ -142,9 +142,11 @@ g_resolver_set_default (GResolver *resolver)
  * Return value: a #GNetworkAddress, or %NULL on error
  **/
 GNetworkAddress *
-g_resolver_lookup_name (GResolver *resolver,
-                        const char *hostname, gushort port,
-                        GCancellable *cancellable, GError **error)
+g_resolver_lookup_name (GResolver     *resolver,
+                        const gchar   *hostname,
+                        gushort        port,
+                        GCancellable  *cancellable,
+                        GError       **error)
 {
   GNetworkAddress *addr;
   GSockaddr *sockaddr;
@@ -177,8 +179,9 @@ g_resolver_lookup_name (GResolver *resolver,
 }
 
 static void
-lookup_name_async_callback (GObject *source, GAsyncResult *result,
-                            gpointer user_data)
+lookup_name_async_callback (GObject      *source,
+                            GAsyncResult *result,
+                            gpointer      user_data)
 {
   GResolver *resolver = G_RESOLVER (source);
   GSimpleAsyncResult *simple = user_data;
@@ -209,11 +212,12 @@ lookup_name_async_callback (GObject *source, GAsyncResult *result,
  * must call g_resolver_lookup_name_finish() to get the result.
  **/
 void
-g_resolver_lookup_name_async (GResolver *resolver,
-                              const char *hostname, gushort port,
-                              GCancellable *cancellable,
-                              GAsyncReadyCallback callback,
-                              gpointer user_data)
+g_resolver_lookup_name_async (GResolver           *resolver,
+                              const gchar         *hostname,
+                              gushort              port,
+                              GCancellable        *cancellable,
+                              GAsyncReadyCallback  callback,
+                              gpointer             user_data)
 {
   GNetworkAddress *addr;
   GSimpleAsyncResult *simple;
@@ -266,8 +270,9 @@ g_resolver_lookup_name_async (GResolver *resolver,
  * Return value: a #GNetworkAddress, or %NULL on error
  **/
 GNetworkAddress *
-g_resolver_lookup_name_finish (GResolver *resolver, GAsyncResult *result,
-                               GError **error)
+g_resolver_lookup_name_finish (GResolver     *resolver,
+                               GAsyncResult  *result,
+                               GError       **error)
 {
   GSimpleAsyncResult *simple;
   GNetworkAddress *addr;
@@ -304,8 +309,10 @@ g_resolver_lookup_name_finish (GResolver *resolver, GAsyncResult *result,
  * Return value: a #GNetworkAddress, or %NULL on error
  **/
 GNetworkAddress *
-g_resolver_lookup_address (GResolver *resolver, GSockaddr *sockaddr,
-                           GCancellable *cancellable, GError **error)
+g_resolver_lookup_address (GResolver     *resolver,
+                           GSockaddr     *sockaddr,
+                           GCancellable  *cancellable,
+                           GError       **error)
 {
   GNetworkAddress *addr;
 
@@ -325,8 +332,9 @@ g_resolver_lookup_address (GResolver *resolver, GSockaddr *sockaddr,
 }
 
 static void
-lookup_address_async_callback (GObject *source, GAsyncResult *result,
-                               gpointer user_data)
+lookup_address_async_callback (GObject      *source,
+                               GAsyncResult *result,
+                               gpointer      user_data)
 {
   GResolver *resolver = G_RESOLVER (source);
   GSimpleAsyncResult *simple = user_data;
@@ -355,10 +363,11 @@ lookup_address_async_callback (GObject *source, GAsyncResult *result,
  * call g_resolver_lookup_address_finish() to get the final result.
  **/
 void
-g_resolver_lookup_address_async (GResolver *resolver, GSockaddr *sockaddr,
-                                 GCancellable *cancellable,
-                                 GAsyncReadyCallback callback,
-                                 gpointer user_data)
+g_resolver_lookup_address_async (GResolver           *resolver,
+                                 GSockaddr           *sockaddr,
+                                 GCancellable        *cancellable,
+                                 GAsyncReadyCallback  callback,
+                                 gpointer             user_data)
 {
   GNetworkAddress *addr;
   GSimpleAsyncResult *simple;
@@ -395,8 +404,9 @@ g_resolver_lookup_address_async (GResolver *resolver, GSockaddr *sockaddr,
  * Return value: a #GNetworkAddress, or %NULL on error
  **/
 GNetworkAddress *
-g_resolver_lookup_address_finish (GResolver *resolver,
-                                  GAsyncResult *result, GError **error)
+g_resolver_lookup_address_finish (GResolver     *resolver,
+                                  GAsyncResult  *result,
+                                  GError       **error)
 {
   GSimpleAsyncResult *simple;
   GNetworkAddress *addr;
@@ -434,9 +444,12 @@ g_resolver_lookup_address_finish (GResolver *resolver,
  * Return value: a #GNetworkService, or %NULL on error.
  **/
 GNetworkService *
-g_resolver_lookup_service (GResolver *resolver, const char *service,
-                           const char *protocol, const char *domain,
-                           GCancellable *cancellable, GError **error)
+g_resolver_lookup_service (GResolver     *resolver,
+                           const gchar   *service,
+                           const gchar   *protocol,
+                           const gchar   *domain,
+                           GCancellable  *cancellable,
+                           GError       **error)
 {
   GNetworkService *srv;
 
@@ -460,8 +473,9 @@ g_resolver_lookup_service (GResolver *resolver, const char *service,
 }
 
 static void
-lookup_service_async_callback (GObject *source, GAsyncResult *result,
-                               gpointer user_data)
+lookup_service_async_callback (GObject      *source,
+                               GAsyncResult *result,
+                               gpointer      user_data)
 {
   GResolver *resolver = G_RESOLVER (source);
   GSimpleAsyncResult *simple = user_data;
@@ -493,11 +507,13 @@ lookup_service_async_callback (GObject *source, GAsyncResult *result,
  * get the final result.
  **/
 void
-g_resolver_lookup_service_async (GResolver *resolver, const char *service,
-                                 const char *protocol, const char *domain,
-                                 GCancellable *cancellable,
-                                 GAsyncReadyCallback callback,
-                                 gpointer user_data)
+g_resolver_lookup_service_async (GResolver           *resolver,
+                                 const gchar         *service,
+                                 const gchar         *protocol,
+                                 const gchar         *domain,
+                                 GCancellable        *cancellable,
+                                 GAsyncReadyCallback  callback,
+                                 gpointer             user_data)
 {
   GNetworkService *srv;
   GSimpleAsyncResult *simple;
@@ -538,8 +554,9 @@ g_resolver_lookup_service_async (GResolver *resolver, const char *service,
  * Return value: a #GNetworkService, or %NULL on error.
  **/
 GNetworkService *
-g_resolver_lookup_service_finish (GResolver *resolver, GAsyncResult *result,
-                                  GError **error)
+g_resolver_lookup_service_finish (GResolver     *resolver,
+                                  GAsyncResult  *result,
+                                  GError       **error)
 {
   GSimpleAsyncResult *simple;
   GNetworkService *srv;

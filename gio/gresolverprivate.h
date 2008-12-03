@@ -60,24 +60,24 @@ void      g_resolver_os_init                   (void);
 #endif
 
 void      g_network_address_get_addrinfo_hints (GNetworkAddress  *addr,
-						char              service[8],
+						gchar             service[8],
 						struct addrinfo  *hints);
 gboolean  g_network_address_set_from_addrinfo  (GNetworkAddress  *addr,
 						struct addrinfo  *res,
-						int               gai_retval,
+						gint              gai_retval,
 						GError          **error);
 
 gboolean  g_network_address_set_from_nameinfo  (GNetworkAddress  *addr,
-						const char       *name,
-						int               gni_retval,
+						const gchar      *name,
+						gint              gni_retval,
 						GError          **error);
 
-char     *g_network_service_get_rrname         (GNetworkService  *srv);
+gchar    *g_network_service_get_rrname         (GNetworkService  *srv);
 #if defined(G_OS_UNIX)
 gboolean  g_network_service_set_from_res_query (GNetworkService  *srv,
 						guchar           *answer,
-						int               len,
-						int               herr,
+						gint              len,
+						gint              herr,
 						GError          **error);
 #elif defined(G_OS_WIN32)
 gboolean  g_network_service_set_from_DnsQuery  (GNetworkService  *srv,

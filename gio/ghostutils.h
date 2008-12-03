@@ -29,12 +29,12 @@
 
 G_BEGIN_DECLS
 
-gboolean  g_hostname_is_non_ascii     (const char *hostname);
-gboolean  g_hostname_is_ascii_encoded (const char *hostname);
-gboolean  g_hostname_is_ip_address    (const char *hostname);
+gboolean  g_hostname_is_non_ascii     (const gchar *hostname);
+gboolean  g_hostname_is_ascii_encoded (const gchar *hostname);
+gboolean  g_hostname_is_ip_address    (const gchar *hostname);
 
-char     *g_hostname_to_ascii         (const char *hostname);
-char     *g_hostname_to_unicode       (const char *hostname);
+gchar    *g_hostname_to_ascii         (const gchar *hostname);
+gchar    *g_hostname_to_unicode       (const gchar *hostname);
 
 G_END_DECLS
 

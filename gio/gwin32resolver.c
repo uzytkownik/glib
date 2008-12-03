@@ -102,22 +102,22 @@ struct GWin32ResolverRequest {
 
   union {
     struct {
-      const char *name;
-      char service[8];
+      const gchar *name;
+      gchar service[8];
       struct addrinfo hints;
-      int retval;
+      gint retval;
       struct addrinfo *res;
     } name;
 
     struct {
       struct sockaddr *addr;
-      int addrlen;
-      int retval;
-      char *namebuf;
+      gint addrlen;
+      gint retval;
+      gchar *namebuf;
     } address;
 
     struct {
-      char *dname;
+      gchar *dname;
       DNS_STATUS retval;
       DNS_RECORD *results;
     } service;
@@ -125,17 +125,22 @@ struct GWin32ResolverRequest {
 
 };
 
-static GSource *g_win32_handle_source_add (HANDLE handle, GSourceFunc callback, gpointer user_data);
-static gboolean request_completed (gpointer user_data);
-static void request_cancelled (GCancellable *cancellable, gpointer user_data);
+static GSource *g_win32_handle_source_add (HANDLE      handle,
+                                           GSourceFunc callback,
+                                           gpointer    user_data);
+
+static gboolean request_completed (gpointer      user_data);
+static void     request_cancelled (GCancellable *cancellable,
+                                   gpointer      user_data);
 
 GWin32ResolverRequest *
-g_win32_resolver_request_new (GResolver *resolver,
-                              gpointer resolvable,
-                              GWin32ResolverRequestFreeFunc free_func,
-                              GCancellable *cancellable,
-                              GAsyncReadyCallback callback,
-                              gpointer user_data, gpointer tag)
+g_win32_resolver_request_new (GResolver                     *resolver,
+                              gpointer                       resolvable,
+                              GWin32ResolverRequestFreeFunc  free_func,
+                              GCancellable                  *cancellable,
+                              GAsyncReadyCallback            callback,
+                              gpointer                       user_data,
+                              gpointer                       tag)
 {
   GWin32ResolverRequest *req;
 
@@ -214,7 +219,8 @@ request_cancelled_idle (gpointer user_data)
 }
 
 static void
-request_cancelled (GCancellable *cancellable, gpointer user_data)
+request_cancelled (GCancellable *cancellable,
+                   gpointer      user_data)
 {
   GWin32ResolverRequest *req = user_data;
 
@@ -251,12 +257,14 @@ free_lookup_name (GWin32ResolverRequest *req)
 }
 
 static void
-lookup_name_async (GResolver *resolver, GNetworkAddress *addr,
-		   GCancellable *cancellable, GAsyncReadyCallback callback,
-		   gpointer user_data)
+lookup_name_async (GResolver           *resolver,
+                   GNetworkAddress     *addr,
+		   GCancellable        *cancellable,
+                   GAsyncReadyCallback  callback,
+		   gpointer             user_data)
 {
   GWin32ResolverRequest *req;
-  const char *name;
+  const gchar *name;
 
   name = g_network_address_get_ascii_name (addr);
   g_return_if_fail (name != NULL);
@@ -272,8 +280,9 @@ lookup_name_async (GResolver *resolver, GNetworkAddress *addr,
 }
 
 static gboolean
-lookup_name_finish (GResolver *resolver, GAsyncResult *result,
-		    GError **error)
+lookup_name_finish (GResolver     *resolver,
+                    GAsyncResult  *result,
+		    GError       **error)
 {
   GSimpleAsyncResult *simple;
   GWin32ResolverRequest *req;
@@ -310,9 +319,11 @@ free_lookup_address (GWin32ResolverRequest *req)
 }
 
 static void
-lookup_address_async (GResolver *resolver, GNetworkAddress *addr,
-		      GCancellable *cancellable, GAsyncReadyCallback callback,
-		      gpointer user_data)
+lookup_address_async (GResolver           *resolver,
+                      GNetworkAddress     *addr,
+		      GCancellable        *cancellable,
+                      GAsyncReadyCallback  callback,
+		      gpointer             user_data)
 {
   GWin32ResolverRequest *req;
   GSockaddr **addrs;
@@ -331,8 +342,9 @@ lookup_address_async (GResolver *resolver, GNetworkAddress *addr,
 }
 
 static gboolean
-lookup_address_finish (GResolver *resolver, GAsyncResult *result,
-		       GError **error)
+lookup_address_finish (GResolver     *resolver,
+                       GAsyncResult  *result,
+		       GError       **error)
 {
   GSimpleAsyncResult *simple;
   GWin32ResolverRequest *req;
@@ -372,9 +384,11 @@ free_lookup_service (GWin32ResolverRequest *req)
 }
 
 static void
-lookup_service_async (GResolver *resolver, GNetworkService *srv,
-		      GCancellable *cancellable, GAsyncReadyCallback callback,
-		      gpointer user_data)
+lookup_service_async (GResolver           *resolver,
+                      GNetworkService     *srv,
+		      GCancellable        *cancellable,
+                      GAsyncReadyCallback  callback,
+		      gpointer             user_data)
 {
   GWin32ResolverRequest *req;
 
@@ -387,8 +401,9 @@ lookup_service_async (GResolver *resolver, GNetworkService *srv,
 }
 
 static gboolean
-lookup_service_finish (GResolver *resolver, GAsyncResult *result,
-		       GError **error)
+lookup_service_finish (GResolver     *resolver,
+                       GAsyncResult  *result,
+		       GError       **error)
 {
   GSimpleAsyncResult *simple;
   GWin32ResolverRequest *req;
@@ -430,7 +445,8 @@ typedef struct {
 } GWin32HandleSource;
 
 static gboolean
-g_win32_handle_source_prepare (GSource *source, gint *timeout)
+g_win32_handle_source_prepare (GSource *source,
+                               gint    *timeout)
 {
   *timeout = -1;
   return FALSE;
@@ -445,7 +461,9 @@ g_win32_handle_source_check (GSource *source)
 }
 
 static gboolean
-g_win32_handle_source_dispatch (GSource *source, GSourceFunc callback, gpointer user_data)
+g_win32_handle_source_dispatch (GSource     *source,
+                                GSourceFunc  callback,
+                                gpointer     user_data)
 {
   return (*callback) (user_data);
 }
@@ -464,14 +482,16 @@ GSourceFuncs g_win32_handle_source_funcs = {
 };
 
 static GSource *
-g_win32_handle_source_add (HANDLE handle, GSourceFunc callback, gpointer user_data)
+g_win32_handle_source_add (HANDLE      handle,
+                           GSourceFunc callback,
+                           gpointer    user_data)
 {
   GWin32HandleSource *hsource;
   GSource *source;
 
   source = g_source_new (&g_win32_handle_source_funcs, sizeof (GWin32HandleSource));
   hsource = (GWin32HandleSource *)source;
-  hsource->pollfd.fd = (int)handle;
+  hsource->pollfd.fd = (gint)handle;
   hsource->pollfd.events = G_IO_IN;
   hsource->pollfd.revents = 0;
   g_source_add_poll (source, &hsource->pollfd);

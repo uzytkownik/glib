@@ -48,7 +48,7 @@
  **/
 
 struct _GSrvTarget {
-  char    *hostname;
+  gchar   *hostname;
   gushort  port;
 
   gushort  priority;
@@ -56,7 +56,8 @@ struct _GSrvTarget {
   time_t   expires;
 };
 
-static void sort_targets (GSrvTarget **targets, int num_targets);
+static void sort_targets (GSrvTarget **targets,
+                          gint         num_targets);
 
 /**
  * GNetworkService:
@@ -69,7 +70,7 @@ static void sort_targets (GSrvTarget **targets, int num_targets);
 
 struct _GNetworkServicePrivate
 {
-  char *service, *protocol, *domain;
+  gchar *service, *protocol, *domain;
   GSrvTarget **targets;
 };
 
@@ -96,7 +97,7 @@ static void
 g_network_service_finalize (GObject *object)
 {
   GNetworkService *srv = G_NETWORK_SERVICE (object);
-  int i;
+  gint i;
 
   g_free (srv->priv->service);
   g_free (srv->priv->protocol);
@@ -155,9 +156,9 @@ g_network_service_init (GNetworkService *srv)
                                            GNetworkServicePrivate);
 }
 
-static void g_network_service_set_targets (GNetworkService *srv,
-                                           GSrvTarget **targets,
-                                           gboolean take);
+static void g_network_service_set_targets (GNetworkService  *srv,
+                                           GSrvTarget      **targets,
+                                           gboolean          take);
 
 static void
 g_network_service_set_property (GObject      *object,
@@ -233,11 +234,11 @@ g_network_service_get_property (GObject    *object,
 }
 
 static void
-g_network_service_set_targets (GNetworkService *srv,
-                               GSrvTarget **targets,
-                               gboolean take)
+g_network_service_set_targets (GNetworkService  *srv,
+                               GSrvTarget      **targets,
+                               gboolean          take)
 {
-  int n;
+  gint n;
 
   g_return_if_fail (G_IS_NETWORK_SERVICE (srv));
   g_return_if_fail (srv->priv->targets == NULL);
@@ -276,12 +277,14 @@ g_network_service_set_targets (GNetworkService *srv,
  * res_query() call.
  */
 gboolean
-g_network_service_set_from_res_query (GNetworkService *srv,
-                                      guchar *answer, int len,
-                                      int herr, GError **error)
+g_network_service_set_from_res_query (GNetworkService  *srv,
+                                      guchar           *answer,
+                                      gint              len,
+                                      gint              herr,
+                                      GError          **error)
 {
-  int count;
-  char namebuf[1024];
+  gint count;
+  gchar namebuf[1024];
   guchar *end, *p;
   guint16 type, qclass, rdlength, priority, weight, port;
   guint32 ttl;
@@ -293,18 +296,25 @@ g_network_service_set_from_res_query (GNetworkService *srv,
   if (len < 0)
     {
       GResolverError errnum;
+      const gchar *format;
 
       if (herr == HOST_NOT_FOUND || herr == NO_DATA)
-        errnum = G_RESOLVER_ERROR_NOT_FOUND;
+        {
+          errnum = G_RESOLVER_ERROR_NOT_FOUND;
+          format = _("No '%s' service for '%s'");
+        }
       else if (herr == TRY_AGAIN)
-        errnum = G_RESOLVER_ERROR_TEMPORARY_FAILURE;
+        {
+          errnum = G_RESOLVER_ERROR_TEMPORARY_FAILURE;
+          format = _("Temporarily unable to resolve '%s' service for '%s'");
+        }
       else
-        errnum = G_RESOLVER_ERROR_INTERNAL;
+        {
+          errnum = G_RESOLVER_ERROR_INTERNAL;
+          format = _("Error resolving '%s' service for '%s'");
+        }
 
-      g_set_error (error, G_RESOLVER_ERROR, errnum,
-		   errnum == G_RESOLVER_ERROR_NOT_FOUND ?
-                   _("No '%s' service for '%s'") :
-                   _("Error resolving '%s' service for '%s'"),
+      g_set_error (error, G_RESOLVER_ERROR, errnum, format,
 		   g_network_service_get_service (srv),
 		   g_network_service_get_domain (srv));
       return FALSE;
@@ -361,9 +371,10 @@ g_network_service_set_from_res_query (GNetworkService *srv,
  * DnsQuery() call.
  */
 gboolean
-g_network_service_set_from_DnsQuery (GNetworkService *srv,
-                                     DNS_STATUS status, DNS_RECORD *results,
-                                     GError **error)
+g_network_service_set_from_DnsQuery (GNetworkService  *srv,
+                                     DNS_STATUS        status,
+                                     DNS_RECORD       *results,
+                                     GError          **error)
 {
   DNS_RECORD *rec;
   GSrvTarget *target;
@@ -419,7 +430,7 @@ g_network_service_set_from_DnsQuery (GNetworkService *srv,
  *
  * Return value: @srv's service name
  **/
-const char *
+const gchar *
 g_network_service_get_service (GNetworkService *srv)
 {
   g_return_val_if_fail (G_IS_NETWORK_SERVICE (srv), NULL);
@@ -435,7 +446,7 @@ g_network_service_get_service (GNetworkService *srv)
  *
  * Return value: @srv's protocol name
  **/
-const char *
+const gchar *
 g_network_service_get_protocol (GNetworkService *srv)
 {
   g_return_val_if_fail (G_IS_NETWORK_SERVICE (srv), NULL);
@@ -451,7 +462,7 @@ g_network_service_get_protocol (GNetworkService *srv)
  *
  * Return value: @srv's domain name
  **/
-const char *
+const gchar *
 g_network_service_get_domain (GNetworkService *srv)
 {
   g_return_val_if_fail (G_IS_NETWORK_SERVICE (srv), NULL);
@@ -499,7 +510,7 @@ time_t
 g_network_service_get_expires (GNetworkService *srv)
 {
   time_t expires;
-  int i;
+  gint i;
 
   g_return_val_if_fail (G_IS_NETWORK_SERVICE (srv), 0);
 
@@ -518,7 +529,7 @@ g_network_service_get_expires (GNetworkService *srv)
 /* Internal method that gets the resource record name to be looked up
  * in DNS for @srv.
  */
-char *
+gchar *
 g_network_service_get_rrname (GNetworkService *srv)
 {
   g_return_val_if_fail (G_IS_NETWORK_SERVICE (srv), NULL);
@@ -564,8 +575,11 @@ g_srv_target_get_type (void)
  * Return value: a new #GSrvTarget.
  **/
 GSrvTarget *
-g_srv_target_new (const char *hostname, gushort port,
-                  gushort priority, gushort weight, time_t expires)
+g_srv_target_new (const gchar *hostname,
+                  gushort      port,
+                  gushort      priority,
+                  gushort      weight,
+                  time_t       expires)
 {
   GSrvTarget *target = g_slice_new0 (GSrvTarget);
 
@@ -618,7 +632,7 @@ g_srv_target_free (GSrvTarget *target)
  *
  * Return value: @target's hostname
  **/
-const char *
+const gchar *
 g_srv_target_get_hostname (GSrvTarget *target)
 {
   return target->hostname;
@@ -670,7 +684,7 @@ g_srv_target_get_weight (GSrvTarget *target)
   return target->weight;
 }
 
-int
+gint
 compare_target (const void *a, const void *b)
 {
   GSrvTarget *ta = *(GSrvTarget **)a;
@@ -694,9 +708,10 @@ compare_target (const void *a, const void *b)
 }
 
 static void
-sort_targets (GSrvTarget **targets, int num_targets)
+sort_targets (GSrvTarget **targets,
+              gint         num_targets)
 {
-  int first, last, i, n, sum;
+  gint first, last, i, n, sum;
   GSrvTarget *tmp;
 
   /* Sort by priority, and partly by weight */

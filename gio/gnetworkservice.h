@@ -55,16 +55,16 @@ struct _GNetworkServiceClass
 
 GType             g_network_service_get_type      (void) G_GNUC_CONST;
 
-const char       *g_network_service_get_service   (GNetworkService  *srv);
-const char       *g_network_service_get_protocol  (GNetworkService  *srv);
-const char       *g_network_service_get_domain    (GNetworkService  *srv);
+const gchar      *g_network_service_get_service   (GNetworkService  *srv);
+const gchar      *g_network_service_get_protocol  (GNetworkService  *srv);
+const gchar      *g_network_service_get_domain    (GNetworkService  *srv);
 GSrvTarget      **g_network_service_get_targets   (GNetworkService  *srv);
 time_t            g_network_service_get_expires   (GNetworkService  *srv);
 
 GType g_srv_target_get_type (void) G_GNUC_CONST;
 #define G_TYPE_SRV_TARGET (g_srv_target_get_type ())
 
-GSrvTarget       *g_srv_target_new                (const char       *hostname,
+GSrvTarget       *g_srv_target_new                (const gchar      *hostname,
 						   gushort           port,
 						   gushort           priority,
 						   gushort           weight,
@@ -72,7 +72,7 @@ GSrvTarget       *g_srv_target_new                (const char       *hostname,
 GSrvTarget       *g_srv_target_copy               (GSrvTarget       *target);
 void              g_srv_target_free               (GSrvTarget       *target);
 
-const char       *g_srv_target_get_hostname       (GSrvTarget       *target);
+const gchar      *g_srv_target_get_hostname       (GSrvTarget       *target);
 gushort           g_srv_target_get_port           (GSrvTarget       *target);
 gushort           g_srv_target_get_priority       (GSrvTarget       *target);
 gushort           g_srv_target_get_weight         (GSrvTarget       *target);
