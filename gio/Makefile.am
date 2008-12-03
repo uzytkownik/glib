@@ -5,7 +5,7 @@ NULL =
 SUBDIRS=
 
 if OS_UNIX
-SUBDIRS += xdgmime
+SUBDIRS += libasyncns xdgmime
 endif
 
 if OS_WIN32_AND_DLL_COMPILATION
@@ -125,13 +125,15 @@ endif
 
 if OS_UNIX
 appinfo_sources += gdesktopappinfo.c gdesktopappinfo.h
-platform_libadd += xdgmime/libxdgmime.la
-platform_deps += xdgmime/libxdgmime.la
+platform_libadd += libasyncns/libasyncns.la xdgmime/libxdgmime.la
+platform_deps += libasyncns/libasyncns.la xdgmime/libxdgmime.la
 unix_sources = \
 	gunixmount.c		\
 	gunixmount.h		\
 	gunixmounts.c 		\
 	gunixmounts.h 		\
+	gunixresolver.c		\
+	gunixresolver.h		\
 	gunixvolume.c 		\
 	gunixvolume.h 		\
 	gunixvolumemonitor.c 	\
@@ -152,10 +154,12 @@ endif
 
 if OS_WIN32
 appinfo_sources += gwin32appinfo.c gwin32appinfo.h
-platform_libadd += -lshlwapi
+platform_libadd += -lshlwapi -lws2_32 -ldnsapi
 win32_sources = \
 	gwin32mount.c \
 	gwin32mount.h \
+	gwin32resolver.c \
+	gwin32resolver.h \
 	gwin32volumemonitor.c \
 	gwin32volumemonitor.h \
 	$(NULL)
@@ -195,6 +199,7 @@ libgio_2_0_la_SOURCES =		\
 	gfileoutputstream.c 	\
 	gfilterinputstream.c 	\
 	gfilteroutputstream.c 	\
+	ghostutils.c		\
 	gicon.c 		\
 	ginputstream.c 		\
 	gioenums.h		\
@@ -209,12 +214,18 @@ libgio_2_0_la_SOURCES =		\
 	gmountoperation.c 	\
 	gnativevolumemonitor.c 	\
 	gnativevolumemonitor.h 	\
+	gnetworkaddress.c	\
+	gnetworkservice.c	\
 	goutputstream.c 	\
 	gpollfilemonitor.c 	\
 	gpollfilemonitor.h 	\
+	gresolver.c		\
+	gresolverprivate.h	\
 	gseekable.c 		\
 	gsimpleasyncresult.c 	\
 	gthemedicon.c 		\
+	gthreadedresolver.c	\
+	gthreadedresolver.h	\
 	gunionvolumemonitor.c 	\
 	gunionvolumemonitor.h 	\
 	gvfs.c 			\
@@ -298,6 +309,7 @@ gio_headers =			\
 	gfileoutputstream.h 	\
 	gfilterinputstream.h 	\
 	gfilteroutputstream.h 	\
+	ghostutils.h		\
 	gicon.h 		\
 	ginputstream.h 		\
 	gio.h			\
@@ -312,7 +324,10 @@ gio_headers =			\
 	gmemoryoutputstream.h 	\
 	gmountoperation.h 	\
 	gnativevolumemonitor.h 	\
+	gnetworkaddress.h	\
+	gnetworkservice.h	\
 	goutputstream.h 	\
+	gresolver.h		\
 	gseekable.h 		\
 	gsimpleasyncresult.h 	\
 	gthemedicon.h 		\

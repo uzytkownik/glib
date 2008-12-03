@@ -48,6 +48,7 @@
 #include <gio/gfileoutputstream.h>
 #include <gio/gfilterinputstream.h>
 #include <gio/gfilteroutputstream.h>
+#include <gio/ghostutils.h>
 #include <gio/gicon.h>
 #include <gio/ginputstream.h>
 #include <gio/gioenums.h>
@@ -61,7 +62,10 @@
 #include <gio/gmount.h>
 #include <gio/gmountoperation.h>
 #include <gio/gnativevolumemonitor.h>
+#include <gio/gnetworkaddress.h>
+#include <gio/gnetworkservice.h>
 #include <gio/goutputstream.h>
+#include <gio/gresolver.h>
 #include <gio/gseekable.h>
 #include <gio/gsimpleasyncresult.h>
 #include <gio/gthemedicon.h>

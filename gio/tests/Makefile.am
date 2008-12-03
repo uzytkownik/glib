@@ -9,7 +9,7 @@ INCLUDES = 			\
 	-I$(top_srcdir)/gio 	\
 	$(GLIB_DEBUG_FLAGS)
 
-noinst_PROGRAMS = $(TEST_PROGS)
+noinst_PROGRAMS = $(TEST_PROGS) $(SAMPLE_PROGS)
 progs_ldadd     = 					\
 	$(top_builddir)/glib/libglib-2.0.la 		\
 	$(top_builddir)/gobject/libgobject-2.0.la	\
@@ -24,7 +24,10 @@ TEST_PROGS +=	 		\
 	data-input-stream 	\
 	data-output-stream 	\
 	g-icon			\
-	buffered-input-stream
+	buffered-input-stream	\
+	hostutils
+
+SAMPLE_PROGS = resolver
 
 if OS_UNIX
 TEST_PROGS += live-g-file unix-streams desktop-app-info
@@ -62,4 +65,11 @@ desktop_app_info_LDADD	  = $(progs_ldadd)
 
 unix_streams_SOURCES	  = unix-streams.c
 unix_streams_LDADD	  = $(progs_ldadd) \
+	$(top_builddir)/gthread/libgthread-2.0.la
+
+hostutils_SOURCES	  = hostutils.c
+hostutils_LDADD		  = $(progs_ldadd)
+
+resolver_SOURCES	  = resolver.c
+resolver_LDADD		  = $(progs_ldadd) \
 	$(top_builddir)/gthread/libgthread-2.0.la

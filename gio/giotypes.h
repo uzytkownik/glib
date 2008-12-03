@@ -104,6 +104,17 @@ typedef struct _GThemedIcon                   GThemedIcon;
 typedef struct _GVfs                          GVfs; /* Dummy typedef */
 
 /**
+ * GResolver:
+ *
+ * Network address/service resolver
+ **/
+typedef struct _GResolver                     GResolver;
+typedef struct _GNetworkAddress               GNetworkAddress;
+typedef struct _GNetworkService               GNetworkService;
+typedef struct _GSockaddr                     GSockaddr;
+typedef struct _GSrvTarget                    GSrvTarget;
+
+/**
  * GVolume:
  *
  * Opaque mountable volume object.
