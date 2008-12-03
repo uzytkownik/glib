@@ -24,7 +24,7 @@
 #include <string.h>
 
 static const struct {
-  const char *ascii_name, *unicode_name;
+  const gchar *ascii_name, *unicode_name;
 } idn_test_domains[] = {
   /* "example.test" in various languages */
   { "xn--mgbh0fb.xn--kgbechtv", "\xd9\x85\xd8\xab\xd8\xa7\xd9\x84.\xd8\xa5\xd8\xae\xd8\xaa\xd8\xa8\xd8\xa7\xd8\xb1" },
@@ -47,13 +47,13 @@ static const struct {
   { "xn--o3cw4h.idn.icann.org", "\xe0\xb9\x84\xe0\xb8\x97\xe0\xb8\xa2.idn.icann.org" },
   { "xn--mgbqf7g.idn.icann.org", "\xd8\xa7\xd8\xb1\xd8\xaf\xd9\x88.idn.icann.org" }
 };
-static const int num_idn_test_domains = G_N_ELEMENTS (idn_test_domains);
+static const gint num_idn_test_domains = G_N_ELEMENTS (idn_test_domains);
 
 static void
 test_to_ascii (void)
 {
-  int i;
-  char *ascii;
+  gint i;
+  gchar *ascii;
 
   for (i = 0; i < num_idn_test_domains; i++)
     {
@@ -71,8 +71,8 @@ test_to_ascii (void)
 static void
 test_to_unicode (void)
 {
-  int i;
-  char *unicode;
+  gint i;
+  gchar *unicode;
 
   for (i = 0; i < num_idn_test_domains; i++)
     {
@@ -87,7 +87,170 @@ test_to_unicode (void)
     }
 }
 
-/* FIXME: test g_hostname_is_ip_addr() */
+static const struct {
+  const gchar *addr;
+  gboolean is_addr;
+} ip_addr_tests[] = {
+  /* IPv6 tests */
+
+  { "0123:4567:89AB:cdef:3210:7654:ba98:FeDc", TRUE },
+
+  { "0123:4567:89AB:cdef:3210:7654:ba98::", TRUE },
+  { "0123:4567:89AB:cdef:3210:7654::", TRUE },
+  { "0123:4567:89AB:cdef:3210::", TRUE },
+  { "0123:4567:89AB:cdef::", TRUE },
+  { "0123:4567:89AB::", TRUE },
+  { "0123:4567::", TRUE },
+  { "0123::", TRUE },
+
+  { "::4567:89AB:cdef:3210:7654:ba98:FeDc", TRUE },
+  { "::89AB:cdef:3210:7654:ba98:FeDc", TRUE },
+  { "::cdef:3210:7654:ba98:FeDc", TRUE },
+  { "::3210:7654:ba98:FeDc", TRUE },
+  { "::7654:ba98:FeDc", TRUE },
+  { "::ba98:FeDc", TRUE },
+  { "::FeDc", TRUE },
+
+  { "0123::89AB:cdef:3210:7654:ba98:FeDc", TRUE },
+  { "0123:4567::cdef:3210:7654:ba98:FeDc", TRUE },
+  { "0123:4567:89AB::3210:7654:ba98:FeDc", TRUE },
+  { "0123:4567:89AB:cdef::7654:ba98:FeDc", TRUE },
+  { "0123:4567:89AB:cdef:3210::ba98:FeDc", TRUE },
+  { "0123:4567:89AB:cdef:3210:7654::FeDc", TRUE },
+
+  { "0123::cdef:3210:7654:ba98:FeDc", TRUE },
+  { "0123:4567::3210:7654:ba98:FeDc", TRUE },
+  { "0123:4567:89AB::7654:ba98:FeDc", TRUE },
+  { "0123:4567:89AB:cdef::ba98:FeDc", TRUE },
+  { "0123:4567:89AB:cdef:3210::FeDc", TRUE },
+
+  { "0123::3210:7654:ba98:FeDc", TRUE },
+  { "0123:4567::7654:ba98:FeDc", TRUE },
+  { "0123:4567:89AB::ba98:FeDc", TRUE },
+  { "0123:4567:89AB:cdef::FeDc", TRUE },
+
+  { "0123::7654:ba98:FeDc", TRUE },
+  { "0123:4567::ba98:FeDc", TRUE },
+  { "0123:4567:89AB::FeDc", TRUE },
+
+  { "0123::ba98:FeDc", TRUE },
+  { "0123:4567::FeDc", TRUE },
+
+  { "0123::FeDc", TRUE },
+
+  { "::", TRUE },
+
+  { "0:12:345:6789:a:bc:def::", TRUE },
+
+  { "0123:4567:89AB:cdef:3210:7654:123.45.67.89", TRUE },
+  { "0123:4567:89AB:cdef:3210::123.45.67.89", TRUE },
+  { "0123:4567:89AB:cdef::123.45.67.89", TRUE },
+  { "0123:4567:89AB::123.45.67.89", TRUE },
+  { "0123:4567::123.45.67.89", TRUE },
+  { "0123::123.45.67.89", TRUE },
+  { "::123.45.67.89", TRUE },
+
+  /* Contain non-hex chars */
+  { "012x:4567:89AB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:45x7:89AB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:4567:8xAB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:4567:89AB:xdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:4567:89AB:cdef:321;:7654:ba98:FeDc", FALSE },
+  { "0123:4567:89AB:cdef:3210:76*4:ba98:FeDc", FALSE },
+  { "0123:4567:89AB:cdef:3210:7654:b-98:FeDc", FALSE },
+  { "0123:4567:89AB:cdef:3210:7654:ba98:+eDc", FALSE },
+  { "0123:4567:89AB:cdef:3210:7654:ba98:FeDc and some trailing junk", FALSE },
+  { " 123:4567:89AB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { "012 :4567:89AB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123: 567:89AB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:4567:89AB:cdef:3210:7654:ba98:FeD ", FALSE },
+
+  /* Contains too-long/out-of-range segments */
+  { "00123:4567:89AB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:04567:89AB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:4567:189AB:cdef:3210:7654:ba98:FeDc", FALSE },
+
+  /* Too short */
+  { "0123:4567:89AB:cdef:3210:7654:ba98", FALSE },
+  { "0123:4567:89AB:cdef:3210:7654", FALSE },
+  { "0123:4567:89AB:cdef:3210", FALSE },
+  { "0123", FALSE },
+  { "", FALSE },
+
+  /* Too long */
+  { "0123:4567:89AB:cdef:3210:7654:ba98:FeDc:9999", FALSE },
+  { "0123::4567:89AB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:4567::89AB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:4567:89AB::cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:4567:89AB:cdef::3210:7654:ba98:FeDc", FALSE },
+  { "0123:4567:89AB:cdef:3210::7654:ba98:FeDc", FALSE },
+  { "0123:4567:89AB:cdef:3210:7654::ba98:FeDc", FALSE },
+  { "0123:4567:89AB:cdef:3210:7654:ba98::FeDc", FALSE },
+
+  /* Invalid use of ":"s */
+  { "0123::89AB::3210:7654:ba98:FeDc", FALSE },
+  { "::4567:89AB:cdef:3210:7654::FeDc", FALSE },
+  { "0123::89AB:cdef:3210:7654:ba98::", FALSE },
+  { ":4567:89AB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:4567:89AB:cdef:3210:7654:ba98:", FALSE },
+  { "0123:::cdef:3210:7654:ba98:FeDc", FALSE },
+  { "0123:4567:89AB:cdef:3210:7654:ba98:FeDc:", FALSE },
+  { ":0123:4567:89AB:cdef:3210:7654:ba98:FeDc", FALSE },
+  { ":::", FALSE },
+
+  /* IPv4 address at wrong place */
+  { "0123:4567:89AB:cdef:3210:123.45.67.89", FALSE },
+  { "0123:4567:89AB:cdef:3210:7654::123.45.67.89", FALSE },
+  { "0123:4567:89AB:cdef:123.45.67.89", FALSE },
+  { "0123:4567:89AB:cdef:3210:123.45.67.89:FeDc", FALSE },
+
+
+  /* IPv4 tests */
+
+  { "123.45.67.89", TRUE },
+  { "1.2.3.4", TRUE },
+  { "1.2.3.0", TRUE },
+
+  { "023.045.067.089", FALSE },
+  { "1234.5.67.89", FALSE },
+  { "123.45.67.00", FALSE },
+  { " 1.2.3.4", FALSE },
+  { "1 .2.3.4", FALSE },
+  { "1. 2.3.4", FALSE },
+  { "1.2.3.4 ", FALSE },
+  { "1.2.3", FALSE },
+  { "1.2.3.4.5", FALSE },
+  { "1.b.3.4", FALSE },
+  { "1.2.3:4", FALSE },
+  { "1.2.3.4, etc", FALSE },
+  { "1,2,3,4", FALSE },
+  { "1.2.3.com", FALSE },
+  { "1.2.3.4.", FALSE },
+  { "1.2.3.", FALSE },
+  { ".1.2.3.4", FALSE },
+  { ".2.3.4", FALSE },
+  { "1..2.3.4", FALSE },
+  { "1..3.4", FALSE }
+};
+static const gint num_ip_addr_tests = G_N_ELEMENTS (ip_addr_tests);
+
+static void
+test_is_ip_addr (void)
+{
+  gint i;
+
+  for (i = 0; i < num_ip_addr_tests; i++)
+    {
+      if (g_hostname_is_ip_address (ip_addr_tests[i].addr) != ip_addr_tests[i].is_addr)
+	{
+	  char *msg = g_strdup_printf ("g_hostname_is_ip_address (\"%s\") == %s",
+				       ip_addr_tests[i].addr,
+				       ip_addr_tests[i].is_addr ? "TRUE" : "FALSE");
+	  g_assertion_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
+	}
+    }
+}
+
 /* FIXME: test names with both unicode and ACE-encoded labels */
 /* FIXME: test invalid unicode names */
 
@@ -100,6 +263,7 @@ main (int   argc,
   
   g_test_add_func ("/hostutils/to_ascii", test_to_ascii);
   g_test_add_func ("/hostutils/to_unicode", test_to_unicode);
+  g_test_add_func ("/hostutils/is_ip_addr", test_is_ip_addr);
 
   return g_test_run ();
 }

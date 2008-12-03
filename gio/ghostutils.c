@@ -656,15 +656,109 @@ g_hostname_is_ascii_encoded (const gchar *hostname)
 gboolean
 g_hostname_is_ip_address (const gchar *hostname)
 {
-  GSockaddr *sockaddr = g_sockaddr_new_from_string (hostname, 0);
+  gchar *p, *end;
+  gint nsegments, octet;
 
-  if (sockaddr)
+  /* On Linux we could implement this using inet_pton, but the Windows
+   * equivalent of that requires linking against winsock, so we just
+   * figure this out ourselves. Tested by tests/hostutils.c.
+   */
+
+  p = (char *)hostname;
+
+  if (strchr (p, ':'))
     {
-      g_sockaddr_free (sockaddr);
-      return TRUE;
+      gboolean skipped;
+
+      /* If it contains a ':', it's an IPv6 address (assuming it's an
+       * IP address at all). This consists of eight ':'-separated
+       * segments, each containing a 1-4 digit hex number, except that
+       * optionally: (a) the last two segments can be replaced by an
+       * IPv4 address, and (b) a single span of 1 to 8 "0000" segments
+       * can be replaced with just "::".
+       */
+
+      nsegments = 0;
+      skipped = FALSE;
+      while (*p && nsegments < 8)
+        {
+          /* Each segment after the first must be preceded by a ':'.
+           * (We also handle half of the "string starts with ::" case
+           * here.)
+           */
+          if (p != (char *)hostname || (p[0] == ':' && p[1] == ':'))
+            {
+              if (*p != ':')
+                return FALSE;
+              p++;
+            }
+
+          /* If there's another ':', it means we're skipping some segments */
+          if (*p == ':' && !skipped)
+            {
+              skipped = TRUE;
+              nsegments++;
+
+              /* Handle the "string ends with ::" case */
+              if (!p[1])
+                p++;
+
+              continue;
+            }
+
+          /* Read the segment, make sure it's valid. */
+          for (end = p; g_ascii_isxdigit (*end); end++)
+            ;
+          if (end == p || end > p + 4)
+            return FALSE;
+
+          if (*end == '.')
+            {
+              if ((nsegments == 6 && !skipped) || (nsegments <= 6 && skipped))
+                goto parse_ipv4;
+              else
+                return FALSE;
+            }
+
+          nsegments++;
+          p = end;
+        }
+
+      return !*p && (nsegments == 8 || skipped);
     }
-  else
-    return FALSE;
+
+ parse_ipv4:
+
+  /* Parse IPv4: N.N.N.N, where each N <= 255 and doesn't have leading 0s. */
+  for (nsegments = 0; nsegments < 4; nsegments++)
+    {
+      if (nsegments != 0)
+        {
+          if (*p != '.')
+            return FALSE;
+          p++;
+        }
+
+      /* Check the segment; a little tricker than the IPv6 case since
+       * we can't allow extra leading 0s, and we can't assume that all
+       * strings of valid length are within range.
+       */
+      octet = 0;
+      if (*p == '0')
+        end = p + 1;
+      else
+        {
+          for (end = p; g_ascii_isdigit (*end); end++)
+            octet = 10 * octet + (*end - '0');
+        }
+      if (end == p || end > p + 3 || octet > 255)
+        return FALSE;
+
+      p = end;
+    }
+
+  /* If there's nothing left to parse, then it's ok. */
+  return !*p;
 }
 
 #define __G_HOST_UTILS_C__
