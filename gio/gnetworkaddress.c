@@ -131,30 +131,30 @@ g_network_address_class_init (GNetworkAddressClass *klass)
                                                         P_("Hostname"),
                                                         P_("Presentation form of hostname"),
                                                         NULL,
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
   g_object_class_install_property (gobject_class, PROP_ASCII_NAME,
                                    g_param_spec_string ("ascii-name",
                                                         P_("ASCII Hostname"),
                                                         P_("ASCII form of hostname"),
                                                         NULL,
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
   g_object_class_install_property (gobject_class, PROP_PORT,
                                    g_param_spec_uint ("port",
                                                       P_("Port"),
                                                       P_("Network port"),
                                                       0, 65535, 0,
-                                                      G_PARAM_READWRITE));
+                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
   g_object_class_install_property (gobject_class, PROP_SOCKADDR,
                                    g_param_spec_boxed ("sockaddr",
                                                        P_("Sockaddr"),
                                                        P_("Used to set a single sockaddr"),
                                                        G_TYPE_SOCKADDR,
-                                                       G_PARAM_WRITABLE));
+                                                       G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
   g_object_class_install_property (gobject_class, PROP_SOCKADDRS,
                                    g_param_spec_pointer ("sockaddrs",
                                                          P_("Sockaddrs"),
                                                          P_("Sockaddrs for this address, an array of GSockaddr"),
-                                                         G_PARAM_READWRITE));
+                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -181,7 +181,13 @@ g_network_address_set_property (GObject      *object,
     {
     case PROP_HOSTNAME:
     case PROP_ASCII_NAME:
+      /* Ignore gobject when it tries to set the default value */
+      if (!g_value_get_string (value))
+        return;
+
+      /* Can only set one or the other */
       g_return_if_fail (addr->priv->hostname == NULL && addr->priv->ascii_name == NULL);
+
       g_network_address_set_hostname (addr, g_value_get_string (value));
       break;
 
@@ -190,7 +196,13 @@ g_network_address_set_property (GObject      *object,
       break;
 
     case PROP_SOCKADDR:
+      /* Ignore gobject when it tries to set the default value */
+      if (!g_value_get_boxed (value))
+        return;
+
+      /* Can only set one or the other of sockaddr and sockaddrs */
       g_return_if_fail (addr->priv->sockaddrs == NULL);
+
       addr->priv->sockaddrs = g_new0 (GSockaddr *, 2);
       addr->priv->sockaddrs[0] = g_value_dup_boxed (value);
       if (addr->priv->port == 0)
@@ -198,7 +210,13 @@ g_network_address_set_property (GObject      *object,
       break;
 
     case PROP_SOCKADDRS:
+      /* Ignore gobject when it tries to set the default value */
+      if (!g_value_get_pointer (value))
+        return;
+
+      /* Can only set one or the other of sockaddr and sockaddrs */
       g_return_if_fail (addr->priv->sockaddrs == NULL);
+
       g_network_address_set_sockaddrs (addr, g_value_get_pointer (value));
       break;
 
@@ -341,8 +359,8 @@ g_network_address_get_addrinfo_hints (GNetworkAddress *addr,
   hints->ai_protocol = IPPROTO_TCP;
 }
 
-/* A private version of set_sockaddrs that sets them from
- * a getaddrinfo() response.
+/* A gio-internal method that sets sockaddrs from a getaddrinfo()
+ * response.
  */
 gboolean
 g_network_address_set_from_addrinfo  (GNetworkAddress  *addr,

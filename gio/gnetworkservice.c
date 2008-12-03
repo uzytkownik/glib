@@ -129,24 +129,24 @@ g_network_service_class_init (GNetworkServiceClass *klass)
                                                         P_("Service"),
                                                         P_("Service name, eg \"ldap\""),
                                                         NULL,
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
   g_object_class_install_property (gobject_class, PROP_PROTOCOL,
                                    g_param_spec_string ("protocol",
                                                         P_("Protocol"),
                                                         P_("Network protocol, eg \"tcp\""),
                                                         NULL,
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
   g_object_class_install_property (gobject_class, PROP_DOMAIN,
                                    g_param_spec_string ("domain",
                                                         P_("domain"),
                                                         P_("Network domain, eg, \"example.com\""),
                                                         NULL,
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
   g_object_class_install_property (gobject_class, PROP_TARGETS,
                                    g_param_spec_pointer ("targets",
                                                          P_("Targets"),
                                                          P_("Targets for this service, an array of GSrvTarget"),
-                                                         G_PARAM_READWRITE));
+                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -171,17 +171,14 @@ g_network_service_set_property (GObject      *object,
   switch (prop_id) 
     {
     case PROP_SERVICE:
-      g_return_if_fail (srv->priv->service == NULL);
       srv->priv->service = g_value_dup_string (value);
       break;
 
     case PROP_PROTOCOL:
-      g_return_if_fail (srv->priv->protocol == NULL);
       srv->priv->protocol = g_value_dup_string (value);
       break;
 
     case PROP_DOMAIN:
-      g_return_if_fail (srv->priv->domain == NULL);
       if (g_hostname_is_non_ascii (g_value_get_string (value)))
         srv->priv->domain = g_hostname_to_ascii (g_value_get_string (value));
       else
@@ -189,7 +186,10 @@ g_network_service_set_property (GObject      *object,
       break;
 
     case PROP_TARGETS:
-      g_return_if_fail (srv->priv->targets == NULL);
+      /* Ignore gobject when it tries to set the default value */
+      if (!g_value_get_pointer (value))
+        return;
+
       g_network_service_set_targets (srv, g_value_get_pointer (value), FALSE);
       break;
 
