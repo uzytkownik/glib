@@ -43,11 +43,15 @@ IGNORE_HFILES=				\
 	glocalvfs.h			\
 	gnativevolumemonitor.h		\
 	gpollfilemonitor.h		\
+	gresolverprivate.h		\
+	gthreadedresolver.h		\
 	gunionvolumemonitor.h		\
 	gunixdrive.h			\
+	gunixresolver.h			\
 	gunixvolume.h			\
 	gvolumeprivate.h		\
 	gwin32appinfo.h			\
+	gwin32resolver.h		\
 	inotify-diag.h			\
 	inotify-helper.h		\
 	inotify-kernel.h		\
