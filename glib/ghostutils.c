@@ -1,7 +1,6 @@
 /* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 
-/* GIO - GLib Input, Output and Streaming Library
- * 
+/* GLIB - Library of useful routines for C programming
  * Copyright (C) 2008 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,20 +20,18 @@
  */
 
 #include "config.h"
-#include <glib.h>
-#include "glibintl.h"
 
-#include "ghostutils.h"
-#include "gnetworkaddress.h"
+#include "glib.h"
+#include "glibintl.h"
 
 #include <string.h>
 
-#include "gioalias.h"
+#include "galias.h"
 
 /**
  * SECTION:ghostutils
  * @short_description: Internet hostname utilities
- * @include: gio/gio.h
+ * @include: glib.h
  *
  * Functions for manipulating internet hostnames; in particular, for
  * converting between Unicode and ASCII-encoded forms of
@@ -48,10 +45,6 @@
  * ASCII-Compatible Encoding of any given Unicode name, which can be
  * used with non-IDN-aware applications and protocols. (For example,
  * "Παν語.org" maps to "xn--4wa8awb4637h.org".)
- *
- * #GResolver accepts either Unicode or ASCII-encoded hostnames, and
- * #GNetworkAddress provides access to both variants in resolved
- * addresses.
  **/
 
 #define IDNA_ACE_PREFIX     "xn--"
@@ -762,4 +755,4 @@ g_hostname_is_ip_address (const gchar *hostname)
 }
 
 #define __G_HOST_UTILS_C__
-#include "gioaliasdef.c"
+#include "galiasdef.c"

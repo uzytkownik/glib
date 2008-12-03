@@ -1394,15 +1394,3 @@ GNetworkServicePrivate
 g_network_service_get_type
 g_srv_target_get_type
 </SECTION>
-
-<SECTION>
-<FILE>ghostutils</FILE>
-<TITLE>Hostname Utilities</TITLE>
-g_hostname_to_ascii
-g_hostname_to_unicode
-<SUBSECTION>
-g_hostname_is_non_ascii
-g_hostname_is_ascii_encoded
-<SUBSECTION>
-g_hostname_is_ip_address
-</SECTION>

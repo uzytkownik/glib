@@ -24,8 +24,7 @@ TEST_PROGS +=	 		\
 	data-input-stream 	\
 	data-output-stream 	\
 	g-icon			\
-	buffered-input-stream	\
-	hostutils
+	buffered-input-stream
 
 SAMPLE_PROGS = resolver
 
@@ -66,9 +65,6 @@ desktop_app_info_LDADD	  = $(progs_ldadd)
 unix_streams_SOURCES	  = unix-streams.c
 unix_streams_LDADD	  = $(progs_ldadd) \
 	$(top_builddir)/gthread/libgthread-2.0.la
-
-hostutils_SOURCES	  = hostutils.c
-hostutils_LDADD		  = $(progs_ldadd)
 
 resolver_SOURCES	  = resolver.c
 resolver_LDADD		  = $(progs_ldadd) \

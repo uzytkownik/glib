@@ -89,7 +89,6 @@
 
     <chapter id="networking">
 	<title>Networking</title>
-	<xi:include href="xml/ghostutils.xml"/>
 	<xi:include href="xml/gresolver.xml"/>
 	<xi:include href="xml/gnetworkaddress.xml"/>
 	<xi:include href="xml/gnetworkservice.xml"/>

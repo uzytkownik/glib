@@ -48,7 +48,6 @@
 #include <gio/gfileoutputstream.h>
 #include <gio/gfilterinputstream.h>
 #include <gio/gfilteroutputstream.h>
-#include <gio/ghostutils.h>
 #include <gio/gicon.h>
 #include <gio/ginputstream.h>
 #include <gio/gioenums.h>

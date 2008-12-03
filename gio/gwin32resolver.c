@@ -31,7 +31,6 @@
 #include "gresolverprivate.h"
 
 #include "gcancellable.h"
-#include "ghostutils.h"
 #include "gnetworkaddress.h"
 #include "gnetworkservice.h"
 #include "gsimpleasyncresult.h"

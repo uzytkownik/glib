@@ -26,7 +26,6 @@
 
 #include "gnetworkaddress.h"
 #include "gresolverprivate.h"
-#include "ghostutils.h"
 
 #include <string.h>
 

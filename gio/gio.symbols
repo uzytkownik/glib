@@ -857,16 +857,6 @@ g_resolver_lookup_service_finish
 #endif
 #endif
 
-#if IN_HEADER(__G_HOST_UTILS_H__)
-#if IN_FILE(__G_HOST_UTILS_C__)
-g_hostname_is_non_ascii
-g_hostname_is_ascii_encoded
-g_hostname_is_ip_address
-g_hostname_to_ascii
-g_hostname_to_unicode
-#endif
-#endif
-
 #if IN_HEADER(__G_NETWORK_ADDRESS_H__)
 #if IN_FILE(__G_NETWORK_ADDRESS_C__)
 g_network_address_get_type G_GNUC_CONST

@@ -1,5 +1,4 @@
-/* GIO - GLib Input, Output and Streaming Library
- *
+/* GLIB - Library of useful routines for C programming
  * Copyright (C) 2008 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,14 +17,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#if !defined (__GIO_GIO_H_INSIDE__) && !defined (GIO_COMPILATION)
-#error "Only <gio/gio.h> can be included directly."
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
 #endif
 
 #ifndef __G_HOST_UTILS_H__
 #define __G_HOST_UTILS_H__
 
-#include <gio/giotypes.h>
+#include <glib/gtypes.h>
 
 G_BEGIN_DECLS
 

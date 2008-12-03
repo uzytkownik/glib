@@ -199,7 +199,6 @@ libgio_2_0_la_SOURCES =		\
 	gfileoutputstream.c 	\
 	gfilterinputstream.c 	\
 	gfilteroutputstream.c 	\
-	ghostutils.c		\
 	gicon.c 		\
 	ginputstream.c 		\
 	gioenums.h		\
@@ -309,7 +308,6 @@ gio_headers =			\
 	gfileoutputstream.h 	\
 	gfilterinputstream.h 	\
 	gfilteroutputstream.h 	\
-	ghostutils.h		\
 	gicon.h 		\
 	ginputstream.h 		\
 	gio.h			\
