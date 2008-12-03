@@ -394,6 +394,8 @@ nameprep (const gchar *hostname,
  *
  * Return value: an ASCII hostname, which must be freed, or %NULL if
  * @hostname is in some way invalid.
+ *
+ * Since: 2.20
  **/
 gchar *
 g_hostname_to_ascii (const gchar *hostname)
@@ -460,6 +462,8 @@ g_hostname_to_ascii (const gchar *hostname)
  * g_hostname_is_ascii_encoded() to both return %TRUE for a name.
  *
  * Return value: %TRUE if @hostname contains any non-ASCII characters
+ *
+ * Since: 2.20
  **/
 gboolean
 g_hostname_is_non_ascii (const gchar *hostname)
@@ -566,6 +570,8 @@ punycode_decode (const gchar *input,
  *
  * Return value: a UTF-8 hostname, which must be freed, or %NULL if
  * @hostname is in some way invalid.
+ *
+ * Since: 2.20
  **/
 gchar *
 g_hostname_to_unicode (const gchar *hostname)
@@ -620,6 +626,8 @@ g_hostname_to_unicode (const gchar *hostname)
  *
  * Return value: %TRUE if @hostname contains any ASCII-encoded
  * segments.
+ *
+ * Since: 2.20
  **/
 gboolean
 g_hostname_is_ascii_encoded (const gchar *hostname)
@@ -642,6 +650,8 @@ g_hostname_is_ascii_encoded (const gchar *hostname)
  * (Eg, "192.168.0.1".)
  *
  * Return value: %TRUE if @hostname is an IP address
+ *
+ * Since: 2.20
  **/
 gboolean
 g_hostname_is_ip_address (const gchar *hostname)

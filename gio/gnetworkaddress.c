@@ -389,6 +389,8 @@ g_network_address_set_from_addrinfo  (GNetworkAddress  *addr,
  *
  * Return value: @addr's display hostname, or %NULL if @addr has
  * only IP addresses
+ *
+ * Since: 2.20
  **/
 const gchar *
 g_network_address_get_hostname (GNetworkAddress *addr)
@@ -412,6 +414,8 @@ g_network_address_get_hostname (GNetworkAddress *addr)
  *
  * Return value: @addr's ASCII hostname, or %NULL if @addr has
  * only IP addresses
+ *
+ * Since: 2.20
  **/
 const gchar *
 g_network_address_get_ascii_name (GNetworkAddress *addr)
@@ -430,6 +434,8 @@ g_network_address_get_ascii_name (GNetworkAddress *addr)
  * Gets @addr's port number
  *
  * Return value: @addr's port (which may be %0)
+ *
+ * Since: 2.20
  **/
 gushort
 g_network_address_get_port (GNetworkAddress *addr)
@@ -450,6 +456,8 @@ g_network_address_get_port (GNetworkAddress *addr)
  *
  * Return value: a %NULL-terminated array of #GSockaddr, or %NULL if
  * @addr has only a hostname.
+ *
+ * Since: 2.20
  **/
 GSockaddr **
 g_network_address_get_sockaddrs (GNetworkAddress *addr)
@@ -502,6 +510,8 @@ g_sockaddr_get_type (void)
  *
  * Return value: a new #GSockaddr, or %NULL if @ip_addr is not an
  * IPv4 or IPv6 address.
+ *
+ * Since: 2.20
  **/
 GSockaddr *
 g_sockaddr_new_from_string (const gchar *ip_addr,
@@ -552,6 +562,8 @@ g_sockaddr_new_from_string (const gchar *ip_addr,
  * Copies @sockaddr
  *
  * Return value: a copy of @sockaddr
+ *
+ * Since: 2.20
  **/
 GSockaddr *
 g_sockaddr_copy (GSockaddr *sockaddr)
@@ -564,6 +576,8 @@ g_sockaddr_copy (GSockaddr *sockaddr)
  * @sockaddr: a #GSockaddr
  *
  * Frees @sockaddr
+ *
+ * Since: 2.20
  **/
 void
 g_sockaddr_free (GSockaddr *sockaddr)
@@ -578,6 +592,8 @@ g_sockaddr_free (GSockaddr *sockaddr)
  * Gets @sockaddr's port number
  *
  * Return value: @sockaddr's port (which may be %0)
+ *
+ * Since: 2.20
  **/
 gushort
 g_sockaddr_get_port (GSockaddr *sockaddr)
@@ -599,6 +615,8 @@ g_sockaddr_get_port (GSockaddr *sockaddr)
  * Converts @sockaddr to string form (ignoring its port)
  *
  * Return value: the string form of @sockaddr, which must be freed
+ *
+ * Since: 2.20
  **/
 gchar *
 g_sockaddr_to_string (GSockaddr *sockaddr)
@@ -647,6 +665,8 @@ g_sockaddr_to_string (GSockaddr *sockaddr)
  * some standard library routines like bind() or connect().
  *
  * Return value: the size of @sockaddr
+ *
+ * Since: 2.20
  **/
 gsize
 g_sockaddr_size (GSockaddr *sockaddr)

@@ -86,6 +86,8 @@ static GResolver *default_resolver;
  *
  * Return value: the #GResolver. You should unref it when you are done
  * with it.
+ *
+ * Since: 2.20
  **/
 GResolver *
 g_resolver_get_default (void)
@@ -107,6 +109,20 @@ g_resolver_get_default (void)
   return g_object_ref (default_resolver);
 }
 
+/**
+ * g_resolver_set_default:
+ * @resolver: the new default #GResolver
+ *
+ * Sets @resolver to be the application's default resolver (reffing
+ * @resolver, and unreffing the previous default resolver, if any).
+ * Future calls to g_resolver_get_default() will return this resolver.
+ *
+ * This can be used if an applications wants to perform any sort of
+ * DNS caching or "pinning"; it can implement its own #GResolver that
+ * calls the original default resolver for DNS operations, and
+ * implements its own cache policies on top of that, and then set
+ * itself as the default resolver for all later code to use.
+ **/
 void
 g_resolver_set_default (GResolver *resolver)
 {
@@ -140,6 +156,8 @@ g_resolver_set_default (GResolver *resolver)
  * %G_IO_ERROR_CANCELLED.
  *
  * Return value: a #GNetworkAddress, or %NULL on error
+ *
+ * Since: 2.20
  **/
 GNetworkAddress *
 g_resolver_lookup_name (GResolver     *resolver,
@@ -210,6 +228,8 @@ lookup_name_async_callback (GObject      *source,
  * Begins asynchronously resolving @hostname to determine its
  * associated IP address(es), and eventually calls @callback, which
  * must call g_resolver_lookup_name_finish() to get the result.
+ *
+ * Since: 2.20
  **/
 void
 g_resolver_lookup_name_async (GResolver           *resolver,
@@ -268,6 +288,8 @@ g_resolver_lookup_name_async (GResolver           *resolver,
  * @error will be set to %G_IO_ERROR_CANCELLED.
  *
  * Return value: a #GNetworkAddress, or %NULL on error
+ *
+ * Since: 2.20
  **/
 GNetworkAddress *
 g_resolver_lookup_name_finish (GResolver     *resolver,
@@ -307,6 +329,8 @@ g_resolver_lookup_name_finish (GResolver     *resolver,
  * %G_IO_ERROR_CANCELLED.
  *
  * Return value: a #GNetworkAddress, or %NULL on error
+ *
+ * Since: 2.20
  **/
 GNetworkAddress *
 g_resolver_lookup_address (GResolver     *resolver,
@@ -361,6 +385,8 @@ lookup_address_async_callback (GObject      *source,
  * Begins asynchronously reverse-resolving @sockaddr to determine its
  * associated hostname, and eventually calls @callback, which must
  * call g_resolver_lookup_address_finish() to get the final result.
+ *
+ * Since: 2.20
  **/
 void
 g_resolver_lookup_address_async (GResolver           *resolver,
@@ -402,6 +428,8 @@ g_resolver_lookup_address_async (GResolver           *resolver,
  * @error will be set to %G_IO_ERROR_CANCELLED.
  *
  * Return value: a #GNetworkAddress, or %NULL on error
+ *
+ * Since: 2.20
  **/
 GNetworkAddress *
 g_resolver_lookup_address_finish (GResolver     *resolver,
@@ -442,6 +470,8 @@ g_resolver_lookup_address_finish (GResolver     *resolver,
  * %G_IO_ERROR_CANCELLED.
  *
  * Return value: a #GNetworkService, or %NULL on error.
+ *
+ * Since: 2.20
  **/
 GNetworkService *
 g_resolver_lookup_service (GResolver     *resolver,
@@ -505,6 +535,8 @@ lookup_service_async_callback (GObject      *source,
  * @service and @protocol in the given @domain, and eventually calls
  * @callback, which must call g_resolver_lookup_service_finish() to
  * get the final result.
+ *
+ * Since: 2.20
  **/
 void
 g_resolver_lookup_service_async (GResolver           *resolver,
@@ -552,6 +584,8 @@ g_resolver_lookup_service_async (GResolver           *resolver,
  * @error will be set to %G_IO_ERROR_CANCELLED.
  *
  * Return value: a #GNetworkService, or %NULL on error.
+ *
+ * Since: 2.20
  **/
 GNetworkService *
 g_resolver_lookup_service_finish (GResolver     *resolver,
@@ -579,6 +613,8 @@ g_resolver_lookup_service_finish (GResolver     *resolver,
  * Gets the #GResolver Error Quark.
  *
  * Return value: a #GQuark.
+ *
+ * Since: 2.20
  **/
 GQuark
 g_resolver_error_quark (void)
