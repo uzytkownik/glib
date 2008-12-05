@@ -43,11 +43,11 @@
  * toplevel hostname (eg, "example.com") or assuming a specific server
  * hostname (eg, "jabber.example.com"), you would look up the
  * appropriate SRV record, and try to connect to the server (or
- * servers) that it indicates. For example, a jabber client might have
- * code looking something like:
+ * servers) that it indicates. Continuing the example from
+ * %GNetworkAddress, a jabber client might do:
  *
  * |[
- * static MyJabberConnection *
+ * static MyConnection *
  * my_connect_to_jabber_server (const char    *domain,
  *                              GCancellable  *cancellable,
  *                              GError       **error)
@@ -55,7 +55,7 @@
  *   GResolver *resolver;
  *   GNetworkService *service;
  *   GSrvTarget **targets;
- *   MyJabberConnection *conn;
+ *   MyConnection *conn;
  *   int i;
  *
  *   resolver = g_resolver_get_default ();
@@ -70,7 +70,7 @@
  *     {
  *       conn = my_connect_to_host (g_srv_target_get_hostname (targets[i]),
  *                                  g_srv_target_get_port (targets[i]),
- *                                  cancellable);
+ *                                  cancellable, NULL);
  *       if (conn)
  *         {
  *           g_object_unref (service);

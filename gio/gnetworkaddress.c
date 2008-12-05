@@ -36,7 +36,49 @@
  * @short_description: IPv4 and IPv6 network address support
  * @include: gio/gio.h
  *
- * IPv4 and IPv6 network address support
+ * IPv4 and IPv6 network address support. Generally you will use
+ * %GResolver to create %GNetworkAddress<!-- -->es. For example,
+ * a network client might have code something like:
+ *
+ * |[
+ * static MyConnection *
+ * my_connect_to_host (const char    *host,
+ *                     gushort        port,
+ *                     GCancellable  *cancellable,
+ *                     GError       **error)
+ * {
+ *   GResolver *resolver;
+ *   GNetworkAddress *addr;
+ *   GSockaddr **sockaddrs;
+ *   MyConnection *conn;
+ *   int i;
+ *
+ *   resolver = g_resolver_get_default ();
+ *   addr = g_resolver_lookup_name (resolver, host, port,
+ *                                  cancellable, error);
+ *   g_object_unref (resolver);
+ *   if (!addr)
+ *     return NULL;
+ *
+ *   sockaddrs = g_network_address_get_sockaddrs (addr);
+ *   for (i = 0; sockaddrs[i]; i++)
+ *     {
+ *       conn = my_connect (sockaddrs[i], cancellable);
+ *       if (conn)
+ *         {
+ *           g_object_unref (addr);
+ *           return conn;
+ *         }
+ *       else if (g_cancellable_set_error_if_cancelled (cancellable, error))
+ *         return NULL;
+ *     }
+ *
+ *   g_set_error (error, MY_ERROR_DOMAIN, MY_ERROR_CODE,
+ *                "Could not connect to %s", host);
+ *   g_object_unref (addr);
+ *   return NULL;
+ * }
+ * ]|
  **/
 
 static GResolverError
