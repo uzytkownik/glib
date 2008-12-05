@@ -38,12 +38,55 @@
  * @include: gio/gio.h
  *
  * SRV (service) records are used by some network protocols to provide
- * service-specific aliasing and load-balancing. For example, XMPP
- * (Jabber) uses SRV records to locate the XMPP server for a domain;
- * rather than connecting directly to "example.com" or assuming a
- * specific server hostname like "xmpp.example.com", an XMPP client
- * would look up the "xmpp-client" SRV record for "example.com", and
- * then connect to whatever host was pointed to by that record.
+ * service-specific aliasing and load-balancing; when looking for a
+ * service in a given domain, rather than connecting directly to the
+ * toplevel hostname (eg, "example.com") or assuming a specific server
+ * hostname (eg, "jabber.example.com"), you would look up the
+ * appropriate SRV record, and try to connect to the server (or
+ * servers) that it indicates. For example, a jabber client might have
+ * code looking something like:
+ *
+ * |[
+ * static MyJabberConnection *
+ * my_connect_to_jabber_server (const char    *domain,
+ *                              GCancellable  *cancellable,
+ *                              GError       **error)
+ * {
+ *   GResolver *resolver;
+ *   GNetworkService *service;
+ *   GSrvTarget **targets;
+ *   MyJabberConnection *conn;
+ *   int i;
+ *
+ *   resolver = g_resolver_get_default ();
+ *   service = g_resolver_lookup_service (resolver, "xmpp-client", "tcp", domain,
+ *                                        cancellable, error);
+ *   g_object_unref (resolver);
+ *   if (!service)
+ *     return NULL;
+ *
+ *   targets = g_network_service_get_targets (service);
+ *   for (i = 0; targets[i]; i++)
+ *     {
+ *       conn = my_connect_to_host (g_srv_target_get_hostname (targets[i]),
+ *                                  g_srv_target_get_port (targets[i]),
+ *                                  cancellable);
+ *       if (conn)
+ *         {
+ *           g_object_unref (service);
+ *           return conn;
+ *         }
+ *       else if (g_cancellable_set_error_if_cancelled (cancellable, error))
+ *         return NULL;
+ *     }
+ *
+ *   g_set_error (error, MY_ERROR_DOMAIN, MY_ERROR_CODE,
+ *                "Could not connect to any jabber server for %s",
+ *                domain);
+ *   g_object_unref (service);
+ *   return NULL;
+ * }
+ * ]|
  **/
 
 struct _GSrvTarget {
