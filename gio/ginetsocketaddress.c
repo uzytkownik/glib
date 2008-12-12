@@ -38,6 +38,8 @@
 #include "ginet4address.h"
 #include "ginet6address.h"
 
+#include "gioalias.h"
+
 /**
  * SECTION:ginetsocketaddress
  * @short_description: Internet socket addresses
@@ -260,3 +262,5 @@ g_inet_socket_address_get_port (GInetSocketAddress *address)
   return address->priv->port;
 }
 
+#define __G_INET_SOCKET_ADDRESS_C__
+#include "gioaliasdef.c"

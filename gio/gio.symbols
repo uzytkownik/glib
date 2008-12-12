@@ -892,3 +892,67 @@ g_srv_target_get_priority
 g_srv_target_get_weight
 #endif
 #endif
+
+#if IN_HEADER(__G_INET4_ADDRESS_H__)
+#if IN_FILE(__G_INET4_ADDRESS_C__)
+g_inet4_address_from_bytes
+g_inet4_address_from_string
+g_inet4_address_get_type G_GNUC_CONST
+g_inet4_address_new_any
+g_inet4_address_new_loopback
+g_inet4_address_to_bytes
+#endif
+#endif
+
+#if IN_HEADER(__G_INET6_ADDRESS_H__)
+#if IN_FILE(__G_INET6_ADDRESS_C__)
+g_inet6_address_from_bytes
+g_inet6_address_from_string
+g_inet6_address_get_type G_GNUC_CONST
+g_inet6_address_new_any
+g_inet6_address_new_loopback
+g_inet6_address_to_bytes
+#endif
+#endif
+
+#if IN_HEADER(__G_INET_ADDRESS_H__)
+#if IN_FILE(__G_INET_ADDRESS_C__)
+g_inet_address_get_type G_GNUC_CONST
+g_inet_address_is_any
+g_inet_address_is_link_local
+g_inet_address_is_loopback
+g_inet_address_is_mc_global
+g_inet_address_is_mc_link_local
+g_inet_address_is_mc_node_local
+g_inet_address_is_mc_org_local
+g_inet_address_is_mc_site_local
+g_inet_address_is_multicast
+g_inet_address_is_site_local
+g_inet_address_to_string
+#endif
+#endif
+
+#if IN_HEADER(__G_INET_SOCKET_ADDRESS_H__)
+#if IN_FILE(__G_INET_SOCKET_ADDRESS_C__)
+g_inet_socket_address_get_address
+g_inet_socket_address_get_port
+g_inet_socket_address_get_type G_GNUC_CONST
+g_inet_socket_address_new
+#endif
+#endif
+
+#if IN_HEADER(__G_LOCAL_SOCKET_ADDRESS_H__)
+#if IN_FILE(__G_LOCAL_SOCKET_ADDRESS_C__)
+g_local_socket_address_get_type G_GNUC_CONST
+g_local_socket_address_new
+#endif
+#endif
+
+#if IN_HEADER(__G_SOCKET_ADDRESS_H__)
+#if IN_FILE(__G_SOCKET_ADDRESS_C__)
+g_socket_address_from_native
+g_socket_address_get_type G_GNUC_CONST
+g_socket_address_native_size
+g_socket_address_to_native
+#endif
+#endif

@@ -26,6 +26,8 @@
 
 #include "ginetaddress.h"
 
+#include "gioalias.h"
+
 /**
  * SECTION:ginetaddress
  * @short_description: Base class for IPv4/IPv6 addresses
@@ -300,3 +302,5 @@ g_inet_address_is_mc_site_local (GInetAddress *address)
   return get_boolean_property (address, "is-mc-site-local");
 }
 
+#define __G_INET_ADDRESS_C__
+#include "gioaliasdef.c"

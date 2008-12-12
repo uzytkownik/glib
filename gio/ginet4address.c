@@ -34,6 +34,8 @@
 
 #include "ginet4address.h"
 
+#include "gioalias.h"
+
 /**
  * SECTION:ginet4address
  * @short_description: IPv4 addresses
@@ -251,3 +253,6 @@ g_inet4_address_new_any (void)
 
   return g_inet4_address_from_bytes (addr);
 }
+
+#define __G_INET4_ADDRESS_C__
+#include "gioaliasdef.c"

@@ -39,6 +39,8 @@
 #include "ginet6address.h"
 #include "glocalsocketaddress.h"
 
+#include "gioalias.h"
+
 /**
  * SECTION:gsocketaddress
  * @short_description: Abstract base class representing endpoints for socket communication
@@ -142,3 +144,6 @@ g_socket_address_from_native (gpointer native, gsize len)
 
   return NULL;
 }
+
+#define __G_SOCKET_ADDRESS_C__
+#include "gioaliasdef.c"

@@ -36,6 +36,8 @@
 
 #include "glocalsocketaddress.h"
 
+#include "gioalias.h"
+
 /**
  * SECTION:glocalsocketaddress
  * @short_description: Local socket addresses
@@ -199,3 +201,5 @@ g_local_socket_address_new (const gchar *path)
   return G_LOCAL_SOCKET_ADDRESS (g_object_new (G_TYPE_LOCAL_SOCKET_ADDRESS, "path", path, NULL));
 }
 
+#define __G_LOCAL_SOCKET_ADDRESS_C__
+#include "gioaliasdef.c"

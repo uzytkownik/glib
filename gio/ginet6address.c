@@ -36,6 +36,8 @@
 
 #include "ginet6address.h"
 
+#include "gioalias.h"
+
 /**
  * SECTION:ginet6address
  * @short_description: IPv6 addresses
@@ -166,3 +168,6 @@ g_inet6_address_new_any (void)
 
   return g_inet6_address_from_bytes (bytes);
 }
+
+#define __G_INET6_ADDRESS_C__
+#include "gioaliasdef.c"

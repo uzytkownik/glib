@@ -1,4 +1,4 @@
-/* GNIO - GLib Network Layer of GIO
+/* GIO - GLib Input, Output and Streaming Library
  *
  * Copyright (C) 2008 Christian Kellner, Samuel Cormier-Iijima
  *
@@ -21,12 +21,14 @@
  *          Samuel Cormier-Iijima <sciyoshi@gmail.com>
  */
 
-#ifndef G_INET_SOCKET_ADDRESS_H
-#define G_INET_SOCKET_ADDRESS_H
+#if !defined (__GIO_GIO_H_INSIDE__) && !defined (GIO_COMPILATION)
+#error "Only <gio/gio.h> can be included directly."
+#endif
 
-#include <glib-object.h>
+#ifndef __G_INET_SOCKET_ADDRESS_H__
+#define __G_INET_SOCKET_ADDRESS_H__
+
 #include <gio/gsocketaddress.h>
-#include <gio/ginetaddress.h>
 
 G_BEGIN_DECLS
 
@@ -37,7 +39,6 @@ G_BEGIN_DECLS
 #define G_IS_INET_SOCKET_ADDRESS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), G_TYPE_INET_SOCKET_ADDRESS))
 #define G_INET_SOCKET_ADDRESS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), G_TYPE_INET_SOCKET_ADDRESS, GInetSocketAddressClass))
 
-typedef struct _GInetSocketAddress        GInetSocketAddress;
 typedef struct _GInetSocketAddressClass   GInetSocketAddressClass;
 typedef struct _GInetSocketAddressPrivate GInetSocketAddressPrivate;
 
@@ -64,4 +65,4 @@ guint16              g_inet_socket_address_get_port    (GInetSocketAddress *addr
 
 G_END_DECLS
 
-#endif /* G_INET_SOCKET_ADDRESS_H */
+#endif /* __G_INET_SOCKET_ADDRESS_H__ */

@@ -1,4 +1,4 @@
-/* GNIO - GLib Network Layer of GIO
+/* GIO - GLib Input, Output and Streaming Library
  *
  * Copyright (C) 2008 Christian Kellner, Samuel Cormier-Iijima
  *
@@ -21,10 +21,13 @@
  *          Samuel Cormier-Iijima <sciyoshi@gmail.com>
  */
 
-#ifndef G_INET6_ADDRESS_H
-#define G_INET6_ADDRESS_H
+#if !defined (__GIO_GIO_H_INSIDE__) && !defined (GIO_COMPILATION)
+#error "Only <gio/gio.h> can be included directly."
+#endif
 
-#include <glib-object.h>
+#ifndef __G_INET6_ADDRESS_H__
+#define __G_INET6_ADDRESS_H__
+
 #include <gio/ginetaddress.h>
 
 G_BEGIN_DECLS
@@ -36,7 +39,6 @@ G_BEGIN_DECLS
 #define G_IS_INET6_ADDRESS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), G_TYPE_INET6_ADDRESS))
 #define G_INET6_ADDRESS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), G_TYPE_INET6_ADDRESS, GInet6AddressClass))
 
-typedef struct _GInet6Address        GInet6Address;
 typedef struct _GInet6AddressClass   GInet6AddressClass;
 typedef struct _GInet6AddressPrivate GInet6AddressPrivate;
 
@@ -66,4 +68,4 @@ GInet6Address * g_inet6_address_new_any      (void);
 
 G_END_DECLS
 
-#endif /* G_INET6_ADDRESS_H */
+#endif /* __G_INET6_ADDRESS_H__ */
