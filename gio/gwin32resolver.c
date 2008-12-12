@@ -34,6 +34,7 @@
 #include "gnetworkaddress.h"
 #include "gnetworkservice.h"
 #include "gsimpleasyncresult.h"
+#include "gsocketaddress.h"
 
 #include "gioalias.h"
 
