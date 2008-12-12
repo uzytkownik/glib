@@ -101,10 +101,7 @@ g_inet6_address_from_string (const char *string)
 
 #ifndef G_OS_WIN32
   if(!inet_pton (AF_INET6, string, &addr))
-    {
-      g_warning ("Could not parse IP address %s", string);
-      return NULL;
-    }
+    return NULL;
 
   return g_inet6_address_from_bytes (addr.s6_addr);
 #else

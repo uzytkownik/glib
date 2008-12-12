@@ -181,10 +181,7 @@ g_inet4_address_from_string (const gchar *string)
 
 #ifndef G_OS_WIN32
   if (!inet_pton (AF_INET, string, &addr))
-    {
-      g_warning ("Could not parse IP address %s", string);
-      return NULL;
-    }
+    return NULL;
 #else
   addr.s_addr = inet_addr (string);
 #endif
