@@ -91,7 +91,6 @@ typedef struct _GIOExtension                  GIOExtension;
  **/
 typedef struct _GIOSchedulerJob               GIOSchedulerJob;
 typedef struct _GLoadableIcon                 GLoadableIcon; /* Dummy typedef */
-typedef struct _GLocalSocketAddress           GLocalSocketAddress;
 typedef struct _GMemoryInputStream            GMemoryInputStream;
 typedef struct _GMemoryOutputStream           GMemoryOutputStream;
 

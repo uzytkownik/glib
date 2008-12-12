@@ -134,6 +134,7 @@ unix_sources = \
 	gunixmounts.h 		\
 	gunixresolver.c		\
 	gunixresolver.h		\
+	gunixsocketaddress.c	\
 	gunixvolume.c 		\
 	gunixvolume.h 		\
 	gunixvolumemonitor.c 	\
@@ -149,6 +150,7 @@ giounixinclude_HEADERS = \
 	gunixmounts.h 		\
 	gunixinputstream.h 	\
 	gunixoutputstream.h 	\
+	gunixsocketaddress.h	\
 	$(NULL)
 endif
 
@@ -211,7 +213,6 @@ libgio_2_0_la_SOURCES =		\
 	giomodule-priv.h	\
 	gioscheduler.c 		\
 	gloadableicon.c 	\
-	glocalsocketaddress.c	\
 	gmount.c 		\
 	gmemoryinputstream.c 	\
 	gmemoryoutputstream.c 	\
@@ -327,7 +328,6 @@ gio_headers =			\
 	giomodule.h 		\
 	gioscheduler.h 		\
 	gloadableicon.h 	\
-	glocalsocketaddress.h	\
 	gmount.h 		\
 	gmemoryinputstream.h 	\
 	gmemoryoutputstream.h 	\

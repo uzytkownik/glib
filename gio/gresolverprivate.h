@@ -48,6 +48,7 @@
 #include <netinet/tcp.h>
 #include <resolv.h>
 #include <sys/socket.h>
+#include <sys/un.h>
 
 #endif
 

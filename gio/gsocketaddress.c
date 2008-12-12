@@ -28,11 +28,10 @@
 #include "ginetsocketaddress.h"
 #include "ginet4address.h"
 #include "ginet6address.h"
-#include "glocalsocketaddress.h"
 #include "gresolverprivate.h"
 
-#ifndef G_OS_WIN32
-#include <sys/un.h>
+#ifdef G_OS_UNIX
+#include "gunixsocketaddress.h"
 #endif
 
 #include "gioalias.h"
@@ -126,16 +125,13 @@ g_socket_address_from_native (gpointer native, gsize len)
       return G_SOCKET_ADDRESS (g_inet_socket_address_new (G_INET_ADDRESS (g_inet6_address_from_bytes ((guint8 *) &(addr->sin6_addr))), g_ntohs (addr->sin6_port)));
     }
 
-#ifndef G_OS_WIN32
-  if (family == AF_LOCAL)
+#ifdef G_OS_UNIX
+  if (family == AF_UNIX)
     {
-
       struct sockaddr_un *addr = (struct sockaddr_un *) native;
 
-      return G_SOCKET_ADDRESS (g_local_socket_address_new (addr->sun_path));
+      return G_SOCKET_ADDRESS (g_unix_socket_address_new (addr->sun_path));
     }
-#else
-  g_error ("local sockets not supported on Windows");
 #endif
 
   return NULL;

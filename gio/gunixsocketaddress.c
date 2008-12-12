@@ -25,21 +25,17 @@
 #include <glib.h>
 #include <string.h>
 
-#include "glocalsocketaddress.h"
+#include "gunixsocketaddress.h"
 #include "gresolverprivate.h"
-
-#ifndef G_OS_WIN32
-#include <sys/un.h>
-#endif
 
 #include "gioalias.h"
 
 /**
- * SECTION:glocalsocketaddress
- * @short_description: Local socket addresses
+ * SECTION:gunixsocketaddress
+ * @short_description: Unix socket addresses
  **/
 
-G_DEFINE_TYPE (GLocalSocketAddress, g_local_socket_address, G_TYPE_SOCKET_ADDRESS);
+G_DEFINE_TYPE (GUnixSocketAddress, g_unix_socket_address, G_TYPE_SOCKET_ADDRESS);
 
 enum
 {
@@ -47,38 +43,38 @@ enum
   PROP_PATH,
 };
 
-struct _GLocalSocketAddressPrivate
+struct _GUnixSocketAddressPrivate
 {
   char *path;
 };
 
 static void
-g_local_socket_address_finalize (GObject *object)
+g_unix_socket_address_finalize (GObject *object)
 {
-  GLocalSocketAddress *address G_GNUC_UNUSED = G_LOCAL_SOCKET_ADDRESS (object);
+  GUnixSocketAddress *address G_GNUC_UNUSED = G_UNIX_SOCKET_ADDRESS (object);
 
   g_free (address->priv->path);
 
-  if (G_OBJECT_CLASS (g_local_socket_address_parent_class)->finalize)
-    (G_OBJECT_CLASS (g_local_socket_address_parent_class)->finalize) (object);
+  if (G_OBJECT_CLASS (g_unix_socket_address_parent_class)->finalize)
+    (G_OBJECT_CLASS (g_unix_socket_address_parent_class)->finalize) (object);
 }
 
 static void
-g_local_socket_address_dispose (GObject *object)
+g_unix_socket_address_dispose (GObject *object)
 {
-  GLocalSocketAddress *address G_GNUC_UNUSED = G_LOCAL_SOCKET_ADDRESS (object);
+  GUnixSocketAddress *address G_GNUC_UNUSED = G_UNIX_SOCKET_ADDRESS (object);
 
-  if (G_OBJECT_CLASS (g_local_socket_address_parent_class)->dispose)
-    (*G_OBJECT_CLASS (g_local_socket_address_parent_class)->dispose) (object);
+  if (G_OBJECT_CLASS (g_unix_socket_address_parent_class)->dispose)
+    (*G_OBJECT_CLASS (g_unix_socket_address_parent_class)->dispose) (object);
 }
 
 static void
-g_local_socket_address_get_property (GObject    *object,
+g_unix_socket_address_get_property (GObject    *object,
                                     guint       prop_id,
                                     GValue     *value,
                                     GParamSpec *pspec)
 {
-  GLocalSocketAddress *address = G_LOCAL_SOCKET_ADDRESS (object);
+  GUnixSocketAddress *address = G_UNIX_SOCKET_ADDRESS (object);
 
   switch (prop_id)
     {
@@ -92,12 +88,12 @@ g_local_socket_address_get_property (GObject    *object,
 }
 
 static void
-g_local_socket_address_set_property (GObject      *object,
+g_unix_socket_address_set_property (GObject      *object,
                                     guint         prop_id,
                                     const GValue *value,
                                     GParamSpec   *pspec)
 {
-  GLocalSocketAddress *address = G_LOCAL_SOCKET_ADDRESS (object);
+  GUnixSocketAddress *address = G_UNIX_SOCKET_ADDRESS (object);
 
   switch (prop_id)
     {
@@ -112,58 +108,40 @@ g_local_socket_address_set_property (GObject      *object,
 }
 
 static gssize
-g_local_socket_address_native_size (GSocketAddress *address)
+g_unix_socket_address_native_size (GSocketAddress *address)
 {
-  g_return_val_if_fail (G_IS_LOCAL_SOCKET_ADDRESS (address), 0);
-
-#ifdef G_OS_WIN32
-  g_error ("local sockets not available on Windows");
-  return -1;
-#else
   return sizeof (struct sockaddr_un);
-#endif
 }
 
 static gboolean
-g_local_socket_address_to_native (GSocketAddress *address,
-                                  gpointer        dest)
+g_unix_socket_address_to_native (GSocketAddress *address,
+				 gpointer        dest)
 {
-  GLocalSocketAddress *addr;
-
-#ifdef G_OS_WIN32
-  g_error ("local sockets not available on Windows");
-  return FALSE;
-#else
+  GUnixSocketAddress *addr = G_UNIX_SOCKET_ADDRESS (address);
   struct sockaddr_un *sock;
 
-  g_return_val_if_fail (G_IS_LOCAL_SOCKET_ADDRESS (address), 0);
-
-  addr = G_LOCAL_SOCKET_ADDRESS (address);
-
   sock = (struct sockaddr_un *) dest;
-
-  sock->sun_family = AF_LOCAL;
-  strcpy (sock->sun_path, addr->priv->path);
+  sock->sun_family = AF_UNIX;
+  g_strlcpy (sock->sun_path, addr->priv->path, sizeof (sock->sun_path));
 
   return TRUE;
-#endif
 }
 
 static void
-g_local_socket_address_class_init (GLocalSocketAddressClass *klass)
+g_unix_socket_address_class_init (GUnixSocketAddressClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GSocketAddressClass *gsocketaddress_class = G_SOCKET_ADDRESS_CLASS (klass);
 
-  g_type_class_add_private (klass, sizeof (GLocalSocketAddressPrivate));
+  g_type_class_add_private (klass, sizeof (GUnixSocketAddressPrivate));
 
-  gobject_class->finalize = g_local_socket_address_finalize;
-  gobject_class->dispose = g_local_socket_address_dispose;
-  gobject_class->set_property = g_local_socket_address_set_property;
-  gobject_class->get_property = g_local_socket_address_get_property;
+  gobject_class->finalize = g_unix_socket_address_finalize;
+  gobject_class->dispose = g_unix_socket_address_dispose;
+  gobject_class->set_property = g_unix_socket_address_set_property;
+  gobject_class->get_property = g_unix_socket_address_get_property;
 
-  gsocketaddress_class->to_native = g_local_socket_address_to_native;
-  gsocketaddress_class->native_size = g_local_socket_address_native_size;
+  gsocketaddress_class->to_native = g_unix_socket_address_to_native;
+  gsocketaddress_class->native_size = g_unix_socket_address_native_size;
 
   g_object_class_install_property (gobject_class,
                                    PROP_PATH,
@@ -175,27 +153,29 @@ g_local_socket_address_class_init (GLocalSocketAddressClass *klass)
 }
 
 static void
-g_local_socket_address_init (GLocalSocketAddress *address)
+g_unix_socket_address_init (GUnixSocketAddress *address)
 {
   address->priv = G_TYPE_INSTANCE_GET_PRIVATE (address,
-                                               G_TYPE_LOCAL_SOCKET_ADDRESS,
-                                               GLocalSocketAddressPrivate);
+                                               G_TYPE_UNIX_SOCKET_ADDRESS,
+                                               GUnixSocketAddressPrivate);
 
   address->priv->path = NULL;
 }
 
 /**
- * g_local_socket_address_new:
- * @address: a #GLocalAddress
+ * g_unix_socket_address_new:
+ * @address: a #GUnixAddress
  * @port: a port number
  *
- * Returns: a new #GLocalSocketAddress with a floating reference
+ * Returns: a new #GUnixSocketAddress with a floating reference
  */
-GLocalSocketAddress *
-g_local_socket_address_new (const gchar *path)
+GUnixSocketAddress *
+g_unix_socket_address_new (const gchar *path)
 {
-  return G_LOCAL_SOCKET_ADDRESS (g_object_new (G_TYPE_LOCAL_SOCKET_ADDRESS, "path", path, NULL));
+  return g_object_new (G_TYPE_UNIX_SOCKET_ADDRESS,
+		       "path", path,
+		       NULL);
 }
 
-#define __G_LOCAL_SOCKET_ADDRESS_C__
+#define __G_UNIX_SOCKET_ADDRESS_C__
 #include "gioaliasdef.c"

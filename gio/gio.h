@@ -60,7 +60,6 @@
 #include <gio/giomodule.h>
 #include <gio/gioscheduler.h>
 #include <gio/gloadableicon.h>
-#include <gio/glocalsocketaddress.h>
 #include <gio/gmemoryinputstream.h>
 #include <gio/gmemoryoutputstream.h>
 #include <gio/gmount.h>
