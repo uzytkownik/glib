@@ -50,7 +50,8 @@ struct _GInetAddressClass
 {
   GInitiallyUnownedClass parent_class;
 
-  gchar * (*to_string) (GInetAddress *address);
+  gchar *        (*to_string) (GInetAddress *address);
+  const guint8 * (*to_bytes)  (GInetAddress *address);
 };
 
 GType           g_inet_address_get_type         (void) G_GNUC_CONST;
@@ -58,6 +59,8 @@ GType           g_inet_address_get_type         (void) G_GNUC_CONST;
 GInetAddress *  g_inet_address_from_string      (const gchar  *string);
 
 gchar *         g_inet_address_to_string        (GInetAddress *address);
+
+const guint8 *  g_inet_address_to_bytes         (GInetAddress *address);
 
 gboolean        g_inet_address_is_any           (GInetAddress *address);
 

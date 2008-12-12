@@ -188,6 +188,21 @@ g_inet_address_to_string (GInetAddress *address)
   return G_INET_ADDRESS_GET_CLASS (address)->to_string (address);
 }
 
+/**
+ * g_inet_address_to_bytes:
+ * @address: a #GInetAddress
+ *
+ * Returns: a pointer to an internal array of the bytes in @address,
+ * which should not be modified, stored, or freed.
+ */
+const guint8 *
+g_inet_address_to_bytes (GInetAddress *address)
+{
+  g_return_val_if_fail (G_IS_INET_ADDRESS (address), NULL);
+
+  return G_INET_ADDRESS_GET_CLASS (address)->to_bytes (address);
+}
+
 static gboolean
 get_boolean_property (GInetAddress *address, const gchar *property)
 {

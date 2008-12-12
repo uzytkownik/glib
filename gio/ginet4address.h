@@ -60,8 +60,6 @@ GInet4Address * g_inet4_address_from_string  (const char *string);
 
 GInet4Address * g_inet4_address_from_bytes   (const guint8 bytes[4]);
 
-const guint8 *  g_inet4_address_to_bytes     (GInet4Address *address);
-
 GInet4Address * g_inet4_address_new_loopback (void);
 
 GInet4Address * g_inet4_address_new_any      (void);

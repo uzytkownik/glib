@@ -893,7 +893,6 @@ g_inet4_address_from_string
 g_inet4_address_get_type G_GNUC_CONST
 g_inet4_address_new_any
 g_inet4_address_new_loopback
-g_inet4_address_to_bytes
 #endif
 #endif
 
@@ -904,7 +903,6 @@ g_inet6_address_from_string
 g_inet6_address_get_type G_GNUC_CONST
 g_inet6_address_new_any
 g_inet6_address_new_loopback
-g_inet6_address_to_bytes
 #endif
 #endif
 
@@ -922,6 +920,7 @@ g_inet_address_is_mc_org_local
 g_inet_address_is_mc_site_local
 g_inet_address_is_multicast
 g_inet_address_is_site_local
+g_inet_address_to_bytes
 g_inet_address_to_string
 #endif
 #endif

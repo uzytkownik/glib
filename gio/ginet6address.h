@@ -60,8 +60,6 @@ GInet6Address * g_inet6_address_from_string  (const char *string);
 
 GInet6Address * g_inet6_address_from_bytes   (const guint8 bytes[16]);
 
-const guint8 *  g_inet6_address_to_bytes     (GInet6Address *address);
-
 GInet6Address * g_inet6_address_new_loopback (void);
 
 GInet6Address * g_inet6_address_new_any      (void);

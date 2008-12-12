@@ -68,6 +68,12 @@ g_inet4_address_to_string (GInetAddress *address)
   return g_strdup_printf ("%d.%d.%d.%d", addr[0], addr[1], addr[2], addr[3]);
 }
 
+static const guint8 *
+g_inet4_address_to_bytes (GInetAddress *address)
+{
+  return (guint8 *)&G_INET4_ADDRESS (address)->priv->addr.s_addr;
+}
+
 static void
 g_inet4_address_get_property (GObject    *object,
                               guint       prop_id,
@@ -140,6 +146,7 @@ g_inet4_address_class_init (GInet4AddressClass *klass)
   gobject_class->get_property = g_inet4_address_get_property;
 
   ginetaddress_class->to_string = g_inet4_address_to_string;
+  ginetaddress_class->to_bytes = g_inet4_address_to_bytes;
 
   g_object_class_override_property (gobject_class, PROP_IS_ANY, "is-any");
   g_object_class_override_property (gobject_class, PROP_IS_LOOPBACK, "is-loopback");
@@ -198,21 +205,6 @@ g_inet4_address_from_bytes (const guint8 bytes[4])
 
   memcpy (&address->priv->addr.s_addr, bytes, sizeof (struct in_addr));
   return address;
-}
-
-/**
- * g_inet4_address_to_bytes:
- * @address: a #GInet4Address
- *
- * Returns: a pointer to an internal array of the bytes in @address,
- * which should not be modified, stored, or freed.
- */
-const guint8 *
-g_inet4_address_to_bytes (GInet4Address *address)
-{
-  g_return_val_if_fail (G_IS_INET4_ADDRESS (address), NULL);
-
-  return (guint8 *)&address->priv->addr.s_addr;
 }
 
 /**

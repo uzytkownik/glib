@@ -82,6 +82,12 @@ g_inet6_address_to_string (GInetAddress *address)
   return addr;
 }
 
+static const guint8 *
+g_inet6_address_to_bytes (GInetAddress *address)
+{
+  return G_INET6_ADDRESS (address)->priv->addr.s6_addr;
+}
+
 static void
 g_inet6_address_get_property (GObject    *object,
                               guint       prop_id,
@@ -149,6 +155,7 @@ g_inet6_address_class_init (GInet6AddressClass *klass)
   gobject_class->get_property = g_inet6_address_get_property;
 
   ginetaddress_class->to_string = g_inet6_address_to_string;
+  ginetaddress_class->to_bytes = g_inet6_address_to_bytes;
 
   g_object_class_override_property (gobject_class, PROP_IS_ANY, "is-any");
   g_object_class_override_property (gobject_class, PROP_IS_LOOPBACK, "is-loopback");
@@ -208,19 +215,6 @@ g_inet6_address_from_bytes (const guint8 bytes[16])
   memcpy (&address->priv->addr, bytes, sizeof (struct in6_addr));
 
   return address;
-}
-
-/**
- * g_inet6_address_to_bytes:
- * @address: a #GInet6Address
- *
- * Returns: a pointer to an internal array of bytes in @address,
- * which should not be modified, stored, or freed.
- */
-const guint8 *
-g_inet6_address_to_bytes (GInet6Address *address)
-{
-  return address->priv->addr.s6_addr;
 }
 
 /**
