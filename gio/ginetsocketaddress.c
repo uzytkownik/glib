@@ -25,18 +25,11 @@
 #include <glib.h>
 #include <string.h>
 
-#ifndef G_OS_WIN32
-# include <sys/socket.h>
-# include <netinet/in.h>
-#else
-# include <winsock2.h>
-# include <ws2tcpip.h>
-#endif
-
 #include "ginetsocketaddress.h"
 #include "ginetaddress.h"
 #include "ginet4address.h"
 #include "ginet6address.h"
+#include "gresolverprivate.h"
 
 #include "gioalias.h"
 

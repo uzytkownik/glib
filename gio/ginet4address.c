@@ -24,15 +24,10 @@
 #include <config.h>
 #include <glib.h>
 
-#ifndef G_OS_WIN32
-# include <netinet/in.h>
-# include <arpa/inet.h>
-#else
-# include <winsock2.h>
-# define IN_LOOPBACKNET 127
-#endif
-
 #include "ginet4address.h"
+#include "gresolverprivate.h"
+
+#include <string.h>
 
 #include "gioalias.h"
 
@@ -45,11 +40,7 @@ G_DEFINE_TYPE (GInet4Address, g_inet4_address, G_TYPE_INET_ADDRESS);
 
 struct _GInet4AddressPrivate
 {
-  union
-  {
-    guint8  u4_addr8[4];
-    guint32 u4_addr32;
-  } addr;
+  struct in_addr addr;
 };
 
 enum
@@ -72,9 +63,7 @@ g_inet4_address_to_string (GInetAddress *address)
 {
   guint8 *addr;
 
-  g_return_val_if_fail (G_IS_INET4_ADDRESS (address), NULL);
-
-  addr = G_INET4_ADDRESS (address)->priv->addr.u4_addr8;
+  addr = (guint8 *)&G_INET4_ADDRESS (address)->priv->addr.s_addr;
 
   return g_strdup_printf ("%d.%d.%d.%d", addr[0], addr[1], addr[2], addr[3]);
 }
@@ -86,9 +75,7 @@ g_inet4_address_get_property (GObject    *object,
                               GParamSpec *pspec)
 {
   GInet4Address *address = G_INET4_ADDRESS (object);
-  GInet4AddressPrivate *priv = address->priv;
-
-  guint32 addr = g_ntohl (priv->addr.u4_addr32);
+  guint32 addr = g_ntohl (address->priv->addr.s_addr);
 
   switch (prop_id)
     {
@@ -97,19 +84,24 @@ g_inet4_address_get_property (GObject    *object,
         break;
 
       case PROP_IS_LOOPBACK:
-        g_value_set_boolean (value, (priv->addr.u4_addr8[0] == IN_LOOPBACKNET));
+	/* 127.0.0.0/8 */
+        g_value_set_boolean (value, ((addr & 0xff000000) == 0x7f000000));
         break;
 
       case PROP_IS_LINK_LOCAL:
+	/* 169.254.0.0/16 */
         g_value_set_boolean (value, ((addr & 0xffff0000) == 0xa9fe0000));
         break;
 
       case PROP_IS_SITE_LOCAL:
-        g_value_set_boolean (value, ((addr & 0xff000000) == (10 << 24)) || ((addr & 0xfff00000) == 0xac100000) || ((addr & 0xffff0000) == 0xc0a80000));
+	/* 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 */
+        g_value_set_boolean (value, ((addr & 0xff000000) == 0x0a000000 ||
+				     (addr & 0xfff00000) == 0xac100000 ||
+				     (addr & 0xffff0000) == 0xc0a80000));
         break;
 
       case PROP_IS_MULTICAST:
-        g_value_set_boolean (value, IN_MULTICAST (g_ntohl (G_INET4_ADDRESS (address)->priv->addr.u4_addr32)));
+        g_value_set_boolean (value, IN_MULTICAST (addr));
         break;
 
       case PROP_IS_MC_GLOBAL:
@@ -177,16 +169,20 @@ g_inet4_address_init (GInet4Address *address)
 GInet4Address *
 g_inet4_address_from_string (const gchar *string)
 {
-  struct in_addr addr;
+  struct sockaddr_in sin;
 
 #ifndef G_OS_WIN32
-  if (!inet_pton (AF_INET, string, &addr))
+  if (!inet_pton (AF_INET, string, &sin.sin_addr))
     return NULL;
-#else
-  addr.s_addr = inet_addr (string);
+#else /* G_OS_WIN32 */
+  int len = sizeof (sin);
+
+  g_resolver_os_init ();
+  if (WSAStringToAddress ((LPTSTR) string, AF_INET, NULL, (LPSOCKADDR) &sin, &len) != 0)
+    return NULL;  
 #endif
 
-  return g_inet4_address_from_bytes ((guint8 *)&addr.s_addr);
+  return g_inet4_address_from_bytes ((guint8 *)&sin.sin_addr.s_addr);
 }
 
 /**
@@ -198,15 +194,9 @@ g_inet4_address_from_string (const gchar *string)
 GInet4Address *
 g_inet4_address_from_bytes (const guint8 bytes[4])
 {
-  GInet4Address *address = G_INET4_ADDRESS (g_object_new (G_TYPE_INET4_ADDRESS, NULL));
+  GInet4Address *address = g_object_new (G_TYPE_INET4_ADDRESS, NULL);
 
-  guint8 *addr = address->priv->addr.u4_addr8;
-
-  addr[0] = bytes[0];
-  addr[1] = bytes[1];
-  addr[2] = bytes[2];
-  addr[3] = bytes[3];
-
+  memcpy (&address->priv->addr.s_addr, bytes, sizeof (struct in_addr));
   return address;
 }
 
@@ -222,7 +212,7 @@ g_inet4_address_to_bytes (GInet4Address *address)
 {
   g_return_val_if_fail (G_IS_INET4_ADDRESS (address), NULL);
 
-  return address->priv->addr.u4_addr8;
+  return (guint8 *)&address->priv->addr.s_addr;
 }
 
 /**

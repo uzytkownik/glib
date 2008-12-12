@@ -25,16 +25,10 @@
 #include <string.h>
 #include <glib.h>
 
-#ifndef G_OS_WIN32
-# include <netinet/in.h>
-# include <arpa/inet.h>
-#else
-# include <winsock2.h>
-# include <ws2tcpip.h>
-# define IN_LOOPBACKNET 127
-#endif
-
 #include "ginet6address.h"
+#include "gresolverprivate.h"
+
+#include <string.h>
 
 #include "gioalias.h"
 
@@ -47,39 +41,124 @@ G_DEFINE_TYPE (GInet6Address, g_inet6_address, G_TYPE_INET_ADDRESS);
 
 struct _GInet6AddressPrivate
 {
-  union {
-    guint8  u6_addr8[16];
-    guint16 u6_addr16[8];
-    guint32 u6_addr32[4];
-  } addr;
+  struct in6_addr addr;
+};
+
+enum
+{
+  PROP_0,
+  PROP_IS_ANY,
+  PROP_IS_LOOPBACK,
+  PROP_IS_LINK_LOCAL,
+  PROP_IS_SITE_LOCAL,
+  PROP_IS_MULTICAST,
+  PROP_IS_MC_GLOBAL,
+  PROP_IS_MC_LINK_LOCAL,
+  PROP_IS_MC_NODE_LOCAL,
+  PROP_IS_MC_ORG_LOCAL,
+  PROP_IS_MC_SITE_LOCAL,
 };
 
 static gchar *
 g_inet6_address_to_string (GInetAddress *address)
 {
-  gchar *addr = g_malloc (48);
-
-  g_return_val_if_fail (G_IS_INET6_ADDRESS (address), NULL);
+  gchar *addr = g_malloc (INET6_ADDRSTRLEN);
 
 #ifndef G_OS_WIN32
-  inet_ntop (AF_INET6, G_INET6_ADDRESS (address)->priv->addr.u6_addr8, addr, 48);
+  inet_ntop (AF_INET6, G_INET6_ADDRESS (address)->priv->addr.s6_addr,
+	     addr, INET6_ADDRSTRLEN);
+
+#else
+
+  struct sockaddr_in6 sin6;
+  DWORD len = INET6_ADDRSTRLEN;
+
+  g_resolver_os_init ();
+  sin6.sin6_family = AF_INET6;
+  sin6.sin6_addr = G_INET6_ADDRESS (address)->priv->addr;
+  WSAAddressToString ((LPSOCKADDR) &sin6, sizeof (sin6), NULL, addr, &len);
+#endif
 
   return addr;
-#else
-  g_error ("IPv6 not implemented on Windows");
+}
 
-  return NULL;
-#endif
+static void
+g_inet6_address_get_property (GObject    *object,
+                              guint       prop_id,
+                              GValue     *value,
+                              GParamSpec *pspec)
+{
+  GInet6Address *address = G_INET6_ADDRESS (object);
+  GInet6AddressPrivate *priv = address->priv;
+
+  switch (prop_id)
+    {
+      case PROP_IS_ANY:
+        g_value_set_boolean (value, IN6_IS_ADDR_UNSPECIFIED (priv->addr.s6_addr));
+        break;
+
+      case PROP_IS_LOOPBACK:
+        g_value_set_boolean (value, IN6_IS_ADDR_LOOPBACK (priv->addr.s6_addr));
+        break;
+
+      case PROP_IS_LINK_LOCAL:
+        g_value_set_boolean (value, IN6_IS_ADDR_LINKLOCAL (priv->addr.s6_addr));
+        break;
+
+      case PROP_IS_SITE_LOCAL:
+        g_value_set_boolean (value, IN6_IS_ADDR_SITELOCAL (priv->addr.s6_addr));
+        break;
+
+      case PROP_IS_MULTICAST:
+        g_value_set_boolean (value, IN6_IS_ADDR_MULTICAST (priv->addr.s6_addr));
+        break;
+
+      case PROP_IS_MC_GLOBAL:
+        g_value_set_boolean (value, IN6_IS_ADDR_MC_GLOBAL (priv->addr.s6_addr));
+        break;
+
+      case PROP_IS_MC_LINK_LOCAL:
+        g_value_set_boolean (value, IN6_IS_ADDR_MC_LINKLOCAL (priv->addr.s6_addr));
+        break;
+
+      case PROP_IS_MC_NODE_LOCAL:
+        g_value_set_boolean (value, IN6_IS_ADDR_MC_NODELOCAL (priv->addr.s6_addr));
+        break;
+
+      case PROP_IS_MC_ORG_LOCAL:
+        g_value_set_boolean (value, IN6_IS_ADDR_MC_ORGLOCAL (priv->addr.s6_addr));
+        break;
+
+      case PROP_IS_MC_SITE_LOCAL:
+        g_value_set_boolean (value, IN6_IS_ADDR_MC_SITELOCAL (priv->addr.s6_addr));
+        break;
+
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+  }
 }
 
 static void
 g_inet6_address_class_init (GInet6AddressClass *klass)
 {
+  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GInetAddressClass *ginetaddress_class = G_INET_ADDRESS_CLASS (klass);
 
   g_type_class_add_private (klass, sizeof (GInet6AddressPrivate));
 
+  gobject_class->get_property = g_inet6_address_get_property;
+
   ginetaddress_class->to_string = g_inet6_address_to_string;
+
+  g_object_class_override_property (gobject_class, PROP_IS_ANY, "is-any");
+  g_object_class_override_property (gobject_class, PROP_IS_LOOPBACK, "is-loopback");
+  g_object_class_override_property (gobject_class, PROP_IS_LINK_LOCAL, "is-link-local");
+  g_object_class_override_property (gobject_class, PROP_IS_SITE_LOCAL, "is-site-local");
+  g_object_class_override_property (gobject_class, PROP_IS_MULTICAST, "is-multicast");
+  g_object_class_override_property (gobject_class, PROP_IS_MC_GLOBAL, "is-mc-global");
+  g_object_class_override_property (gobject_class, PROP_IS_MC_LINK_LOCAL, "is-mc-link-local");
+  g_object_class_override_property (gobject_class, PROP_IS_MC_ORG_LOCAL, "is-mc-org-local");
+  g_object_class_override_property (gobject_class, PROP_IS_MC_SITE_LOCAL, "is-mc-site-local");
 }
 
 static void
@@ -97,18 +176,22 @@ g_inet6_address_init (GInet6Address *address)
 GInet6Address *
 g_inet6_address_from_string (const char *string)
 {
-  struct in6_addr addr;
+  struct sockaddr_in6 sin6;
 
 #ifndef G_OS_WIN32
-  if(!inet_pton (AF_INET6, string, &addr))
+  if (!inet_pton (AF_INET6, string, &sin6.sin6_addr))
     return NULL;
 
-  return g_inet6_address_from_bytes (addr.s6_addr);
-#else
-  g_error ("IPv6 not implemented on Windows");
+#else /* G_OS_WIN32 */
 
-  return NULL;
+  int len = sizeof (sin6);
+
+  g_resolver_os_init ();
+  if (WSAStringToAddress ((LPTSTR) string, AF_INET6, NULL, (LPSOCKADDR) &sin6, &len) != 0)
+    return NULL;  
 #endif
+
+  return g_inet6_address_from_bytes ((guint8 *)&sin6.sin6_addr.s6_addr);
 }
 
 /**
@@ -120,9 +203,9 @@ g_inet6_address_from_string (const char *string)
 GInet6Address *
 g_inet6_address_from_bytes (const guint8 bytes[16])
 {
-  GInet6Address *address = G_INET6_ADDRESS (g_object_new (G_TYPE_INET6_ADDRESS, NULL));
+  GInet6Address *address = g_object_new (G_TYPE_INET6_ADDRESS, NULL);
 
-  g_memmove (address->priv->addr.u6_addr8, bytes, 16);
+  memcpy (&address->priv->addr, bytes, sizeof (struct in6_addr));
 
   return address;
 }
@@ -137,7 +220,7 @@ g_inet6_address_from_bytes (const guint8 bytes[16])
 const guint8 *
 g_inet6_address_to_bytes (GInet6Address *address)
 {
-  return address->priv->addr.u6_addr8;
+  return address->priv->addr.s6_addr;
 }
 
 /**
@@ -148,9 +231,7 @@ g_inet6_address_to_bytes (GInet6Address *address)
 GInet6Address *
 g_inet6_address_new_loopback (void)
 {
-  guint8 bytes[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-
-  return g_inet6_address_from_bytes (bytes);
+  return g_inet6_address_from_bytes (in6addr_loopback.s6_addr);
 }
 
 /**
@@ -161,9 +242,7 @@ g_inet6_address_new_loopback (void)
 GInet6Address *
 g_inet6_address_new_any (void)
 {
-  guint8 bytes[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-  return g_inet6_address_from_bytes (bytes);
+  return g_inet6_address_from_bytes (in6addr_any.s6_addr);
 }
 
 #define __G_INET6_ADDRESS_C__

@@ -77,7 +77,6 @@ g_inet_address_class_init (GInetAddressClass *klass)
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
   gobject_class->get_property = g_inet_address_get_property;
-//  gobject_class->set_property = g_inet_address_set_property;
 
   g_object_class_install_property (gobject_class, PROP_IS_ANY,
                                    g_param_spec_boolean ("is-any",
