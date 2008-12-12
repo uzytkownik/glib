@@ -55,6 +55,8 @@ struct _GInetAddressClass
 
 GType           g_inet_address_get_type         (void) G_GNUC_CONST;
 
+GInetAddress *  g_inet_address_from_string      (const gchar  *string);
+
 gchar *         g_inet_address_to_string        (GInetAddress *address);
 
 gboolean        g_inet_address_is_any           (GInetAddress *address);

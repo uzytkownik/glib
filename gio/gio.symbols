@@ -917,6 +917,7 @@ g_inet6_address_to_bytes
 
 #if IN_HEADER(__G_INET_ADDRESS_H__)
 #if IN_FILE(__G_INET_ADDRESS_C__)
+g_inet_address_from_string
 g_inet_address_get_type G_GNUC_CONST
 g_inet_address_is_any
 g_inet_address_is_link_local

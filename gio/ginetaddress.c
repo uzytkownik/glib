@@ -25,6 +25,8 @@
 #include <glib.h>
 
 #include "ginetaddress.h"
+#include "ginet4address.h"
+#include "ginet6address.h"
 
 #include "gioalias.h"
 
@@ -152,6 +154,25 @@ static void
 g_inet_address_init (GInetAddress *address)
 {
 
+}
+
+/**
+ * g_inet_address_from_string:
+ * @string: a string representation of an IP address
+ *
+ * Returns: a new #GInetAddress corresponding to @string, or %NULL if
+ * @address_string could not be parsed.
+ */
+GInetAddress *
+g_inet_address_from_string (const gchar *string)
+{
+  GInetAddress *addr;
+
+  addr = (GInetAddress *)g_inet4_address_from_string (string);
+  if (addr)
+    return addr;
+  else
+    return (GInetAddress *)g_inet6_address_from_string (string);
 }
 
 /**
