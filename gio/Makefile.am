@@ -200,6 +200,10 @@ libgio_2_0_la_SOURCES =		\
 	gfilterinputstream.c 	\
 	gfilteroutputstream.c 	\
 	gicon.c 		\
+	ginet4address.c		\
+	ginet6address.c		\
+	ginetaddress.c		\
+	ginetsocketaddress.c	\
 	ginputstream.c 		\
 	gioenums.h		\
 	gioerror.c 		\
@@ -207,6 +211,7 @@ libgio_2_0_la_SOURCES =		\
 	giomodule-priv.h	\
 	gioscheduler.c 		\
 	gloadableicon.c 	\
+	glocalsocketaddress.c	\
 	gmount.c 		\
 	gmemoryinputstream.c 	\
 	gmemoryoutputstream.c 	\
@@ -222,6 +227,7 @@ libgio_2_0_la_SOURCES =		\
 	gresolverprivate.h	\
 	gseekable.c 		\
 	gsimpleasyncresult.c 	\
+	gsocketaddress.c	\
 	gthemedicon.c 		\
 	gthreadedresolver.c	\
 	gthreadedresolver.h	\
@@ -309,6 +315,10 @@ gio_headers =			\
 	gfilterinputstream.h 	\
 	gfilteroutputstream.h 	\
 	gicon.h 		\
+	ginet4address.h		\
+	ginet6address.h		\
+	ginetaddress.h		\
+	ginetsocketaddress.h	\
 	ginputstream.h 		\
 	gio.h			\
 	giotypes.h		\
@@ -317,6 +327,7 @@ gio_headers =			\
 	giomodule.h 		\
 	gioscheduler.h 		\
 	gloadableicon.h 	\
+	glocalsocketaddress.h	\
 	gmount.h 		\
 	gmemoryinputstream.h 	\
 	gmemoryoutputstream.h 	\
@@ -328,6 +339,7 @@ gio_headers =			\
 	gresolver.h		\
 	gseekable.h 		\
 	gsimpleasyncresult.h 	\
+	gsocketaddress.h	\
 	gthemedicon.h 		\
 	gvfs.h 			\
 	gvolume.h 		\
