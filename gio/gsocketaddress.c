@@ -115,14 +115,14 @@ g_socket_address_from_native (gpointer native, gsize len)
     {
       struct sockaddr_in *addr = (struct sockaddr_in *) native;
 
-      return G_SOCKET_ADDRESS (g_inet_socket_address_new (G_INET_ADDRESS (g_inet4_address_from_bytes ((guint8 *) &(addr->sin_addr))), g_ntohs (addr->sin_port)));
+      return G_SOCKET_ADDRESS (g_inet_socket_address_new (g_inet4_address_from_bytes ((guint8 *) &(addr->sin_addr)), g_ntohs (addr->sin_port)));
     }
 
   if (family == AF_INET6)
     {
       struct sockaddr_in6 *addr = (struct sockaddr_in6 *) native;
 
-      return G_SOCKET_ADDRESS (g_inet_socket_address_new (G_INET_ADDRESS (g_inet6_address_from_bytes ((guint8 *) &(addr->sin6_addr))), g_ntohs (addr->sin6_port)));
+      return G_SOCKET_ADDRESS (g_inet_socket_address_new (g_inet6_address_from_bytes ((guint8 *) &(addr->sin6_addr)), g_ntohs (addr->sin6_port)));
     }
 
 #ifdef G_OS_UNIX

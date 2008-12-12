@@ -173,7 +173,7 @@ g_inet4_address_init (GInet4Address *address)
  *
  * Returns: a new #GInet4Address corresponding to @string.
  */
-GInet4Address *
+GInetAddress *
 g_inet4_address_from_string (const gchar *string)
 {
   struct sockaddr_in sin;
@@ -198,13 +198,13 @@ g_inet4_address_from_string (const gchar *string)
  *
  * Returns: a new #GInet4Address corresponding to @bytes.
  */
-GInet4Address *
+GInetAddress *
 g_inet4_address_from_bytes (const guint8 bytes[4])
 {
   GInet4Address *address = g_object_new (G_TYPE_INET4_ADDRESS, NULL);
 
   memcpy (&address->priv->addr.s_addr, bytes, sizeof (struct in_addr));
-  return address;
+  return (GInetAddress *)address;
 }
 
 /**
@@ -212,7 +212,7 @@ g_inet4_address_from_bytes (const guint8 bytes[4])
  *
  * Returns: a new #GInet4Address corresponding to the loopback address (127.0.0.1).
  */
-GInet4Address *
+GInetAddress *
 g_inet4_address_new_loopback (void)
 {
   guint8 addr[4] = {127, 0, 0, 1};
@@ -225,7 +225,7 @@ g_inet4_address_new_loopback (void)
  *
  * Returns: a new #GInet4Address corresponding to the any address (0.0.0.0).
  */
-GInet4Address *
+GInetAddress *
 g_inet4_address_new_any (void)
 {
   guint8 addr[4] = {0, 0, 0, 0};

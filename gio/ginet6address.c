@@ -180,7 +180,7 @@ g_inet6_address_init (GInet6Address *address)
  * g_inet6_address_from_string:
  * @string: a string
  */
-GInet6Address *
+GInetAddress *
 g_inet6_address_from_string (const char *string)
 {
   struct sockaddr_in6 sin6;
@@ -207,14 +207,14 @@ g_inet6_address_from_string (const char *string)
  *
  * Returns: a new #GInet6Address corresponding to @bytes
  */
-GInet6Address *
+GInetAddress *
 g_inet6_address_from_bytes (const guint8 bytes[16])
 {
   GInet6Address *address = g_object_new (G_TYPE_INET6_ADDRESS, NULL);
 
   memcpy (&address->priv->addr, bytes, sizeof (struct in6_addr));
 
-  return address;
+  return (GInetAddress *)address;
 }
 
 /**
@@ -222,7 +222,7 @@ g_inet6_address_from_bytes (const guint8 bytes[16])
  *
  * Returns: a new #GInet6Address corresponding to the IPv6 loopback address ::1.
  */
-GInet6Address *
+GInetAddress *
 g_inet6_address_new_loopback (void)
 {
   return g_inet6_address_from_bytes (in6addr_loopback.s6_addr);
@@ -233,7 +233,7 @@ g_inet6_address_new_loopback (void)
  *
  * Returns: a new #GInet6Address corresponding to the IPv6 any address ::0.
  */
-GInet6Address *
+GInetAddress *
 g_inet6_address_new_any (void)
 {
   return g_inet6_address_from_bytes (in6addr_any.s6_addr);

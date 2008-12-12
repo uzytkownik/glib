@@ -106,7 +106,7 @@ g_inet_socket_address_set_property (GObject      *object,
   switch (prop_id)
     {
       case PROP_ADDRESS:
-        address->priv->address = G_INET_ADDRESS (g_object_ref_sink (g_value_get_object (value)));
+        address->priv->address = g_object_ref_sink (g_value_get_object (value));
         break;
 
       case PROP_PORT:

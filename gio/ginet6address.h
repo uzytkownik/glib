@@ -54,15 +54,15 @@ struct _GInet6AddressClass
   GInetAddressClass parent_class;
 };
 
-GType           g_inet6_address_get_type     (void) G_GNUC_CONST;
+GType          g_inet6_address_get_type     (void) G_GNUC_CONST;
 
-GInet6Address * g_inet6_address_from_string  (const char *string);
+GInetAddress * g_inet6_address_from_string  (const char *string);
 
-GInet6Address * g_inet6_address_from_bytes   (const guint8 bytes[16]);
+GInetAddress * g_inet6_address_from_bytes   (const guint8 bytes[16]);
 
-GInet6Address * g_inet6_address_new_loopback (void);
+GInetAddress * g_inet6_address_new_loopback (void);
 
-GInet6Address * g_inet6_address_new_any      (void);
+GInetAddress * g_inet6_address_new_any      (void);
 
 G_END_DECLS
 
