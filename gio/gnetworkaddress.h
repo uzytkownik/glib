@@ -53,24 +53,12 @@ struct _GNetworkAddressClass
 
 };
 
-GType             g_network_address_get_type       (void) G_GNUC_CONST;
+GType                g_network_address_get_type       (void) G_GNUC_CONST;
 
-const gchar      *g_network_address_get_hostname   (GNetworkAddress  *addr);
-const gchar      *g_network_address_get_ascii_name (GNetworkAddress  *addr);
-gushort           g_network_address_get_port       (GNetworkAddress  *addr);
-GSockaddr       **g_network_address_get_sockaddrs  (GNetworkAddress  *addr);
-
-
-GType g_sockaddr_get_type (void) G_GNUC_CONST;
-#define G_TYPE_SOCKADDR (g_sockaddr_get_type ())
-
-GSockaddr        *g_sockaddr_new_from_string       (const gchar      *ip_addr,
-						    gushort           port);
-GSockaddr        *g_sockaddr_copy                  (GSockaddr        *sockaddr);
-void              g_sockaddr_free                  (GSockaddr        *sockaddr);
-gushort           g_sockaddr_get_port              (GSockaddr        *sockaddr);
-gchar            *g_sockaddr_to_string             (GSockaddr        *sockaddr);
-gsize             g_sockaddr_size                  (GSockaddr        *sockaddr);
+const gchar         *g_network_address_get_hostname   (GNetworkAddress  *addr);
+const gchar         *g_network_address_get_ascii_name (GNetworkAddress  *addr);
+guint16              g_network_address_get_port       (GNetworkAddress  *addr);
+GInetSocketAddress **g_network_address_get_sockaddrs  (GNetworkAddress  *addr);
 
 G_END_DECLS
 

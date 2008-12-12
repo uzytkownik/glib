@@ -27,6 +27,8 @@
 #include "gresolver.h"
 #include "gresolverprivate.h"
 #include "gasyncresult.h"
+#include "ginetaddress.h"
+#include "ginetsocketaddress.h"
 #include "gnetworkaddress.h"
 #include "gnetworkservice.h"
 #include "gsimpleasyncresult.h"
@@ -136,8 +138,8 @@ g_resolver_set_default (GResolver *resolver)
  * g_resolver_lookup_name:
  * @resolver: a #GResolver
  * @hostname: the hostname to look up
- * @port: the port to use in the returned #GSockAddr<!-- -->s. (Use %0
- * if you don't care.)
+ * @port: the port to use in the returned #GInetSocketAddress<!-- -->es.
+ * (Use %0 if you don't care.)
  * @cancellable: a #GCancellable, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -162,24 +164,26 @@ g_resolver_set_default (GResolver *resolver)
 GNetworkAddress *
 g_resolver_lookup_name (GResolver     *resolver,
                         const gchar   *hostname,
-                        gushort        port,
+                        guint16        port,
                         GCancellable  *cancellable,
                         GError       **error)
 {
   GNetworkAddress *addr;
-  GSockaddr *sockaddr;
+  GInetAddress *iaddr;
+  GInetSocketAddress *sockaddr;
 
   g_return_val_if_fail (G_IS_RESOLVER (resolver), NULL);
   g_return_val_if_fail (hostname != NULL, NULL);
 
   /* Check if @hostname is just an IP address */
-  sockaddr = g_sockaddr_new_from_string (hostname, port);
-  if (sockaddr)
+  iaddr = g_inet_address_from_string (hostname);
+  if (iaddr)
     {
+      sockaddr = g_inet_socket_address_new (iaddr, port);
       addr = g_object_new (G_TYPE_NETWORK_ADDRESS,
                            "sockaddr", sockaddr,
                            NULL);
-      g_sockaddr_free (sockaddr);
+      g_object_unref (sockaddr);
       return addr;
     }
 
@@ -219,8 +223,8 @@ lookup_name_async_callback (GObject      *source,
  * g_resolver_lookup_name_async:
  * @resolver: a #GResolver
  * @hostname: the hostname to look up the address of
- * @port: the port to use in the returned #GSockAddr<!-- -->s. (Use %0
- * if you don't care.)
+ * @port: the port to use in the returned #GInetSocketAddress<!-- -->es.
+ * (Use %0 if you don't care.)
  * @cancellable: a #GCancellable, or %NULL
  * @callback: callback to call after resolution completes
  * @user_data: data for @callback
@@ -234,14 +238,15 @@ lookup_name_async_callback (GObject      *source,
 void
 g_resolver_lookup_name_async (GResolver           *resolver,
                               const gchar         *hostname,
-                              gushort              port,
+                              guint16              port,
                               GCancellable        *cancellable,
                               GAsyncReadyCallback  callback,
                               gpointer             user_data)
 {
   GNetworkAddress *addr;
   GSimpleAsyncResult *simple;
-  GSockaddr *sockaddr;
+  GInetSocketAddress *sockaddr;
+  GInetAddress *iaddr;
 
   g_return_if_fail (G_IS_RESOLVER (resolver));
   g_return_if_fail (hostname != NULL);
@@ -250,13 +255,14 @@ g_resolver_lookup_name_async (GResolver           *resolver,
                                       g_resolver_lookup_name_async);
 
   /* Check if @hostname is just an IP address */
-  sockaddr = g_sockaddr_new_from_string (hostname, port);
-  if (sockaddr)
+  iaddr = g_inet_address_from_string (hostname);
+  if (iaddr)
     {
+      sockaddr = g_inet_socket_address_new (iaddr, port);
       addr = g_object_new (G_TYPE_NETWORK_ADDRESS,
                            "sockaddr", sockaddr,
                            NULL);
-      g_sockaddr_free (sockaddr);
+      g_object_unref (sockaddr);
 
       g_simple_async_result_set_op_res_gpointer (simple, addr, g_object_unref);
       g_simple_async_result_complete_in_idle (simple);
@@ -314,11 +320,11 @@ g_resolver_lookup_name_finish (GResolver     *resolver,
 /**
  * g_resolver_lookup_address:
  * @resolver: a #GResolver
- * @sockaddr: the address to reverse-resolve
+ * @address: the address to reverse-resolve
  * @cancellable: a #GCancellable, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Synchronously reverse-resolves @sockaddr to determine its
+ * Synchronously reverse-resolves @address to determine its
  * associated hostname.
  *
  * If the DNS resolution fails, @error (if non-%NULL) will be set to
@@ -333,18 +339,18 @@ g_resolver_lookup_name_finish (GResolver     *resolver,
  * Since: 2.20
  **/
 GNetworkAddress *
-g_resolver_lookup_address (GResolver     *resolver,
-                           GSockaddr     *sockaddr,
-                           GCancellable  *cancellable,
-                           GError       **error)
+g_resolver_lookup_address (GResolver           *resolver,
+                           GInetSocketAddress  *address,
+                           GCancellable        *cancellable,
+                           GError             **error)
 {
   GNetworkAddress *addr;
 
   g_return_val_if_fail (G_IS_RESOLVER (resolver), NULL);
-  g_return_val_if_fail (sockaddr != NULL, NULL);
+  g_return_val_if_fail (address != NULL, NULL);
 
   addr = g_object_new (G_TYPE_NETWORK_ADDRESS,
-                       "sockaddr", sockaddr,
+                       "sockaddr", address,
                        NULL);
 
   if (!G_RESOLVER_GET_CLASS (resolver)->lookup_address (resolver, addr, cancellable, error))
@@ -377,12 +383,12 @@ lookup_address_async_callback (GObject      *source,
 /**
  * g_resolver_lookup_address_async:
  * @resolver: a #GResolver
- * @sockaddr: the address to reverse-resolve
+ * @address: the address to reverse-resolve
  * @cancellable: a #GCancellable, or %NULL
  * @callback: callback to call after resolution completes
  * @user_data: data for @callback
  *
- * Begins asynchronously reverse-resolving @sockaddr to determine its
+ * Begins asynchronously reverse-resolving @address to determine its
  * associated hostname, and eventually calls @callback, which must
  * call g_resolver_lookup_address_finish() to get the final result.
  *
@@ -390,7 +396,7 @@ lookup_address_async_callback (GObject      *source,
  **/
 void
 g_resolver_lookup_address_async (GResolver           *resolver,
-                                 GSockaddr           *sockaddr,
+                                 GInetSocketAddress  *address,
                                  GCancellable        *cancellable,
                                  GAsyncReadyCallback  callback,
                                  gpointer             user_data)
@@ -399,10 +405,10 @@ g_resolver_lookup_address_async (GResolver           *resolver,
   GSimpleAsyncResult *simple;
 
   g_return_if_fail (G_IS_RESOLVER (resolver));
-  g_return_if_fail (sockaddr != NULL);
+  g_return_if_fail (address != NULL);
 
   addr = g_object_new (G_TYPE_NETWORK_ADDRESS,
-                       "sockaddr", sockaddr,
+                       "sockaddr", address,
                        NULL);
 
   simple = g_simple_async_result_new (G_OBJECT (resolver), callback, user_data,

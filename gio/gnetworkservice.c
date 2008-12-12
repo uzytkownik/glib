@@ -91,10 +91,10 @@
 
 struct _GSrvTarget {
   gchar   *hostname;
-  gushort  port;
+  guint16  port;
 
-  gushort  priority;
-  gushort  weight;
+  guint16  priority;
+  guint16  weight;
   time_t   expires;
 };
 
@@ -630,9 +630,9 @@ g_srv_target_get_type (void)
  **/
 GSrvTarget *
 g_srv_target_new (const gchar *hostname,
-                  gushort      port,
-                  gushort      priority,
-                  gushort      weight,
+                  guint16      port,
+                  guint16      priority,
+                  guint16      weight,
                   time_t       expires)
 {
   GSrvTarget *target = g_slice_new0 (GSrvTarget);
@@ -708,7 +708,7 @@ g_srv_target_get_hostname (GSrvTarget *target)
  *
  * Since: 2.20
  **/
-gushort
+guint16
 g_srv_target_get_port (GSrvTarget *target)
 {
   return target->port;
@@ -726,7 +726,7 @@ g_srv_target_get_port (GSrvTarget *target)
  *
  * Since: 2.20
  **/
-gushort
+guint16
 g_srv_target_get_priority (GSrvTarget *target)
 {
   return target->priority;
@@ -744,7 +744,7 @@ g_srv_target_get_priority (GSrvTarget *target)
  *
  * Since: 2.20
  **/
-gushort
+guint16
 g_srv_target_get_weight (GSrvTarget *target)
 {
   return target->weight;

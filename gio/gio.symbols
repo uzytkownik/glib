@@ -864,13 +864,6 @@ g_network_address_get_hostname
 g_network_address_get_ascii_name
 g_network_address_get_port
 g_network_address_get_sockaddrs
-g_sockaddr_get_type G_GNUC_CONST
-g_sockaddr_new_from_string
-g_sockaddr_copy
-g_sockaddr_free
-g_sockaddr_get_port
-g_sockaddr_to_string
-g_sockaddr_size
 #endif
 #endif
 

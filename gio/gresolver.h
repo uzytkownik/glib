@@ -98,12 +98,12 @@ void             g_resolver_set_default            (GResolver           *resolve
 
 GNetworkAddress *g_resolver_lookup_name            (GResolver           *resolver,
 						    const gchar         *hostname,
-						    gushort              port,
+						    guint16              port,
 						    GCancellable        *cancellable,
 						    GError             **error);
 void             g_resolver_lookup_name_async      (GResolver           *resolver,
 						    const gchar         *hostname,
-						    gushort              port,
+						    guint16              port,
 						    GCancellable        *cancellable,
 						    GAsyncReadyCallback  callback,
 						    gpointer             user_data);
@@ -112,11 +112,11 @@ GNetworkAddress *g_resolver_lookup_name_finish     (GResolver           *resolve
 						    GError             **error);
 
 GNetworkAddress *g_resolver_lookup_address         (GResolver           *resolver,
-						    GSockaddr           *sockaddr,
+						    GInetSocketAddress  *address,
 						    GCancellable        *cancellable,
 						    GError             **error);
 void             g_resolver_lookup_address_async   (GResolver           *resolver,
-						    GSockaddr           *sockaddr,
+						    GInetSocketAddress  *address,
 						    GCancellable        *cancellable,
 						    GAsyncReadyCallback  callback,
 						    gpointer             user_data);

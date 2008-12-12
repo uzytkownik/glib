@@ -314,6 +314,7 @@ lookup_addresses_in_thread (LPVOID data)
 static void
 free_lookup_address (GWin32ResolverRequest *req)
 {
+  g_free (req->u.address.addr);
   g_free (req->u.address.namebuf);
 }
 
@@ -325,16 +326,17 @@ lookup_address_async (GResolver           *resolver,
 		      gpointer             user_data)
 {
   GWin32ResolverRequest *req;
-  GSockaddr **addrs;
+  GInetSocketAddress **sockaddrs;
 
-  addrs = g_network_address_get_sockaddrs (addr);
-  g_return_if_fail (addrs != NULL && addrs[0] != NULL);
+  sockaddrs = g_network_address_get_sockaddrs (addr);
+  g_return_if_fail (sockaddrs != NULL && sockaddrs[0] != NULL);
 
   req = g_win32_resolver_request_new (resolver, addr, free_lookup_address,
                                       cancellable, callback, user_data,
                                       lookup_address_async);
-  req->u.address.addr = (struct sockaddr *)addrs[0];
-  req->u.address.addrlen = g_sockaddr_size (addrs[0]);
+  req->u.address.addrlen = g_socket_address_native_size (G_SOCKET_ADDRESS (sockaddrs[0]));
+  req->u.address.addr = g_malloc (req->u.address.addrlen);
+  g_socket_address_to_native (G_SOCKET_ADDRESS (sockaddrs[0]), req->u.address.addr);
   req->u.address.namebuf = g_malloc (NI_MAXHOST);
 
   QueueUserWorkItem (lookup_addresses_in_thread, req, 0);

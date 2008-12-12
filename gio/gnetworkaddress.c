@@ -25,6 +25,8 @@
 #include "glibintl.h"
 
 #include "gnetworkaddress.h"
+#include "ginetaddress.h"
+#include "ginetsocketaddress.h"
 #include "gresolverprivate.h"
 
 #include <string.h>
@@ -43,13 +45,13 @@
  * |[
  * static MyConnection *
  * my_connect_to_host (const char    *host,
- *                     gushort        port,
+ *                     guint16        port,
  *                     GCancellable  *cancellable,
  *                     GError       **error)
  * {
  *   GResolver *resolver;
  *   GNetworkAddress *addr;
- *   GSockaddr **sockaddrs;
+ *   GInetSocketAddress **sockaddrs;
  *   MyConnection *conn;
  *   int i;
  *
@@ -113,8 +115,8 @@ g_resolver_error_from_addrinfo_error (gint err)
 
 struct _GNetworkAddressPrivate {
   gchar *hostname, *ascii_name;
-  gushort port;
-  GSockaddr **sockaddrs;
+  guint16 port;
+  GInetSocketAddress **sockaddrs;
 };
 
 enum {
@@ -149,7 +151,7 @@ g_network_address_finalize (GObject *object)
   if (addr->priv->sockaddrs)
     {
       for (i = 0; addr->priv->sockaddrs[i]; i++)
-        g_sockaddr_free (addr->priv->sockaddrs[i]);
+        g_object_unref (addr->priv->sockaddrs[i]);
       g_free (addr->priv->sockaddrs);
     }
 
@@ -186,15 +188,15 @@ g_network_address_class_init (GNetworkAddressClass *klass)
                                                       0, 65535, 0,
                                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
   g_object_class_install_property (gobject_class, PROP_SOCKADDR,
-                                   g_param_spec_boxed ("sockaddr",
-                                                       P_("Sockaddr"),
-                                                       P_("Used to set a single sockaddr"),
-                                                       G_TYPE_SOCKADDR,
-                                                       G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+                                   g_param_spec_object ("sockaddr",
+                                                        P_("Sockaddr"),
+                                                        P_("Used to set a single sockaddr"),
+                                                        G_TYPE_INET_SOCKET_ADDRESS,
+                                                        G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
   g_object_class_install_property (gobject_class, PROP_SOCKADDRS,
                                    g_param_spec_pointer ("sockaddrs",
                                                          P_("Sockaddrs"),
-                                                         P_("Sockaddrs for this address, an array of GSockaddr"),
+                                                         P_("Sockaddrs for this address, an array of GInetSocketAddress"),
                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
@@ -205,10 +207,10 @@ g_network_address_init (GNetworkAddress *addr)
                                             GNetworkAddressPrivate);
 }
 
-static void g_network_address_set_hostname  (GNetworkAddress  *addr,
-                                             const gchar      *hostname);
-static void g_network_address_set_sockaddrs (GNetworkAddress  *addr,
-                                             GSockaddr       **sockaddrs);
+static void g_network_address_set_hostname  (GNetworkAddress     *addr,
+                                             const gchar         *hostname);
+static void g_network_address_set_sockaddrs (GNetworkAddress     *addr,
+                                             GInetSocketAddress **sockaddrs);
 
 static void
 g_network_address_set_property (GObject      *object,
@@ -238,16 +240,16 @@ g_network_address_set_property (GObject      *object,
 
     case PROP_SOCKADDR:
       /* Ignore gobject when it tries to set the default value */
-      if (!g_value_get_boxed (value))
+      if (!g_value_get_object (value))
         return;
 
       /* Can only set one or the other of sockaddr and sockaddrs */
       g_return_if_fail (addr->priv->sockaddrs == NULL);
 
-      addr->priv->sockaddrs = g_new0 (GSockaddr *, 2);
-      addr->priv->sockaddrs[0] = g_value_dup_boxed (value);
+      addr->priv->sockaddrs = g_new0 (GInetSocketAddress *, 2);
+      addr->priv->sockaddrs[0] = g_value_dup_object (value);
       if (addr->priv->port == 0)
-        addr->priv->port = g_sockaddr_get_port (addr->priv->sockaddrs[0]);
+        addr->priv->port = g_inet_socket_address_get_port (addr->priv->sockaddrs[0]);
       break;
 
     case PROP_SOCKADDRS:
@@ -336,7 +338,7 @@ g_network_address_set_from_nameinfo (GNetworkAddress  *addr,
     {
       gchar *phys;
 
-      phys = g_sockaddr_to_string (addr->priv->sockaddrs[0]);
+      phys = g_inet_address_to_string (g_inet_socket_address_get_address (addr->priv->sockaddrs[0]));
       g_set_error (error, G_RESOLVER_ERROR,
                    g_resolver_error_from_addrinfo_error (gni_retval),
                    _("Error reverse-resolving '%s': %s"),
@@ -350,28 +352,28 @@ g_network_address_set_from_nameinfo (GNetworkAddress  *addr,
 }
 
 static void
-g_network_address_set_sockaddrs (GNetworkAddress  *addr,
-                                 GSockaddr       **sockaddrs)
+g_network_address_set_sockaddrs (GNetworkAddress     *addr,
+                                 GInetSocketAddress **sockaddrs)
 {
   gint n;
-  gushort port;
+  guint16 port;
 
   g_return_if_fail (sockaddrs != NULL && sockaddrs[0] != NULL);
 
   if (addr->priv->port == 0)
-    port = g_sockaddr_get_port (sockaddrs[0]);
+    port = g_inet_socket_address_get_port (sockaddrs[0]);
   else
     port = 0;
 
   for (n = 1; sockaddrs[n]; n++)
     ;
-  addr->priv->sockaddrs = g_new0 (GSockaddr *, n + 1);
+  addr->priv->sockaddrs = g_new0 (GInetSocketAddress *, n + 1);
 
   for (n = 0; sockaddrs[n]; n++)
     {
-      if (g_sockaddr_get_port (sockaddrs[n]) != port)
+      if (g_inet_socket_address_get_port (sockaddrs[n]) != port)
         port = 0;
-      addr->priv->sockaddrs[n] = g_sockaddr_copy (sockaddrs[n]);
+      addr->priv->sockaddrs[n] = g_object_ref (sockaddrs[n]);
     }
 
   if (port != 0)
@@ -410,7 +412,7 @@ g_network_address_set_from_addrinfo  (GNetworkAddress  *addr,
                                       GError          **error)
 {
   struct addrinfo *ai;
-  GSockaddr **sockaddrs;
+  GInetSocketAddress **sockaddrs;
   gint n;
 
   g_return_val_if_fail (G_IS_NETWORK_ADDRESS (addr), FALSE);
@@ -429,12 +431,15 @@ g_network_address_set_from_addrinfo  (GNetworkAddress  *addr,
 
   for (ai = res, n = 0; ai; ai = ai->ai_next, n++)
     ;
-  sockaddrs = alloca ((n + 1) * sizeof (GSockaddr *));
+  sockaddrs = alloca ((n + 1) * sizeof (GInetSocketAddress *));
   for (ai = res, n = 0; ai; ai = ai->ai_next, n++)
-    sockaddrs[n] = (GSockaddr *)ai->ai_addr;
+    sockaddrs[n] = (GInetSocketAddress *)g_socket_address_from_native (ai->ai_addr, ai->ai_addrlen);
   sockaddrs[n] = NULL;
 
   g_network_address_set_sockaddrs (addr, sockaddrs);
+  for (n = 0; sockaddrs[n]; n++)
+    g_object_unref (sockaddrs[n]);
+
   return TRUE;
 }
 
@@ -496,7 +501,7 @@ g_network_address_get_ascii_name (GNetworkAddress *addr)
  *
  * Since: 2.20
  **/
-gushort
+guint16
 g_network_address_get_port (GNetworkAddress *addr)
 {
   g_return_val_if_fail (G_IS_NETWORK_ADDRESS (addr), 0);
@@ -508,236 +513,22 @@ g_network_address_get_port (GNetworkAddress *addr)
  * g_network_address_get_sockaddrs:
  * @addr: a #GNetworkAddress
  *
- * Gets @addr's array of #GSockaddr. These are assumed to be in the
- * "correct" order, so you should attempt to connect to the first one
- * first, then the second one if the first one fails, etc, until one
- * succeeds.
+ * Gets @addr's array of #GInetSocketAddress. These are assumed to be
+ * in the "correct" order, so you should attempt to connect to the
+ * first one first, then the second one if the first one fails, etc,
+ * until one succeeds.
  *
- * Return value: a %NULL-terminated array of #GSockaddr, or %NULL if
- * @addr has only a hostname.
+ * Return value: a %NULL-terminated array of #GInetSocketAddress, or
+ * %NULL if @addr has only a hostname.
  *
  * Since: 2.20
  **/
-GSockaddr **
+GInetSocketAddress **
 g_network_address_get_sockaddrs (GNetworkAddress *addr)
 {
   g_return_val_if_fail (G_IS_NETWORK_ADDRESS (addr), NULL);
 
   return addr->priv->sockaddrs;
-}
-
-
-/**
- * GSockaddr:
- *
- * A type representing an IP address and port.
- *
- * #GSockaddr is simply a typedef for the system <literal><type>struct
- * sockaddr</type></literal> type, and you may freely cast a
- * #GSockaddr to a <literal><type>struct sockaddr *</type></literal>
- * in order to pass it to a low-level socket routine, or cast a
- * pointer to a <literal><type>struct sockaddr_in</type></literal>, or
- * <literal><type>struct sockaddr_in6</type></literal> to a #GSockaddr
- * in order to pass it to a gio routine. (However, #GSockaddr<!-- -->s
- * created with g_sockaddr_new_from_string() or g_sockaddr_copy() must
- * be freed with g_sockaddr_free(), and other #GSockaddr<!-- -->s must
- * not be.)
- */
-
-GType
-g_sockaddr_get_type (void)
-{
-  static volatile gsize type_volatile = 0;
-
-  if (g_once_init_enter (&type_volatile))
-    {
-      GType type = g_boxed_type_register_static (
-                        g_intern_static_string ("GSockaddr"),
-			(GBoxedCopyFunc) g_sockaddr_copy,
-			(GBoxedFreeFunc) g_sockaddr_free);
-      g_once_init_leave (&type_volatile, type);
-    }
-  return type_volatile;
-}
-
-/**
- * g_sockaddr_new_from_string:
- * @ip_addr: an IPv4 or IPv6 numeric address
- * @port: port to use in the #GSockaddr, or %0 if you don't care
- *
- * Parses @ip_addr and returns a corresponding #GSockaddr.
- *
- * Return value: a new #GSockaddr, or %NULL if @ip_addr is not an
- * IPv4 or IPv6 address.
- *
- * Since: 2.20
- **/
-GSockaddr *
-g_sockaddr_new_from_string (const gchar *ip_addr,
-                            gushort      port)
-{
-#ifdef G_OS_WIN32
-  gint len;
-#endif
-  struct sockaddr_storage sa;
-  struct sockaddr_in *sin = (struct sockaddr_in *)&sa;
-  struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&sa;
-
-  memset (&sa, 0, sizeof (sa));
-  g_resolver_os_init ();
-
-#ifdef G_OS_WIN32
-  len = sizeof (sa);
-  if (WSAStringToAddress ((LPTSTR) ip_addr, AF_INET, NULL, (LPSOCKADDR) &sa, &len) == 0)
-    sin->sin_port = port;
-  else if (WSAStringToAddress ((LPTSTR) ip_addr, AF_INET6, NULL, (LPSOCKADDR) &sa, &len) == 0)
-    sin6->sin6_port = port;
-  else
-    return NULL;
-
-#else /* !G_OS_WIN32 */
-
-  if (inet_pton (AF_INET, ip_addr, &sin->sin_addr) > 0)
-    {
-      sin->sin_family = AF_INET;
-      sin->sin_port = port;
-    }
-  else if (inet_pton (AF_INET6, ip_addr, &sin6->sin6_addr) > 0)
-    {
-      sin6->sin6_family = AF_INET6;
-      sin6->sin6_port = port;
-    }
-  else
-    return NULL;
-#endif
-
-  return g_sockaddr_copy ((GSockaddr *)&sa);
-}
-
-/**
- * g_sockaddr_copy:
- * @sockaddr: a #GSockaddr
- *
- * Copies @sockaddr
- *
- * Return value: a copy of @sockaddr
- *
- * Since: 2.20
- **/
-GSockaddr *
-g_sockaddr_copy (GSockaddr *sockaddr)
-{
-  return g_slice_copy (g_sockaddr_size (sockaddr), sockaddr);
-}
-
-/**
- * g_sockaddr_free:
- * @sockaddr: a #GSockaddr
- *
- * Frees @sockaddr
- *
- * Since: 2.20
- **/
-void
-g_sockaddr_free (GSockaddr *sockaddr)
-{
-  g_slice_free1 (g_sockaddr_size (sockaddr), sockaddr);
-}
-
-/**
- * g_sockaddr_get_port:
- * @sockaddr: a #GSockaddr
- *
- * Gets @sockaddr's port number
- *
- * Return value: @sockaddr's port (which may be %0)
- *
- * Since: 2.20
- **/
-gushort
-g_sockaddr_get_port (GSockaddr *sockaddr)
-{
-  struct sockaddr *sa = (struct sockaddr *)sockaddr;
-
-  if (sa->sa_family == AF_INET)
-    return ((struct sockaddr_in *)sa)->sin_port;
-  else if (sa->sa_family == AF_INET6)
-    return ((struct sockaddr_in6 *)sa)->sin6_port;
-  else
-    g_return_val_if_reached (0);
-}
-
-/**
- * g_sockaddr_to_string:
- * @sockaddr: a #GSockaddr
- *
- * Converts @sockaddr to string form (ignoring its port)
- *
- * Return value: the string form of @sockaddr, which must be freed
- *
- * Since: 2.20
- **/
-gchar *
-g_sockaddr_to_string (GSockaddr *sockaddr)
-{
-  struct sockaddr *sa = (struct sockaddr *)sockaddr;
-  gchar buffer[INET6_ADDRSTRLEN];
-#ifdef G_OS_WIN32
-  DWORD buflen = sizeof (buffer);
-#else
-  struct sockaddr_in *sin = (struct sockaddr_in *)sockaddr;
-  struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)sockaddr;
-#endif
-
-  g_resolver_os_init ();
-
-#ifdef G_OS_WIN32
-  if (WSAAddressToString ((LPSOCKADDR) sa, g_sockaddr_size (sockaddr), NULL,
-			  buffer, &buflen) == 0)
-    return g_strdup (buffer);
-  else
-    return NULL;
-
-#else /* !G_OS_WIN32 */
-
-  switch (sa->sa_family)
-    {
-    case AF_INET:
-      inet_ntop (AF_INET, &sin->sin_addr, buffer, sizeof (buffer));
-      return g_strdup (buffer);
-
-    case AF_INET6:
-      inet_ntop (AF_INET6, &sin6->sin6_addr, buffer, sizeof (buffer));
-      return g_strdup (buffer);
-
-    default:
-      return NULL;
-    }
-#endif
-}
-
-/**
- * g_sockaddr_size:
- * @sockaddr: a #GSockaddr
- *
- * Determines the size of @sockaddr, which is needed as a parameter to
- * some standard library routines like bind() or connect().
- *
- * Return value: the size of @sockaddr
- *
- * Since: 2.20
- **/
-gsize
-g_sockaddr_size (GSockaddr *sockaddr)
-{
-  struct sockaddr *sa = (struct sockaddr *)sockaddr;
-
-  if (sa->sa_family == AF_INET)
-    return sizeof (struct sockaddr_in);
-  else if (sa->sa_family == AF_INET6)
-    return sizeof (struct sockaddr_in6);
-  else
-    g_return_val_if_reached (0);
 }
 
 #define __G_NETWORK_ADDRESS_C__

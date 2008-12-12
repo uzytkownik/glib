@@ -35,6 +35,7 @@
 #include "gnetworkaddress.h"
 #include "gnetworkservice.h"
 #include "gsimpleasyncresult.h"
+#include "gsocketaddress.h"
 
 #include "gioalias.h"
 
@@ -307,13 +308,19 @@ lookup_address_async (GResolver           *resolver,
 {
   GUnixResolver *gur = G_UNIX_RESOLVER (resolver);
   _g_asyncns_query_t *qy;
-  GSockaddr *sockaddr;
-  gint socklen;
+  GInetSocketAddress **sockaddrs;
+  struct sockaddr_storage sockaddr;
+  gssize sockaddr_size;
 
-  sockaddr = g_network_address_get_sockaddrs (addr)[0];
-  socklen = g_sockaddr_size (sockaddr);
+  sockaddrs = g_network_address_get_sockaddrs (addr);
+  g_return_if_fail (sockaddrs != NULL && sockaddrs[0] != NULL);
+
+  sockaddr_size = g_socket_address_native_size (G_SOCKET_ADDRESS (sockaddrs[0]));
+  g_return_if_fail (sockaddr_size <= sizeof (sockaddr));
+  g_socket_address_to_native (G_SOCKET_ADDRESS (sockaddrs[0]), &sockaddr);
+
   qy = _g_asyncns_getnameinfo (gur->asyncns,
-                               (struct sockaddr *)sockaddr, socklen,
+                               (struct sockaddr *)&sockaddr, sockaddr_size,
                                NI_NAMEREQD, TRUE, FALSE);
   resolve_async (gur, addr, qy, cancellable,
                  callback, user_data, lookup_address_async);

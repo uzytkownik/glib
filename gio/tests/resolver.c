@@ -77,7 +77,7 @@ static void
 print_resolved_addresses (const char *name, GNetworkAddress *addr,
 			  GError *error)
 {
-  GSockaddr **addrs;
+  GInetSocketAddress **addrs;
   char *phys;
   int i;
 
@@ -93,7 +93,7 @@ print_resolved_addresses (const char *name, GNetworkAddress *addr,
       addrs = g_network_address_get_sockaddrs (addr);
       for (i = 0; addrs[i]; i++)
 	{
-	  phys = g_sockaddr_to_string (addrs[i]);
+	  phys = g_inet_address_to_string (g_inet_socket_address_get_address (addrs[i]));
 	  printf ("Address: %s\n", phys);
 	  g_free (phys);
 	}
@@ -164,10 +164,12 @@ lookup_thread (gpointer data)
     }
   else if (g_hostname_is_ip_address (arg))
     {
-      GSockaddr *sockaddr = g_sockaddr_new_from_string (arg, 0);
+      GInetAddress *iaddr = g_inet_address_from_string (arg);
+      GInetSocketAddress *sockaddr = g_inet_socket_address_new (iaddr, 0);
+
       addr = g_resolver_lookup_address (resolver, sockaddr, cancellable, &error);
       print_resolved_name (arg, addr, error);
-      g_sockaddr_free (sockaddr);
+      g_object_unref (sockaddr);
     }
   else
     {
@@ -245,10 +247,12 @@ start_async_lookups (char **argv, int argc)
 	}
       else if (g_hostname_is_ip_address (argv[i]))
 	{
-	  GSockaddr *addr = g_sockaddr_new_from_string (argv[i], 0);
-	  g_resolver_lookup_address_async (resolver, addr, cancellable,
+          GInetAddress *iaddr = g_inet_address_from_string (argv[i]);
+          GInetSocketAddress *sockaddr = g_inet_socket_address_new (iaddr, 0);
+
+	  g_resolver_lookup_address_async (resolver, sockaddr, cancellable,
 					   lookup_addr_callback, argv[i]);
-	  g_sockaddr_free (addr);
+	  g_object_unref (sockaddr);
 	}
       else
 	{

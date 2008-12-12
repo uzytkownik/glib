@@ -114,7 +114,6 @@ typedef struct _GOutputStream                 GOutputStream;
 typedef struct _GResolver                     GResolver;
 typedef struct _GSeekable                     GSeekable;
 typedef struct _GSimpleAsyncResult            GSimpleAsyncResult;
-typedef struct _GSockaddr                     GSockaddr;
 typedef struct _GSocketAddress                GSocketAddress;
 typedef struct _GSrvTarget                    GSrvTarget;
 typedef struct _GThemedIcon                   GThemedIcon;

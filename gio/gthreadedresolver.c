@@ -34,6 +34,7 @@
 #include "gnetworkaddress.h"
 #include "gnetworkservice.h"
 #include "gsimpleasyncresult.h"
+#include "gsocketaddress.h"
 
 #include "gioalias.h"
 
@@ -433,15 +434,20 @@ do_lookup_address (gpointer   data,
                    GError   **error)
 {
   GNetworkAddress *addr = data;
-  GSockaddr **sockaddrs;
+  GInetSocketAddress **sockaddrs;
+  struct sockaddr_storage sockaddr;
+  gssize sockaddr_size;
   gchar name[NI_MAXHOST];
   gint retval;
 
   sockaddrs = g_network_address_get_sockaddrs (addr);
   g_return_val_if_fail (sockaddrs && sockaddrs[0], FALSE);
 
-  retval = getnameinfo ((struct sockaddr *)sockaddrs[0],
-                        g_sockaddr_size (sockaddrs[0]),
+  sockaddr_size = g_socket_address_native_size (G_SOCKET_ADDRESS (sockaddrs[0]));
+  g_return_val_if_fail (sockaddr_size <= sizeof (sockaddr), FALSE);
+  g_socket_address_to_native (G_SOCKET_ADDRESS (sockaddrs[0]), &sockaddr);
+
+  retval = getnameinfo ((struct sockaddr *)&sockaddr, sockaddr_size,
                         name, sizeof (name), NULL, 0, NI_NAMEREQD);
   g_network_address_set_from_nameinfo (addr, name, retval, error);
   return retval == 0;
