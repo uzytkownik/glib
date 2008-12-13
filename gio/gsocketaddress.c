@@ -29,6 +29,7 @@
 #include "ginet4address.h"
 #include "ginet6address.h"
 #include "gresolverprivate.h"
+#include "gsocketconnectable.h"
 
 #ifdef G_OS_UNIX
 #include "gunixsocketaddress.h"
@@ -44,12 +45,31 @@
  * #GSocketAddress is the equivalent of %struct %sockaddr in the BSD sockets API.
  **/
 
-G_DEFINE_ABSTRACT_TYPE (GSocketAddress, g_socket_address, G_TYPE_INITIALLY_UNOWNED);
+static void                    g_socket_address_connectable_iface_init      (GSocketConnectableIface *iface);
+static GSocketConnectableIter *g_socket_address_connectable_get_iter        (GSocketConnectable      *connectable);
+void                           g_socket_address_connectable_free_iter       (GSocketConnectable      *connectable,
+									     GSocketConnectableIter  *iter);
+static GSocketAddress         *g_socket_address_connectable_get_next        (GSocketConnectable      *connectable,
+									     GSocketConnectableIter  *iter,
+									     GCancellable            *cancellable,
+									     GError                 **error);
+
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GSocketAddress, g_socket_address, G_TYPE_INITIALLY_UNOWNED,
+				  G_IMPLEMENT_INTERFACE (G_TYPE_SOCKET_CONNECTABLE,
+							 g_socket_address_connectable_iface_init))
 
 static void
 g_socket_address_class_init (GSocketAddressClass *klass)
 {
 
+}
+
+static void
+g_socket_address_connectable_iface_init (GSocketConnectableIface *connectable_iface)
+{
+  connectable_iface->get_iter  = g_socket_address_connectable_get_iter;
+  connectable_iface->free_iter = g_socket_address_connectable_free_iter;
+  connectable_iface->get_next  = g_socket_address_connectable_get_next;
 }
 
 static void
@@ -135,6 +155,40 @@ g_socket_address_from_native (gpointer native, gsize len)
 #endif
 
   return NULL;
+}
+
+static GSocketConnectableIter *
+g_socket_address_connectable_get_iter (GSocketConnectable *connectable)
+{
+  gboolean iter_real = TRUE;
+
+  return (GSocketConnectableIter *)g_slice_dup (gboolean, &iter_real);
+}
+
+void
+g_socket_address_connectable_free_iter (GSocketConnectable     *connectable,
+					GSocketConnectableIter *iter)
+{
+  gboolean *iter_real = (gboolean *)iter;
+
+  g_slice_free (gboolean, iter_real);
+}
+
+static GSocketAddress *
+g_socket_address_connectable_get_next (GSocketConnectable      *connectable,
+				       GSocketConnectableIter  *iter,
+				       GCancellable            *cancellable,
+				       GError                 **error)
+{
+  gboolean *iter_real = (gboolean *)iter;
+
+  if (*iter_real)
+    {
+      *iter_real = FALSE;
+      return G_SOCKET_ADDRESS (connectable);
+    }
+  else
+    return NULL;
 }
 
 #define __G_SOCKET_ADDRESS_C__

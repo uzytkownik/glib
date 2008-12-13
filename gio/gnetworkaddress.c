@@ -28,6 +28,7 @@
 #include "ginetaddress.h"
 #include "ginetsocketaddress.h"
 #include "gresolverprivate.h"
+#include "gsocketconnectable.h"
 
 #include <string.h>
 
@@ -137,7 +138,18 @@ static void g_network_address_get_property (GObject      *object,
                                             GValue       *value,
                                             GParamSpec   *pspec);
 
-G_DEFINE_TYPE (GNetworkAddress, g_network_address, G_TYPE_OBJECT);
+static void                    g_network_address_connectable_iface_init      (GSocketConnectableIface *iface);
+static GSocketConnectableIter *g_network_address_connectable_get_iter        (GSocketConnectable      *connectable);
+void                           g_network_address_connectable_free_iter       (GSocketConnectable      *connectable,
+                                                                              GSocketConnectableIter  *iter);
+static GSocketAddress         *g_network_address_connectable_get_next        (GSocketConnectable      *connectable,
+                                                                              GSocketConnectableIter  *iter,
+                                                                              GCancellable            *cancellable,
+                                                                              GError                 **error);
+
+G_DEFINE_TYPE_WITH_CODE (GNetworkAddress, g_network_address, G_TYPE_OBJECT,
+                         G_IMPLEMENT_INTERFACE (G_TYPE_SOCKET_CONNECTABLE,
+                                                g_network_address_connectable_iface_init))
 
 static void
 g_network_address_finalize (GObject *object)
@@ -198,6 +210,14 @@ g_network_address_class_init (GNetworkAddressClass *klass)
                                                          P_("Sockaddrs"),
                                                          P_("Sockaddrs for this address, an array of GInetSocketAddress"),
                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+}
+
+static void
+g_network_address_connectable_iface_init (GSocketConnectableIface *connectable_iface)
+{
+  connectable_iface->get_iter  = g_network_address_connectable_get_iter;
+  connectable_iface->free_iter = g_network_address_connectable_free_iter;
+  connectable_iface->get_next  = g_network_address_connectable_get_next;
 }
 
 static void
@@ -529,6 +549,35 @@ g_network_address_get_sockaddrs (GNetworkAddress *addr)
   g_return_val_if_fail (G_IS_NETWORK_ADDRESS (addr), NULL);
 
   return addr->priv->sockaddrs;
+}
+
+static GSocketConnectableIter *
+g_network_address_connectable_get_iter (GSocketConnectable *connectable)
+{
+  gint iter_real = 0;
+
+  return (GSocketConnectableIter *)g_slice_dup (gint, &iter_real);
+}
+
+void
+g_network_address_connectable_free_iter (GSocketConnectable     *connectable,
+                                         GSocketConnectableIter *iter)
+{
+  gint *iter_real = (gint *)iter;
+
+  g_slice_free (gint, iter_real);
+}
+
+static GSocketAddress *
+g_network_address_connectable_get_next (GSocketConnectable      *connectable,
+                                        GSocketConnectableIter  *iter,
+                                        GCancellable            *cancellable,
+                                        GError                 **error)
+{
+  GNetworkAddress *addr = G_NETWORK_ADDRESS (connectable);
+  gint *iter_real = (gint *)iter;
+
+  return (GSocketAddress *)addr->priv->sockaddrs[(*iter_real)++];
 }
 
 #define __G_NETWORK_ADDRESS_C__

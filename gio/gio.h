@@ -72,6 +72,7 @@
 #include <gio/gseekable.h>
 #include <gio/gsimpleasyncresult.h>
 #include <gio/gsocketaddress.h>
+#include <gio/gsocketconnectable.h>
 #include <gio/gthemedicon.h>
 #include <gio/gvfs.h>
 #include <gio/gvolume.h>

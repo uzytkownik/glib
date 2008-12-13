@@ -229,6 +229,7 @@ libgio_2_0_la_SOURCES =		\
 	gseekable.c 		\
 	gsimpleasyncresult.c 	\
 	gsocketaddress.c	\
+	gsocketconnectable.c	\
 	gthemedicon.c 		\
 	gthreadedresolver.c	\
 	gthreadedresolver.h	\
@@ -340,6 +341,7 @@ gio_headers =			\
 	gseekable.h 		\
 	gsimpleasyncresult.h 	\
 	gsocketaddress.h	\
+	gsocketconnectable.h	\
 	gthemedicon.h 		\
 	gvfs.h 			\
 	gvolume.h 		\
