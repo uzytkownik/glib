@@ -49,6 +49,10 @@
 #include <gio/gfilterinputstream.h>
 #include <gio/gfilteroutputstream.h>
 #include <gio/gicon.h>
+#include <gio/ginet4address.h>
+#include <gio/ginet6address.h>
+#include <gio/ginetaddress.h>
+#include <gio/ginetsocketaddress.h>
 #include <gio/ginputstream.h>
 #include <gio/gioenums.h>
 #include <gio/gioenumtypes.h>
@@ -61,9 +65,14 @@
 #include <gio/gmount.h>
 #include <gio/gmountoperation.h>
 #include <gio/gnativevolumemonitor.h>
+#include <gio/gnetworkaddress.h>
+#include <gio/gnetworkservice.h>
 #include <gio/goutputstream.h>
+#include <gio/gresolver.h>
 #include <gio/gseekable.h>
 #include <gio/gsimpleasyncresult.h>
+#include <gio/gsocketaddress.h>
+#include <gio/gsocketconnectable.h>
 #include <gio/gthemedicon.h>
 #include <gio/gvfs.h>
 #include <gio/gvolume.h>
