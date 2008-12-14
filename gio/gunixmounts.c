@@ -263,6 +263,7 @@ guess_system_internal (const char *mountpoint,
     "autofs",
     "devfs",
     "devpts",
+    "ecryptfs",
     "kernfs",
     "linprocfs",
     "proc",
@@ -1053,7 +1054,7 @@ g_unix_mount_at (const char *mount_path,
     {
       mount_entry = l->data;
 
-      if (strcmp (mount_path, mount_entry->mount_path) == 0)
+      if (!found && strcmp (mount_path, mount_entry->mount_path) == 0)
 	found = mount_entry;
       else
 	g_unix_mount_free (mount_entry);
@@ -1882,7 +1883,8 @@ g_unix_mount_guess_should_display (GUnixMountEntry *mount_entry)
         /* Avoid displaying mounts that are not accessible to the user.
          *
          * See http://bugzilla.gnome.org/show_bug.cgi?id=526320 for why we
-         * want to avoid g_access() for every mount point.
+         * want to avoid g_access() for mount points which can potentially
+         * block or fail stat()'ing, such as network mounts.
          */
         path = g_path_get_dirname (mount_path);
         if (g_str_has_prefix (path, "/media/"))
@@ -1893,6 +1895,15 @@ g_unix_mount_guess_should_display (GUnixMountEntry *mount_entry)
             }
           }
         g_free (path);
+
+        if (mount_entry->device_path && mount_entry->device_path[0] == '/')
+           {
+             struct stat st;
+             if (g_stat (mount_entry->device_path, &st) == 0 &&
+                 S_ISBLK(st.st_mode) &&
+                 g_access (mount_path, R_OK|X_OK) != 0)
+               return FALSE;
+           }
         return TRUE;
       }
       

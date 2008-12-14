@@ -788,15 +788,18 @@ g_hash_table_lookup (GHashTable   *hash_table,
 
 /**
  * g_hash_table_lookup_extended:
- * @hash_table: a #GHashTable.
- * @lookup_key: the key to look up.
- * @orig_key: returns the original key.
- * @value: returns the value associated with the key.
+ * @hash_table: a #GHashTable
+ * @lookup_key: the key to look up
+ * @orig_key: return location for the original key, or %NULL
+ * @value: return location for the value associated with the key, or %NULL
  *
  * Looks up a key in the #GHashTable, returning the original key and the
  * associated value and a #gboolean which is %TRUE if the key was found. This
  * is useful if you need to free the memory allocated for the original key,
  * for example before calling g_hash_table_remove().
+ *
+ * You can actually pass %NULL for @lookup_key to test
+ * whether the %NULL key exists.
  *
  * Return value: %TRUE if the key was found in the #GHashTable.
  **/
@@ -1131,7 +1134,7 @@ g_hash_table_foreach_remove_or_steal (GHashTable *hash_table,
  * the #GHashTable, they are used to free the memory allocated for the removed
  * keys and values.
  *
- * See #GHashTableIterator for an alternative way to loop over the 
+ * See #GHashTableIter for an alternative way to loop over the 
  * key/value pairs in the hash table.
  *
  * Return value: the number of key/value pairs removed.
@@ -1157,7 +1160,7 @@ g_hash_table_foreach_remove (GHashTable *hash_table,
  * If the function returns %TRUE, then the key/value pair is removed from the
  * #GHashTable, but no key or value destroy functions are called.
  *
- * See #GHashTableIterator for an alternative way to loop over the 
+ * See #GHashTableIter for an alternative way to loop over the 
  * key/value pairs in the hash table.
  *
  * Return value: the number of key/value pairs removed.

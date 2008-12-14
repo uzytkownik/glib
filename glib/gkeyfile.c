@@ -1237,12 +1237,14 @@ g_key_file_get_groups (GKeyFile *key_file,
  * @key: a key
  * @error: return location for a #GError, or %NULL
  *
- * Returns the value associated with @key under @group_name.  
+ * Returns the raw value associated with @key under @group_name. 
+ * Use g_key_file_get_string() to retrieve an unescaped UTF-8 string. 
  *
  * In the event the key cannot be found, %NULL is returned and 
  * @error is set to #G_KEY_FILE_ERROR_KEY_NOT_FOUND.  In the 
  * event that the @group_name cannot be found, %NULL is returned 
  * and @error is set to #G_KEY_FILE_ERROR_GROUP_NOT_FOUND.
+ *
  *
  * Return value: a newly allocated string or %NULL if the specified 
  *  key cannot be found.
@@ -1294,8 +1296,11 @@ g_key_file_get_value (GKeyFile     *key_file,
  * @value: a string
  *
  * Associates a new value with @key under @group_name.  
- * If @key cannot be found then it is created. 
- * If @group_name cannot be found then it is created.
+ *
+ * If @key cannot be found then it is created. If @group_name cannot 
+ * be found then it is created. To set an UTF-8 string which may contain 
+ * characters that need escaping (such as newlines or spaces), use 
+ * g_key_file_set_string().
  *
  * Since: 2.6
  **/
@@ -1343,7 +1348,9 @@ g_key_file_set_value (GKeyFile    *key_file,
  * @key: a key
  * @error: return location for a #GError, or %NULL
  *
- * Returns the value associated with @key under @group_name.  
+ * Returns the string value associated with @key under @group_name.
+ * Unlike g_key_file_get_value(), this function handles escape sequences
+ * like \s.
  *
  * In the event the key cannot be found, %NULL is returned and 
  * @error is set to #G_KEY_FILE_ERROR_KEY_NOT_FOUND.  In the 
@@ -1425,6 +1432,8 @@ g_key_file_get_string (GKeyFile     *key_file,
  * Associates a new string value with @key under @group_name.  
  * If @key cannot be found then it is created.  
  * If @group_name cannot be found then it is created.
+ * Unlike g_key_file_set_value(), this function handles characters
+ * that need escaping, such as newlines.
  *
  * Since: 2.6
  **/
@@ -1546,8 +1555,8 @@ g_key_file_get_string_list (GKeyFile     *key_file,
  * @key_file: a #GKeyFile
  * @group_name: a group name
  * @key: a key
- * @list: an array of locale string values
- * @length: number of locale string values in @list
+ * @list: an array of string values
+ * @length: number of string values in @list
  *
  * Associates a list of string values for @key under @group_name.
  * If @key cannot be found then it is created.  
@@ -1589,7 +1598,7 @@ g_key_file_set_string_list (GKeyFile            *key_file,
  * @key_file: a #GKeyFile
  * @group_name: a group name
  * @key: a key
- * @locale: a locale
+ * @locale: a locale identifier
  * @string: a string
  *
  * Associates a string value for @key and @locale under @group_name.  
@@ -1625,7 +1634,7 @@ extern GSList *_g_compute_locale_variants (const gchar *locale);
  * @key_file: a #GKeyFile
  * @group_name: a group name
  * @key: a key
- * @locale: a locale or %NULL
+ * @locale: a locale identifier or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Returns the value associated with @key under @group_name
@@ -1721,7 +1730,7 @@ g_key_file_get_locale_string (GKeyFile     *key_file,
  * @key_file: a #GKeyFile
  * @group_name: a group name
  * @key: a key
- * @locale: a locale
+ * @locale: a locale identifier or %NULL
  * @length: return location for the number of returned strings or %NULL
  * @error: return location for a #GError or %NULL
  *
@@ -1752,6 +1761,8 @@ g_key_file_get_locale_string_list (GKeyFile     *key_file,
 {
   GError *key_file_error;
   gchar **values, *value;
+  char list_separator[2];
+  gsize len;
 
   g_return_val_if_fail (key_file != NULL, NULL);
   g_return_val_if_fail (group_name != NULL, NULL);
@@ -1773,10 +1784,13 @@ g_key_file_get_locale_string_list (GKeyFile     *key_file,
       return NULL;
     }
 
-  if (value[strlen (value) - 1] == ';')
-    value[strlen (value) - 1] = '\0';
+  len = strlen (value);
+  if (value[len - 1] == key_file->list_separator)
+    value[len - 1] = '\0';
 
-  values = g_strsplit (value, ";", 0);
+  list_separator[0] = key_file->list_separator;
+  list_separator[1] = '\0';
+  values = g_strsplit (value, list_separator, 0);
 
   g_free (value);
 
@@ -1791,7 +1805,7 @@ g_key_file_get_locale_string_list (GKeyFile     *key_file,
  * @key_file: a #GKeyFile
  * @group_name: a group name
  * @key: a key
- * @locale: a locale
+ * @locale: a locale identifier
  * @list: a %NULL-terminated array of locale string values
  * @length: the length of @list
  *
@@ -1824,9 +1838,8 @@ g_key_file_set_locale_string_list (GKeyFile            *key_file,
       gchar *value;
       
       value = g_key_file_parse_string_as_value (key_file, list[i], TRUE);
-      
       g_string_append (value_list, value);
-      g_string_append_c (value_list, ';');
+      g_string_append_c (value_list, key_file->list_separator);
 
       g_free (value);
     }
@@ -2253,7 +2266,7 @@ g_key_file_set_integer_list (GKeyFile    *key_file,
       value = g_key_file_parse_integer_as_value (key_file, list[i]);
 
       g_string_append (values, value);
-      g_string_append_c (values, ';');
+      g_string_append_c (values, key_file->list_separator);
 
       g_free (value);
     }
@@ -2464,7 +2477,7 @@ g_key_file_set_double_list (GKeyFile    *key_file,
       g_ascii_dtostr( result, sizeof (result), list[i] );
 
       g_string_append (values, result);
-      g_string_append_c (values, ';');
+      g_string_append_c (values, key_file->list_separator);
     }
 
   g_key_file_set_value (key_file, group_name, key, values->str);

@@ -190,6 +190,7 @@
  * <row><entry>%G_FILE_ATTRIBUTE_OWNER_GROUP</entry><entry>owner::group</entry><entry>string</entry></row>
  * <row><entry>%G_FILE_ATTRIBUTE_THUMBNAIL_PATH</entry><entry>thumbnail::path</entry><entry>bytestring</entry></row>
  * <row><entry>%G_FILE_ATTRIBUTE_THUMBNAILING_FAILED</entry><entry>thumbnail::failed</entry><entry>boolean</entry></row>
+ * <row><entry>%G_FILE_ATTRIBUTE_PREVIEW_ICON</entry><entry>preview::icon</entry><entry>object (#GIcon)</entry></row>
  * <row><entry>%G_FILE_ATTRIBUTE_FILESYSTEM_SIZE</entry><entry>filesystem::size</entry><entry>uint64</entry></row>
  * <row><entry>%G_FILE_ATTRIBUTE_FILESYSTEM_FREE</entry><entry>filesystem::free</entry><entry>uint64</entry></row>
  * <row><entry>%G_FILE_ATTRIBUTE_FILESYSTEM_TYPE</entry><entry>filesystem::type</entry><entry>string</entry></row>
@@ -326,6 +327,24 @@ _g_file_attribute_value_dup (const GFileAttributeValue *other)
   return attr;
 }
 
+GType
+g_file_attribute_info_list_get_type (void)
+{
+  static volatile gsize g_define_type_id__volatile = 0;
+
+  if (g_once_init_enter (&g_define_type_id__volatile))
+    {
+      GType g_define_type_id =
+        g_boxed_type_register_static (I_("GFileAttributeInfoList"),
+                                      (GBoxedCopyFunc) g_file_attribute_info_list_dup,
+                                      (GBoxedFreeFunc) g_file_attribute_info_list_unref);
+
+      g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
+    }
+
+  return g_define_type_id__volatile;
+}
+
 static gboolean
 valid_char (char c)
 {
@@ -366,7 +385,7 @@ escape_byte_string (const char *str)
 	    {
 	      *p++ = '\\';
 	      *p++ = 'x';
-	      *p++ = hex_digits[(c >> 8) & 0xf];
+	      *p++ = hex_digits[(c >> 4) & 0xf];
 	      *p++ = hex_digits[c & 0xf];
 	    }
 	}

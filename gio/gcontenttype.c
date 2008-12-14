@@ -747,6 +747,7 @@ g_content_type_get_icon (const char *type)
 {
   char *mimetype_icon, *generic_mimetype_icon, *q;
   char *xdg_mimetype_icon, *legacy_mimetype_icon;
+  char *xdg_mimetype_generic_icon;
   char *icon_names[4];
   int n = 0;
   const char *p;
@@ -756,6 +757,7 @@ g_content_type_get_icon (const char *type)
   
   G_LOCK (gio_xdgmime);
   xdg_mimetype_icon = g_strdup (xdg_mime_get_icon (type));
+  xdg_mimetype_generic_icon = g_strdup (xdg_mime_get_generic_icon (type));
   G_UNLOCK (gio_xdgmime);
 
   mimetype_icon = g_strdup (type);
@@ -780,11 +782,16 @@ g_content_type_get_icon (const char *type)
 
   icon_names[n++] = mimetype_icon;
   icon_names[n++] = legacy_mimetype_icon;
+
+  if (xdg_mimetype_generic_icon)
+    icon_names[n++] = xdg_mimetype_generic_icon;
+
   icon_names[n++] = generic_mimetype_icon;
   
   themed_icon = g_themed_icon_new_from_names (icon_names, n);
   
   g_free (xdg_mimetype_icon);
+  g_free (xdg_mimetype_generic_icon);
   g_free (mimetype_icon);
   g_free (legacy_mimetype_icon);
   g_free (generic_mimetype_icon);
@@ -992,7 +999,7 @@ enumerate_mimetypes_subdir (const char *dir,
 	  if (g_str_has_suffix (ent->d_name, ".xml"))
 	    {
 	      mimetype = g_strdup_printf ("%s/%.*s", prefix, (int) strlen (ent->d_name) - 4, ent->d_name);
-	      g_hash_table_insert (mimetypes, mimetype, NULL);
+	      g_hash_table_replace (mimetypes, mimetype, NULL);
 	    }
 	}
       closedir (d);
@@ -1047,7 +1054,7 @@ g_content_types_get_registered (void)
   int i;
   GList *l;
 
-  mimetypes = g_hash_table_new (g_str_hash, g_str_equal);
+  mimetypes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
   enumerate_mimetypes_dir (g_get_user_data_dir (), mimetypes);
   dirs = g_get_system_data_dirs ();
@@ -1058,7 +1065,10 @@ g_content_types_get_registered (void)
   l = NULL;
   g_hash_table_iter_init (&iter, mimetypes);
   while (g_hash_table_iter_next (&iter, &key, NULL))
-    l = g_list_prepend (l, key);
+    {
+      l = g_list_prepend (l, key);
+      g_hash_table_iter_steal (&iter);
+    }
 
   g_hash_table_destroy (mimetypes);
 

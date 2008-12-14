@@ -1303,14 +1303,17 @@ parse_long_option (GOptionContext *context,
 	  strcmp (arg, group->entries[j].long_name) == 0)
 	{
 	  gchar *option_name;
+	  gboolean retval;
 
 	  option_name = g_strconcat ("--", group->entries[j].long_name, NULL);
-	  parse_arg (context, group, &group->entries[j],
-		     NULL, option_name, error);
+	  retval = parse_arg (context, group, &group->entries[j],
+			      NULL, option_name, error);
 	  g_free(option_name);
 	  
 	  add_pending_null (context, &((*argv)[*index]), NULL);
 	  *parsed = TRUE;
+
+	  return retval;
 	}
       else
 	{
@@ -2005,9 +2008,8 @@ g_option_group_set_parse_hooks (GOptionGroup     *group,
  * Associates a function with @group which will be called 
  * from g_option_context_parse() when an error occurs.
  *
- * Note that the user data to be passed to @pre_parse_func and
- * @post_parse_func can be specified when constructing the group
- * with g_option_group_new().
+ * Note that the user data to be passed to @error_func can be
+ * specified when constructing the group with g_option_group_new().
  *
  * Since: 2.6
  **/

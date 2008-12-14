@@ -623,7 +623,7 @@ g_value_unset (&amp;val);
       <function><link linkend="object-set-property">object_set_property</link></function> which first walks the class hierarchy,
       from bottom, most derived type, to top, fundamental type to find the class
       which registered that property. It then tries to convert the user-provided GValue
-      into a GValue whose type if that of the associated property.
+      into a GValue whose type is that of the associated property.
     </para>
   
     <para>
@@ -725,7 +725,7 @@ g_object_set (G_OBJECT (foo),
       <para>
         These high level functions have one drawback - they don't provide a return result.
         One should pay attention to the argument types and ranges when using them.
-        A know source of errors is to e.g. pass a gfloat instead of a gdouble and thus
+        A known source of errors is to e.g. pass a gfloat instead of a gdouble and thus
         shifting all subsequent parameters by four bytes. Also forgetting the terminating
         NULL will lead to unexpected behaviour.
       </para>

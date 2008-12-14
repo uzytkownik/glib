@@ -179,11 +179,16 @@ g_local_file_class_init (GLocalFileClass *klass)
   g_file_attribute_info_list_add (list,
 				  G_FILE_ATTRIBUTE_TIME_MODIFIED,
 				  G_FILE_ATTRIBUTE_TYPE_UINT64,
+				  G_FILE_ATTRIBUTE_INFO_COPY_WITH_FILE |
 				  G_FILE_ATTRIBUTE_INFO_COPY_WHEN_MOVED);
   g_file_attribute_info_list_add (list,
 				  G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC,
 				  G_FILE_ATTRIBUTE_TYPE_UINT32,
+				  G_FILE_ATTRIBUTE_INFO_COPY_WITH_FILE |
 				  G_FILE_ATTRIBUTE_INFO_COPY_WHEN_MOVED);
+  /* When copying, the target file is accessed. Replicating
+   * the source access time does not make sense in this case.
+   */
   g_file_attribute_info_list_add (list,
 				  G_FILE_ATTRIBUTE_TIME_ACCESS,
 				  G_FILE_ATTRIBUTE_TYPE_UINT64,
@@ -431,6 +436,8 @@ g_local_file_get_parse_name (GFile *file)
 	      g_free (utf8_filename);
 	      utf8_filename = NULL;
 	    }
+
+	  g_free (roundtripped_filename);
 	}
     }
 
@@ -590,7 +597,7 @@ g_local_file_get_child_for_display_name (GFile        *file,
 					 const char   *display_name,
 					 GError      **error)
 {
-  GFile *parent, *new_file;
+  GFile *new_file;
   char *basename;
 
   basename = g_filename_from_utf8 (display_name, -1, NULL, NULL, NULL);
@@ -602,9 +609,7 @@ g_local_file_get_child_for_display_name (GFile        *file,
       return NULL;
     }
 
-  parent = g_file_get_parent (file);
   new_file = g_file_get_child (file, basename);
-  g_object_unref (parent);
   g_free (basename);
   
   return new_file;
@@ -779,7 +784,7 @@ get_mount_info (GFileInfo             *fs_info,
 
       mountpoint = find_mountpoint_for (path, buf.st_dev);
       if (mountpoint == NULL)
-	mountpoint = "/";
+	mountpoint = g_strdup ("/");
 
       mount = g_unix_mount_at (mountpoint, &cache_time);
       if (mount)
@@ -789,6 +794,8 @@ get_mount_info (GFileInfo             *fs_info,
 	  
 	  g_unix_mount_free (mount);
 	}
+
+      g_free (mountpoint);
 
       dev = g_new0 (dev_t, 1);
       *dev = buf.st_dev;
@@ -1114,12 +1121,23 @@ g_local_file_set_display_name (GFile         *file,
   
   if (new_file == NULL)
     return NULL;
-  
   local = G_LOCAL_FILE (file);
   new_local = G_LOCAL_FILE (new_file);
 
-  if (!(g_lstat (new_local->filename, &statbuf) == -1 &&
-	errno == ENOENT))
+  if (g_lstat (new_local->filename, &statbuf) == -1) 
+    {
+      errsv = errno;
+
+      if (errsv != ENOENT)
+        {
+	  g_set_error (error, G_IO_ERROR,
+		       g_io_error_from_errno (errsv),
+		       _("Error renaming file: %s"),
+		       g_strerror (errsv));
+          return NULL;
+        }
+    }
+  else
     {
       g_set_error_literal (error, G_IO_ERROR,
                            G_IO_ERROR_EXISTS,

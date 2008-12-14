@@ -23,7 +23,7 @@ m4_define(glib_configure_in)
 #
 m4_define([glib_major_version], [2])
 m4_define([glib_minor_version], [19])
-m4_define([glib_micro_version], [0])
+m4_define([glib_micro_version], [3])
 m4_define([glib_interface_age], [0])
 m4_define([glib_binary_age],
           [m4_eval(100 * glib_minor_version + glib_micro_version)])
@@ -247,6 +247,7 @@ fi
 
 dnl Checks for programs.
 AC_PROG_CC
+AC_PROG_CPP
 
 dnl Check for a working C++ compiler, but do not bail out, if none is found.
 AC_CHECK_PROGS(CXX, [$CCC c++ g++ gcc CC cxx cc++ cl], [gcc])
@@ -490,6 +491,9 @@ dnl Initialize libtool
 AM_DISABLE_STATIC
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
+dnl when using libtool 2.x create libtool early, because it's used in configure
+m4_ifdef([LT_OUTPUT], [LT_OUTPUT])
+
 
 if test "x$GCC" = "xyes"; then
   case " $CFLAGS " in
@@ -2400,6 +2404,18 @@ if test x"$GCC" = xyes; then
                          [arm atomic implementation])
       glib_memory_barrier_needed=no
       ;;
+    crisv32*|etraxfs*)
+      AC_MSG_RESULT([crisv32])
+      AC_DEFINE_UNQUOTED(G_ATOMIC_CRISV32, 1,
+		   	 [crisv32 atomic implementation])
+      glib_memory_barrier_needed=no
+      ;;
+    cris*|etrax*)
+      AC_MSG_RESULT([cris])
+      AC_DEFINE_UNQUOTED(G_ATOMIC_CRIS, 1,
+			 [cris atomic implementation])
+      glib_memory_barrier_needed=no
+      ;;
     *)
       AC_MSG_RESULT([none])
       glib_memory_barrier_needed=yes
@@ -2588,7 +2604,7 @@ dnl **************************
 dnl *** Checks for gtk-doc ***
 dnl **************************
 
-GTK_DOC_CHECK([1.8])
+GTK_DOC_CHECK([1.11])
 
 AC_ARG_ENABLE(man,
               [AC_HELP_STRING([--enable-man],
@@ -2889,7 +2905,7 @@ struct _GStaticMutex
 };
 #define	G_STATIC_MUTEX_INIT	{ NULL, { { $g_mutex_contents} } }
 #define	g_static_mutex_get_mutex(mutex) \\
-  (g_thread_use_default_impl ? ((GMutex*) ((mutex)->static_mutex.pad)) : \\
+  (g_thread_use_default_impl ? ((GMutex*)(gpointer) ((mutex)->static_mutex.pad)) : \\
    g_static_mutex_get_mutex_impl_shortcut (&((mutex)->runtime_mutex)))
 _______EOF
 	else
@@ -3316,6 +3332,7 @@ build/Makefile
 build/win32/Makefile
 build/win32/dirent/Makefile
 build/win32/vs8/Makefile
+build/win32/vs9/Makefile
 glib/Makefile
 glib/libcharset/Makefile
 glib/gnulib/Makefile

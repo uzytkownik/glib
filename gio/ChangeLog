@@ -1,3 +1,374 @@
+2008-12-12  Dan Winship  <danw@gnome.org>
+
+	* pltcheck.sh: make this work on x86_64
+
+2008-12-10  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 562452 - Ensure we return G_IO_ERROR_CANCELLED if cancelling
+	g_simple_async_result_run_in_thread
+	
+        * gsimpleasyncresult.c:
+	Make g_simple_async_result_run_in_thread check cancellation before
+	calling out to the user in the callback. This means we guarantee
+	reporting cancels of async operations from the main threads, which
+	is probably more in line with what users expect.
+	
+	Note that there are still no such guarantees for cancelling sync
+	operations or cancelling async operation from outside the main
+	thread. Furthermore, the exact behaviour of async implementations
+	not using run_in_thread may differ.
+
+2008-12-09  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 515777 - incorrect date&time on copy
+	
+        * glocalfile.c:
+        (g_local_file_class_init):
+	Copy mtime by default
+	
+        * gfile.c:
+	Change docs about G_FILE_COPY_ALL_METADATA to not mention
+	mtime as an example.
+
+2008-12-08  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 558298 – Hide ecryptfs mounts
+
+	* gunixmounts.c: (guess_system_internal): Hide ecryptfs mounts, 
+	so that the desktop does not show both the mount and the target 
+	directory. Patch by Martin Pitt
+ 
+2008-12-08  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 555465 – GUnix{Input,Output}Stream lacks fd/close_fd_at_close 
+	property
+
+	* gio.symbols:
+	* gunixinputstream.[hc]:
+	* gunixoutputstream.[hc]: Add "fd" and "close-fd" properties
+	including getters and setters. Patch by Maciej Piechotka
+
+2008-12-07  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 558458 – Cannot build gio tests on Solaris using SUN cc
+
+	* tests/live-g-file.c: Support compilers that don't understand
+	ISO C varargs macros. Patch by Eric Lamarque
+
+2008-12-07  Matthias Clasen  <mclasen@redhat.com>
+	
+	Bug 526320 – should not list mounts that the user doesn't have 
+	permission to use
+
+	gunixmounts.c: Use g_access() to check accessibility of local devices.
+	Patch by Martin Pitt
+
+2008-12-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.2 ===
+
+2008-12-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* gdatainputstream.c (g_data_input_stream_read_line): Revert the
+	behaviour change, and update the docs instead, to avoid breaking
+	existing users.
+
+2008-12-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.1 ===
+
+2008-12-01  Alexander Larsson  <alexl@redhat.com>
+
+        * gio.symbols:
+        * gmount.[ch]:
+        * gunionvolumemonitor.c:
+        * gvolume.c:
+	Add and document g_mount_is_shadowed plus calls
+	to set/unset a mount as shadowed
+	
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/tests/g-icon.c: Comment out two failing tests
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 555486 – No way to recover command line from GAppInfo
+
+	* gio.symbols:
+	* gappinfo.[hc]: Add g_app_info_get_commandline. Requested
+	by Hans Petter Jansson.
+	
+	* gdesktopappinfo.c: And implement it here.
+
+2008-11-28  Christian Dywan  <christian@imendio.com>
+
+	* gappinfo.c: Fix a typo, s/detext/detect. Patch by Enrico Tröger.
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 559633 – gtk_image_new_from_gicon does not always work for
+	.desktop files
+
+	* gdesktopappinfo.c (g_desktop_app_info_new_from_keyfile): Ignore
+	extensions on icon names.  Proposed by Axel von Bertoldi.
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 548163 – Nautilus displays wrong error message for too long file
+	names
+
+	* glocalfile.c (g_local_file_set_display_name): Correctly set
+	error conditions if the new name is e.g. too long. Reported
+	by Leonardo Ferreira Fontenelle.
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 547481 – g_data_input_stream_read_line behaves not as stated in
+	the docs
+
+	* gdatainputstream.c (g_data_input_stream_read_line): Behave as
+	documented and include the line end in the returned string. 
+	Pointed out by Paul Pogonyshev.
+
+	* tests/data-input-stream.c: Fix the read_line test to test the
+	documented behaviour.
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* gdesktopappinfo.c (g_app_info_can_delete): Only allow deleting
+	files that have been created by g_app_info_create_from_commandline.
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 541715 – win32 : patch for warnings and signature problems in 
+	recent code
+	
+	* glocalvfs.c: Avoid unused variables. Pointed out by Jody
+	Goldberg.
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 562393 – g_buffered_input_stream_read_byte broken if data
+	available
+
+	* gbufferedinputstream.c (g_buffered_input_stream_read_byte): Fix
+	handling of buffered content.  Patch by Philip Withnall
+
+	* tests/buffered-input-stream.c: Add a testcase for this bug.
+	* tests/Makefile.am: And build it
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 561807 – inotify_sub.c :: dup_dirname() fails to remove trailing
+	'/'
+
+	* inotify/inotify-sub.c (dup_dirname): Actually strip the trailing
+	'/' away. Spotted by Dan Williams.
+
+2008-11-21  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	Bug 561375 – Leaks mountpoint description
+
+	* glocalfile.c: (get_mount_info): don't leak the mountpoint description
+	string.
+
+2008-11-21  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	Bug 561352 – Leak of icon description
+
+	* gcontenttype.c: (g_content_type_get_icon): don't leak the XDG mimetype
+	generic icon string.
+
+2008-11-14  Matthias Clasen <mclasen@redhat.com>
+
+	* gfileattribute.c: Add G_FILE_ATTRIBUTE_PREVIEW_ICON to doc table.
+
+2008-11-12  Tor Lillqvist  <tml@novell.com>
+
+	Bug 556415 - Crash on Windows 2000 in g_winhttp_vfs_init()
+
+	* win32/gwinhttpvfs.h: Move the set of function pointers to
+	winhttp.dll into a separate struct GWinHttpDllFuncs. Just have a
+	pointer to that in the GWinHttpVfsClass.
+	
+	* win32/gwinhttpvfs.c: Move the lookup of functions from
+	winhttp.dll into a function of its own, that stores the pointers
+	in a separate GWinHttpDllFuncs variable. Add two bookeeping
+	booleans lookup_done and funcs_found.
+
+	Don't call g_io_extension_point_implement() to register the
+	winhttp extension unless winhttp.dll has been successfully loaded
+	and the required functions found in it.
+
+	* win32/gwinhttp*.c: Adjust calls of the functions looked up from
+	winhttp.dll correspondingly.
+
+2008-10-28  Cosimo Cecchi  <cosimoc@gnome.org>
+
+	reviewed by: Alexander Larsson <alexl@redhat.com>
+
+	* gdatainputstream.c: Make the docs of g_dada_input_stream_read_line ()
+	clearer about the behavior when there's no more content to read.
+
+2008-10-27  Federico Mena Quintero  <federico@novell.com>
+
+	* glocalfile.c (g_local_file_get_parse_name): Don't leak roundtripped_filename.
+
+2008-10-27  Tor Lillqvist  <tml@novell.com>
+
+	Bug 557592 - Missing include in gwinhttpfile.c
+
+	* win32/gwinhttpfile.c: Include <wchar.h> to make it compile with
+	MSVC2008.
+
+2008-10-24  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 556910 – [fam-helper.c:223]: Memory leak: sub
+
+	* fam/fam-helper.c: Fix a memory leak and formatting issues.
+	Reported by Daniel Marjamäki
+
+2008-10-23  Matthias Clasen  <mclasen@redhat.com>
+
+	* gdesktopappinfo.c (g_app_info_reset_type_associations): Fix docs.
+
+2008-10-23  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 528320 - Incorrect icons displayed for files with custom mimetype icons
+	
+        * glocalfileinfo.c:
+        (_g_local_file_info_get):
+	Don't return the fallback icon (text-x-generic) for all files.
+	This is causing problems with theme icon lookup and custom mime
+	icons, as the generic fallback overrides custom mime icons in
+	inherited themes.
+
+	This is a slight change as applications might not get an icon wher
+	they previously did. But there is no guarantee to get on neither before
+	or after this change, so it should not break applications. Changes
+	to nautilus and gtk+ will be done to manually use the generic fallback
+	icon if no icon is found, but this is only required for rare cases.
+
+2008-10-21  Alexander Larsson  <alexl@redhat.com>
+
+        * gfileinfo.h:
+	Add G_FILE_ATTRIBUTE_PREVIEW_ICON (#557182)
+
+2008-10-21  Alexander Larsson  <alexl@redhat.com>
+
+	Bug 555740 - gicon serialization
+	Based on patch from David Zeuthen
+	
+        * gicon.[ch]:
+        * gio.symbols:
+	Add g_icon_to_string() and g_icon_new_for_string().
+	
+        * gemblem.c:
+        * gemblemedicon.c:
+        * gfileicon.c:
+        * gthemedicon.c:
+	Implement icon serialization for built-in icon types
+	
+        * tests/Makefile.am:
+        * tests/g-icon.c:
+	Added GIcon serialization test
+
+2008-10-16  Matthias Clasen <mclasen@redhat.com>
+
+	* === Released 2.19.0 ===
+
+2008-10-16  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 556422 – g_file_enumerator_next_file: unclear whether return 
+	value needs to be freed
+
+	* gfileenumerator.c (g_file_enumerate_next_file): Clarify
+	the return value docs. Pointed out by Armin Burgmeier
+
+2008-10-14  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 556334 – Warning when building without selinux support
+
+	* glocalfileinfo.c: Avoid compiler warnings when selinux is
+	disabled. Patch by Pascal Terjan
+
+2008-10-14  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 556335 – make check fails in abicheck.sh
+
+	* gio.symbols: Add g_file_attribute_info_list_get_type. 
+	Pointed out by Pascal Terjan.
+
+2008-10-13  Alexander Larsson  <alexl@redhat.com>
+
+        * gdesktopappinfo.c:
+	When adding an application as handling a mime type (but
+	not as the default), copy the full list of desktop ids handling
+	that type in before adding the new one on the end of the list.
+	This means we're not accidentally changing the default by overriding
+	the info from the later directories in the search path.
+	
+	Also, fixes small leak of removed_entries.
+
+2008-10-12  David Zeuthen  <davidz@redhat.com>
+
+	* gio.symbols:
+	* gunionvolumemonitor.c:
+	* gvolumemonitor.h:
+	Deprecate g_volume_monitor_adopt_orphan_mount() (#555331).
+
+2008-10-10  Alexander Larsson  <alexl@redhat.com>
+
+	* gfileattribute.c (escape_byte_string):
+	Upper half of byte is >> 4, not >> 8.
+	Found by Kjartan Maraas via sparse
+
+2008-10-10  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 555711 – Wrong fallback order of mimetype icons
+
+	* gcontenttype.c: Don't prefer generic icons over
+	default mimetype icons.
+
+	* xdgmime/xdgmimecache.c (xdg_mime_cache_get_icon): 
+	* xdgmime/xdgmime.c (xdg_mime_get_icon): Don't fall back
+	to generic icons.
+	Patch by Krysztof Kosiński
+
+2008-10-10  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 555121 – Improved build-time handling of gio module-dir
+
+	* fam/Makefile.am: Use GIO_MODULE_DIR consistently.
+	* Makefile.am: Create the module dir.
+
+2008-10-10  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/glocalfileinfo.c:
+	* gio/tests/live-g-file.c:
+	* gio/gsimpleasyncresult.c: Fix gcc warnings.
+
+2008-10-09  Alexander Larsson  <alexl@redhat.com>
+
+	* gunixinputstream.c (g_unix_input_stream_read):
+	Actually return -1 in case of cancelled, not old res value.
+
+2008-10-06  Colin Walters  <walters@verbum.org>
+
+	Bug 554745 - GFileAttributeInfoList should be boxed
+
+	* gio/gfileattribute.c: Define a boxed type for GFileAttributeList
+	for convenience of bindings.
+	* gio/gfileattribute.h: Prototype it.
+
+2008-10-05  Pascal Terjan  <pterjan@linuxfr.org>
+
+	Bug 554970 – segfault when update-desktop-database is not available
+	on the system
+
+	* gdesktopappinfo.c (run_update_command): Have the error set before 
+	using it.
+
 2008-10-01  David Zeuthen  <davidz@redhat.com>
 
 	* gdesktopappinfo.c (expand_macro): If possible, always pass FUSE

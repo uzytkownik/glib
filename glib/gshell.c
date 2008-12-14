@@ -64,8 +64,8 @@ unquote_string_inplace (gchar* str, gchar** end, GError** err)
   
   if (!(*s == '"' || *s == '\''))
     {
-      if (err)
-        *err = g_error_new(G_SHELL_ERROR,
+      g_set_error_literal (err,
+                           G_SHELL_ERROR,
                            G_SHELL_ERROR_BAD_QUOTING,
                            _("Quoted text doesn't begin with a quotation mark"));
       *end = str;
@@ -154,8 +154,8 @@ unquote_string_inplace (gchar* str, gchar** end, GError** err)
 
   *dest = '\0';
   
-  if (err)
-    *err = g_error_new(G_SHELL_ERROR,
+  g_set_error_literal (err,
+                       G_SHELL_ERROR,
                        G_SHELL_ERROR_BAD_QUOTING,
                        _("Unmatched quotation mark in command line or other shell-quoted text"));
   *end = s;

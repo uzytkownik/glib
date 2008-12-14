@@ -222,6 +222,7 @@ G_FILE_ATTRIBUTE_OWNER_USER_REAL
 G_FILE_ATTRIBUTE_OWNER_GROUP
 G_FILE_ATTRIBUTE_THUMBNAIL_PATH
 G_FILE_ATTRIBUTE_THUMBNAILING_FAILED
+G_FILE_ATTRIBUTE_PREVIEW_ICON
 G_FILE_ATTRIBUTE_FILESYSTEM_SIZE
 G_FILE_ATTRIBUTE_FILESYSTEM_FREE
 G_FILE_ATTRIBUTE_FILESYSTEM_TYPE
@@ -320,6 +321,8 @@ g_file_attribute_info_list_unref
 g_file_attribute_info_list_dup
 g_file_attribute_info_list_lookup
 g_file_attribute_info_list_add
+<SUBSECTION Private>
+g_file_attribute_info_list_get_type
 </SECTION>
 
 <SECTION>
@@ -351,6 +354,8 @@ GIcon
 GIconIface
 g_icon_hash
 g_icon_equal
+g_icon_to_string
+g_icon_new_for_string
 <SUBSECTION Standard>
 G_ICON
 G_IS_ICON
@@ -449,6 +454,12 @@ g_emblem_get_icon
 g_emblem_get_origin
 <SUBSECTION Private>
 g_emblem_get_type
+G_EMBLEM
+G_EMBLEM_CLASS
+G_EMBLEM_GET_CLASS
+G_IS_EMBLEM
+G_IS_EMBLEM_CLASS
+G_TYPE_EMBLEM
 </SECTION>
 
 <SECTION>
@@ -525,6 +536,9 @@ GFilterInputStreamPrivate
 <TITLE>GUnixInputStream</TITLE>
 GUnixInputStream
 g_unix_input_stream_new
+g_unix_input_stream_set_close_fd
+g_unix_input_stream_get_close_fd
+g_unix_input_stream_get_fd
 <SUBSECTION Standard>
 GUnixInputStreamClass
 G_UNIX_INPUT_STREAM
@@ -772,6 +786,9 @@ GDataOutputStreamPrivate
 <TITLE>GUnixOutputStream</TITLE>
 GUnixOutputStream
 g_unix_output_stream_new
+g_unix_output_stream_set_close_fd
+g_unix_output_stream_get_close_fd
+g_unix_output_stream_get_fd
 <SUBSECTION Standard>
 GUnixOutputStreamClass
 G_UNIX_OUTPUT_STREAM
@@ -852,6 +869,9 @@ g_mount_eject_finish
 g_mount_guess_content_type
 g_mount_guess_content_type_finish
 g_mount_guess_content_type_sync
+g_mount_is_shadowed
+g_mount_shadow
+g_mount_unshadow
 <SUBSECTION Standard>
 G_IS_MOUNT
 G_MOUNT
@@ -1055,12 +1075,16 @@ g_app_info_get_id
 g_app_info_get_name
 g_app_info_get_description
 g_app_info_get_executable
+g_app_info_get_commandline
 g_app_info_get_icon
 g_app_info_launch
 g_app_info_supports_files
 g_app_info_supports_uris
 g_app_info_launch_uris
 g_app_info_should_show
+g_app_info_can_delete
+g_app_info_delete
+g_app_info_reset_type_associations
 g_app_info_set_as_default_for_type
 g_app_info_set_as_default_for_extension
 g_app_info_add_supports_type

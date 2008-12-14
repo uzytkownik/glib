@@ -1,3 +1,130 @@
+2008-12-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add new functions
+
+2008-12-07  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 563156 – Document printing and scanning gunichar values
+
+	* glib/tmpl/unicode.sgml: Document printing and scanning gunichar
+	values.
+
+2008-12-07  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 563150 – G_GU?INT*_MODIFIER/FORMAT docs
+
+	* glib/tmpl/glib-unused.sgml:
+	* glib/tmpl/macros_misc.sgml:
+	* glib/tmpl/types.sgml:
+	Update docs to mention scanning as well as printing.
+	Cross reference these from their respective types.
+
+2008-12-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.2 ===
+
+2008-12-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.1 ===
+
+2008-12-01  Alexander Larsson  <alexl@redhat.com>
+
+        Reviewed by NOBODY (OOPS!).
+
+        * gio/gio-sections.txt:
+
+2008-11-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/running.sgml: Mention all and help special options in
+	debug envvars.
+
+2008-11-30  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 562538 – GObject interface tutorial shouldn't finalise with
+	"Please forget everything"
+
+	* gobject/tut_gtype.xml: Remove the questionable closing sentence
+	and all references to private functions. Pointed out by Christian
+	Dywan.
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 559452 – GObject Reference Manual (typo)
+	Bug 559462 – GObject Reference Manual (typo)
+	Bug 559517 – GObject Reference Manual (typo)
+
+	* gobject/tut_howto.xml:
+	* gobject/tut_gsignal.xml: 
+	* gobject/tut_gobject.xml: Fix typos, found by Andrew Feren.
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add g_app_info_get_commandline
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/tmpl/keyfile.sgml: Explain locale identifiers in
+	more detail
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 562549 – g_byte_array_free should tell how free data
+
+	* glib/tmpl/arrays_byte.sgml: Improve docs, proposed by
+	Guillaume Desmottes
+
+2008-11-21  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/Makefile.am:
+	* gobject/Makefile.am:
+	* gio/Makefile.am: Use a new gtk-doc feature to generate
+	much nicer indices.
+
+2008-11-14  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/glib-sections.txt: Add G_STATIC_ASSERT and friends
+
+2008-11-14  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add G_FILE_ATTRIBUTE_PREVIEW_ICON
+
+2008-11-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 559448 – GObject Reference Manual (typo)
+
+	* gobject/tut_gobject.xml: Fix typo.
+
+2008-11-03 Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 552776 – ac_cv_func_posix_getgrgid_r not mentioned
+
+	* glib/cross.sgml: Mention ac_cv_func_posix_getgrgid_r.
+
+2008-10-29 16:04:38  Tim Janik  <timj@gtk.org>
+
+	* glib/tmpl/macros_misc.sgml: Clarified/added docs for
+	G_STRINGIFY, G_PASTE and G_STATIC_ASSERT, based on
+	patches from Christian Persch and  Christian Dywan.
+
+2008-10-21  Alexander Larsson  <alexl@redhat.com>
+
+        * gio/gio-sections.txt:
+	Update with new symbolse
+
+2008-10-16  Matthias Clasen <mclasen@redhat.com>
+
+	* === Released 2.19.0 ===
+
+	* gio/gio-sections.txt: Add new api
+
+	* gobject/gobject-docs.sgml: 
+	* gio/gio-docs.xml: Add new indexes
+
+2008-10-16  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/Makefile.am: Don't specify multiple directories in
+	DOC_SOURCE_DIR. It doesn't work.
+
 2008-09-26  Dan Winship  <danw@gnome.org>
 
 	* glib/tmpl/testing.sgml: Fix lots of typos, document
