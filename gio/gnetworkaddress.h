@@ -55,6 +55,8 @@ struct _GNetworkAddressClass
 
 GType                g_network_address_get_type       (void) G_GNUC_CONST;
 
+GNetworkAddress     *g_network_address_new            (const gchar      *hostname,
+						       guint16           port);
 const gchar         *g_network_address_get_hostname   (GNetworkAddress  *addr);
 const gchar         *g_network_address_get_ascii_name (GNetworkAddress  *addr);
 guint16              g_network_address_get_port       (GNetworkAddress  *addr);

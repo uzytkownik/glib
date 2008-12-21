@@ -83,24 +83,6 @@
  * ]|
  **/
 
-static GResolverError
-g_resolver_error_from_addrinfo_error (gint err)
-{
-  switch (err)
-    {
-    case EAI_FAIL:
-    case EAI_NODATA:
-    case EAI_NONAME:
-      return G_RESOLVER_ERROR_NOT_FOUND;
-
-    case EAI_AGAIN:
-      return G_RESOLVER_ERROR_TEMPORARY_FAILURE;
-
-    default:
-      return G_RESOLVER_ERROR_INTERNAL;
-    }
-}
-
 /**
  * GNetworkAddress:
  *
@@ -322,35 +304,6 @@ g_network_address_set_hostname (GNetworkAddress *addr,
     addr->priv->ascii_name = g_hostname_to_ascii (hostname);
 }
 
-/* A gio-internal method to set the hostname from a getnameinfo()
- * response.
- */
-gboolean
-g_network_address_set_from_nameinfo (GNetworkAddress  *addr,
-                                     const gchar      *name,
-                                     gint              gni_retval,
-                                     GError          **error)
-{
-  g_return_val_if_fail (G_IS_NETWORK_ADDRESS (addr), FALSE);
-  g_return_val_if_fail (addr->priv->sockaddrs != NULL, FALSE);
-
-  if (gni_retval != 0)
-    {
-      gchar *phys;
-
-      phys = g_inet_address_to_string (g_inet_socket_address_get_address (addr->priv->sockaddrs[0]));
-      g_set_error (error, G_RESOLVER_ERROR,
-                   g_resolver_error_from_addrinfo_error (gni_retval),
-                   _("Error reverse-resolving '%s': %s"),
-                   phys ? phys : "(unknown)", gai_strerror (gni_retval));
-      g_free (phys);
-      return FALSE;
-    }
-
-  g_network_address_set_hostname (addr, name);
-  return TRUE;
-}
-
 static void
 g_network_address_set_sockaddrs (GNetworkAddress     *addr,
                                  GInetSocketAddress **sockaddrs)
@@ -380,67 +333,25 @@ g_network_address_set_sockaddrs (GNetworkAddress     *addr,
     addr->priv->port = port;
 }
 
-/* Private method to prepare args to getaddrinfo() */
-void
-g_network_address_get_addrinfo_hints (GNetworkAddress *addr,
-                                      gchar            service[8],
-                                      struct addrinfo *hints)
+/**
+ * g_network_address_new:
+ * @hostname: the hostname
+ * @port: the port
+ *
+ * Creates a new #GNetworkAddress for connecting to the given
+ * @hostname and @port. The address will initially be unresolved;
+ * use its #GSocketConnectable interface to resolve it.
+ *
+ * Return value: the new #GNetworkAddress
+ **/
+GNetworkAddress *
+g_network_address_new (const gchar *hostname,
+                       guint16      port)
 {
-  g_snprintf (service, sizeof (service), "%u", addr->priv->port);
-  memset (hints, 0, sizeof (struct addrinfo));
-#ifdef AI_NUMERICSERV
-  hints->ai_flags = AI_NUMERICSERV;
-#endif
-#ifdef AI_ADDRCONFIG
-  hints->ai_flags |= AI_ADDRCONFIG;
-#endif
-  /* These two don't actually matter, they just get copied into the
-   * returned addrinfo structures (and then we ignore them). But if
-   * we leave them unset, we'll get back duplicate answers.
-   */
-  hints->ai_socktype = SOCK_STREAM;
-  hints->ai_protocol = IPPROTO_TCP;
-}
-
-/* A gio-internal method that sets sockaddrs from a getaddrinfo()
- * response.
- */
-gboolean
-g_network_address_set_from_addrinfo  (GNetworkAddress  *addr,
-                                      struct addrinfo  *res,
-                                      gint              gai_retval,
-                                      GError          **error)
-{
-  struct addrinfo *ai;
-  GInetSocketAddress **sockaddrs;
-  gint n;
-
-  g_return_val_if_fail (G_IS_NETWORK_ADDRESS (addr), FALSE);
-
-  if (gai_retval != 0)
-    {
-      g_set_error (error, G_RESOLVER_ERROR,
-		   g_resolver_error_from_addrinfo_error (gai_retval),
-		   _("Error resolving '%s': %s"),
-		   g_network_address_get_hostname (addr),
-                   gai_strerror (gai_retval));
-      return FALSE;
-    }
-
-  g_return_val_if_fail (res != NULL, FALSE);
-
-  for (ai = res, n = 0; ai; ai = ai->ai_next, n++)
-    ;
-  sockaddrs = alloca ((n + 1) * sizeof (GInetSocketAddress *));
-  for (ai = res, n = 0; ai; ai = ai->ai_next, n++)
-    sockaddrs[n] = (GInetSocketAddress *)g_socket_address_from_native (ai->ai_addr, ai->ai_addrlen);
-  sockaddrs[n] = NULL;
-
-  g_network_address_set_sockaddrs (addr, sockaddrs);
-  for (n = 0; sockaddrs[n]; n++)
-    g_object_unref (sockaddrs[n]);
-
-  return TRUE;
+  return g_object_new (G_TYPE_NETWORK_ADDRESS,
+                       "hostname", hostname,
+                       "port", port,
+                       NULL);
 }
 
 /**

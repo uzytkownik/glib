@@ -44,44 +44,44 @@ struct _GResolver {
 typedef struct {
   GObjectClass parent_class;
 
-  gboolean ( *lookup_name)           (GResolver           *resolver,
-				      GNetworkAddress     *address,
-				      GCancellable        *cancellable,
-				      GError             **error);
-  void     ( *lookup_name_async)     (GResolver           *resolver,
-				      GNetworkAddress     *address,
-				      GCancellable        *cancellable,
-				      GAsyncReadyCallback  callback,
-				      gpointer             user_data);
-  gboolean ( *lookup_name_finish)    (GResolver           *resolver,
-				      GAsyncResult        *result,
-				      GError             **error);
+  GInetAddress ** ( *lookup_by_name)           (GResolver            *resolver,
+						const gchar          *hostname,
+						GCancellable         *cancellable,
+						GError              **error);
+  void            ( *lookup_by_name_async)     (GResolver            *resolver,
+						const gchar          *hostname,
+						GCancellable         *cancellable,
+						GAsyncReadyCallback   callback,
+						gpointer              user_data);
+  GInetAddress ** ( *lookup_by_name_finish)    (GResolver            *resolver,
+						GAsyncResult         *result,
+						GError              **error);
 
-  gboolean ( *lookup_address)        (GResolver           *resolver,
-				      GNetworkAddress     *address,
-				      GCancellable        *cancellable,
-				      GError             **error);
-  void     ( *lookup_address_async)  (GResolver           *resolver,
-				      GNetworkAddress     *address,
-				      GCancellable        *cancellable,
-				      GAsyncReadyCallback  callback,
-				      gpointer             user_data);
-  gboolean ( *lookup_address_finish) (GResolver           *resolver,
-				      GAsyncResult        *result,
-				      GError             **error);
+  gchar *         ( *lookup_by_address)        (GResolver            *resolver,
+						GInetAddress         *address,
+						GCancellable         *cancellable,
+						GError              **error);
+  void            ( *lookup_by_address_async)  (GResolver            *resolver,
+						GInetAddress         *address,
+						GCancellable         *cancellable,
+						GAsyncReadyCallback   callback,
+						gpointer              user_data);
+  gchar *         ( *lookup_by_address_finish) (GResolver            *resolver,
+						GAsyncResult         *result,
+						GError              **error);
 
-  gboolean ( *lookup_service)        (GResolver           *resolver,
-				      GNetworkService     *srv,
-				      GCancellable        *cancellable,
-				      GError             **error);
-  void     ( *lookup_service_async)  (GResolver           *resolver,
-				      GNetworkService     *srv,
-				      GCancellable        *cancellable,
-				      GAsyncReadyCallback  callback,
-				      gpointer             user_data);
-  gboolean ( *lookup_service_finish) (GResolver           *resolver,
-				      GAsyncResult        *result,
-				      GError             **error);
+  GSrvTarget **   ( *lookup_service)           (GResolver            *resolver,
+						const gchar          *rrname,
+						GCancellable         *cancellable,
+						GError              **error);
+  void            ( *lookup_service_async)     (GResolver            *resolver,
+						const gchar          *rrname,
+						GCancellable         *cancellable,
+						GAsyncReadyCallback   callback,
+						gpointer              user_data);
+  GSrvTarget **   ( *lookup_service_finish)    (GResolver            *resolver,
+						GAsyncResult         *result,
+						GError              **error);
 
   /* Padding for future expansion */
   void (*_g_reserved1) (void);
@@ -89,57 +89,56 @@ typedef struct {
   void (*_g_reserved3) (void);
   void (*_g_reserved4) (void);
   void (*_g_reserved5) (void);
+  void (*_g_reserved6) (void);
 
 } GResolverClass;
 
-GType            g_resolver_get_type               (void) G_GNUC_CONST;
-GResolver       *g_resolver_get_default            (void);
-void             g_resolver_set_default            (GResolver           *resolver);
+GType          g_resolver_get_type                  (void) G_GNUC_CONST;
+GResolver     *g_resolver_get_default               (void);
+void           g_resolver_set_default               (GResolver            *resolver);
 
-GNetworkAddress *g_resolver_lookup_name            (GResolver           *resolver,
-						    const gchar         *hostname,
-						    guint16              port,
-						    GCancellable        *cancellable,
-						    GError             **error);
-void             g_resolver_lookup_name_async      (GResolver           *resolver,
-						    const gchar         *hostname,
-						    guint16              port,
-						    GCancellable        *cancellable,
-						    GAsyncReadyCallback  callback,
-						    gpointer             user_data);
-GNetworkAddress *g_resolver_lookup_name_finish     (GResolver           *resolver,
-						    GAsyncResult        *result,
-						    GError             **error);
+GInetAddress **g_resolver_lookup_by_name            (GResolver            *resolver,
+						     const gchar          *hostname,
+						     GCancellable         *cancellable,
+						     GError              **error);
+void           g_resolver_lookup_by_name_async      (GResolver            *resolver,
+						     const gchar          *hostname,
+						     GCancellable         *cancellable,
+						     GAsyncReadyCallback   callback,
+						     gpointer              user_data);
+GInetAddress **g_resolver_lookup_by_name_finish     (GResolver            *resolver,
+						     GAsyncResult         *result,
+						     GError              **error);
 
-GNetworkAddress *g_resolver_lookup_address         (GResolver           *resolver,
-						    GInetSocketAddress  *address,
-						    GCancellable        *cancellable,
-						    GError             **error);
-void             g_resolver_lookup_address_async   (GResolver           *resolver,
-						    GInetSocketAddress  *address,
-						    GCancellable        *cancellable,
-						    GAsyncReadyCallback  callback,
-						    gpointer             user_data);
-GNetworkAddress *g_resolver_lookup_address_finish  (GResolver           *resolver,
-						    GAsyncResult        *result,
-						    GError             **error);
+gchar         *g_resolver_lookup_by_address         (GResolver            *resolver,
+						     GInetAddress         *address,
+						     GCancellable         *cancellable,
+						     GError              **error);
+void           g_resolver_lookup_by_address_async   (GResolver            *resolver,
+						     GInetAddress         *address,
+						     GCancellable         *cancellable,
+						     GAsyncReadyCallback   callback,
+						     gpointer              user_data);
+gchar         *g_resolver_lookup_by_address_finish  (GResolver            *resolver,
+						     GAsyncResult         *result,
+						     GError              **error);
 
-GNetworkService *g_resolver_lookup_service         (GResolver           *resolver,
-						    const gchar         *service,
-						    const gchar         *protocol,
-						    const gchar         *domain,
-						    GCancellable        *cancellable,
-						    GError             **error);
-void             g_resolver_lookup_service_async   (GResolver           *resolver,
-						    const gchar         *service,
-						    const gchar         *protocol,
-						    const gchar         *domain,
-						    GCancellable        *cancellable,
-						    GAsyncReadyCallback  callback,
-						    gpointer             user_data);
-GNetworkService *g_resolver_lookup_service_finish  (GResolver           *resolver,
-						    GAsyncResult        *result,
-						    GError             **error);
+GSrvTarget   **g_resolver_lookup_service            (GResolver            *resolver,
+						     const gchar          *service,
+						     const gchar          *protocol,
+						     const gchar          *domain,
+						     GCancellable         *cancellable,
+						     GError              **error);
+void           g_resolver_lookup_service_async      (GResolver            *resolver,
+						     const gchar          *service,
+						     const gchar          *protocol,
+						     const gchar          *domain,
+						     GCancellable         *cancellable,
+						     GAsyncReadyCallback   callback,
+						     gpointer              user_data);
+GSrvTarget   **g_resolver_lookup_service_finish     (GResolver            *resolver,
+						     GAsyncResult         *result,
+						     GError              **error);
 
 /**
  * G_RESOLVER_ERROR:

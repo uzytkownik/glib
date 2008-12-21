@@ -98,9 +98,6 @@ struct _GSrvTarget {
   time_t   expires;
 };
 
-static void sort_targets (GSrvTarget **targets,
-                          gint         num_targets);
-
 /**
  * GNetworkService:
  *
@@ -188,7 +185,7 @@ g_network_service_class_init (GNetworkServiceClass *klass)
                                    g_param_spec_pointer ("targets",
                                                          P_("Targets"),
                                                          P_("Targets for this service, an array of GSrvTarget"),
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                         G_PARAM_READWRITE));
 }
 
 static void
@@ -199,8 +196,7 @@ g_network_service_init (GNetworkService *srv)
 }
 
 static void g_network_service_set_targets (GNetworkService  *srv,
-                                           GSrvTarget      **targets,
-                                           gboolean          take);
+                                           GSrvTarget      **targets);
 
 static void
 g_network_service_set_property (GObject      *object,
@@ -209,6 +205,8 @@ g_network_service_set_property (GObject      *object,
                                 GParamSpec   *pspec)
 {
   GNetworkService *srv = G_NETWORK_SERVICE (object);
+  GSrvTarget **targets;
+  gint n;
 
   switch (prop_id) 
     {
@@ -232,7 +230,19 @@ g_network_service_set_property (GObject      *object,
       if (!g_value_get_pointer (value))
         return;
 
-      g_network_service_set_targets (srv, g_value_get_pointer (value), FALSE);
+      if (srv->priv->targets)
+        {
+          for (n = 0; srv->priv->targets[n]; n++)
+            g_srv_target_free (srv->priv->targets[n]);
+          g_free (srv->priv->targets);
+        }
+
+      targets = g_value_get_pointer (value);
+      for (n = 0; targets[n]; n++)
+        ;
+      srv->priv->targets = g_new0 (GSrvTarget *, n + 1);
+      for (n = 0; targets[n]; n++)
+        srv->priv->targets[n] = g_srv_target_copy (targets[n]);
       break;
 
     default:
@@ -275,194 +285,29 @@ g_network_service_get_property (GObject    *object,
 
 }
 
-static void
-g_network_service_set_targets (GNetworkService  *srv,
-                               GSrvTarget      **targets,
-                               gboolean          take)
+/**
+ * g_network_service_new:
+ * @service: the service type to look up (eg, "ldap")
+ * @protocol: the networking protocol to use for @service (eg, "tcp")
+ * @domain: the DNS domain to look up the service in
+ *
+ * Creates a new #GNetworkService representing the given @service,
+ * @protocol, and @domain. This will initially be unresolved; use the
+ * #GSocketConnectable interface to resolve it.
+ *
+ * Return value: a new #GNetworkService
+ **/
+GNetworkService *
+g_network_service_new (const gchar *service,
+                       const gchar *protocol,
+                       const gchar *domain)
 {
-  gint n;
-
-  g_return_if_fail (G_IS_NETWORK_SERVICE (srv));
-  g_return_if_fail (srv->priv->targets == NULL);
-  g_return_if_fail (targets != NULL && targets[0] != NULL);
-
-  for (n = 1; targets[n]; n++)
-    ;
-
-  if (take)
-    srv->priv->targets = targets;
-  else
-    {
-      srv->priv->targets = g_new0 (GSrvTarget *, n + 1);
-
-      for (n = 0; targets[n]; n++)
-        srv->priv->targets[n] = g_srv_target_copy (targets[n]);
-    }
-
-  if (n == 1 && !strcmp (srv->priv->targets[0]->hostname, "."))
-    {
-      /* 'A Target of "." means that the service is decidedly not
-       * available at this domain.'
-       */
-      g_srv_target_free (srv->priv->targets[0]);
-      srv->priv->targets[0] = NULL;
-      return;
-    }
-
-  /* Sort by priority and weight */
-  sort_targets (srv->priv->targets, n);
+  return g_object_new (G_TYPE_NETWORK_SERVICE,
+                       "service", service,
+                       "protocol", protocol,
+                       "domain", domain,
+                       NULL);
 }
-
-#if defined(G_OS_UNIX)
-
-/* Internal method to set a service's targets from the results of a
- * res_query() call.
- */
-gboolean
-g_network_service_set_from_res_query (GNetworkService  *srv,
-                                      guchar           *answer,
-                                      gint              len,
-                                      gint              herr,
-                                      GError          **error)
-{
-  gint count;
-  gchar namebuf[1024];
-  guchar *end, *p;
-  guint16 type, qclass, rdlength, priority, weight, port;
-  guint32 ttl;
-  HEADER *header;
-  time_t now = time (NULL);
-  GSrvTarget *target;
-  GPtrArray *targets;
-
-  if (len < 0)
-    {
-      GResolverError errnum;
-      const gchar *format;
-
-      if (herr == HOST_NOT_FOUND || herr == NO_DATA)
-        {
-          errnum = G_RESOLVER_ERROR_NOT_FOUND;
-          format = _("No '%s' service for '%s'");
-        }
-      else if (herr == TRY_AGAIN)
-        {
-          errnum = G_RESOLVER_ERROR_TEMPORARY_FAILURE;
-          format = _("Temporarily unable to resolve '%s' service for '%s'");
-        }
-      else
-        {
-          errnum = G_RESOLVER_ERROR_INTERNAL;
-          format = _("Error resolving '%s' service for '%s'");
-        }
-
-      g_set_error (error, G_RESOLVER_ERROR, errnum, format,
-		   g_network_service_get_service (srv),
-		   g_network_service_get_domain (srv));
-      return FALSE;
-    }
-
-  targets = g_ptr_array_new ();
-
-  header = (HEADER *)answer;
-  p = answer + sizeof (HEADER);
-  end = answer + len;
-
-  /* Skip query */
-  count = ntohs (header->qdcount);
-  while (count-- && p < end)
-    {
-      p += dn_expand (answer, end, p, namebuf, sizeof (namebuf));
-      p += 4;
-    }
-
-  /* Read answers */
-  count = ntohs (header->ancount);
-  while (count-- && p < end)
-    {
-      p += dn_expand (answer, end, p, namebuf, sizeof (namebuf));
-      GETSHORT (type, p);
-      GETSHORT (qclass, p);
-      GETLONG  (ttl, p);
-      GETSHORT (rdlength, p);
-
-      if (type != T_SRV || qclass != C_IN)
-        {
-          p += rdlength;
-          continue;
-        }
-
-      GETSHORT (priority, p);
-      GETSHORT (weight, p);
-      GETSHORT (port, p);
-      p += dn_expand (answer, end, p, namebuf, sizeof (namebuf));
-
-      target = g_srv_target_new (namebuf, port, priority, weight, now + ttl);
-      g_ptr_array_add (targets, target);
-    }
-
-  g_ptr_array_add (targets, NULL);
-  g_network_service_set_targets (srv, (GSrvTarget **)targets->pdata, TRUE);
-  g_ptr_array_free (targets, FALSE);
-  return TRUE;
-}
-
-#elif defined(G_OS_WIN32)
-
-/* Internal method to set a service's targets from the results of a
- * DnsQuery() call.
- */
-gboolean
-g_network_service_set_from_DnsQuery (GNetworkService  *srv,
-                                     DNS_STATUS        status,
-                                     DNS_RECORD       *results,
-                                     GError          **error)
-{
-  DNS_RECORD *rec;
-  GSrvTarget *target;
-  GPtrArray *targets;
-  time_t now = time (NULL);
-
-  if (status != ERROR_SUCCESS)
-    {
-      GResolverError errnum;
-
-      if (status == DNS_ERROR_RCODE_NAME_ERROR)
-        errnum = G_RESOLVER_ERROR_NOT_FOUND;
-      else if (status == DNS_ERROR_RCODE_SERVER_FAILURE)
-        errnum = G_RESOLVER_ERROR_TEMPORARY_FAILURE;
-      else
-        errnum = G_RESOLVER_ERROR_INTERNAL;
-
-      g_set_error (error, G_RESOLVER_ERROR, errnum,
-		   errnum == G_RESOLVER_ERROR_NOT_FOUND ?
-                   _("No '%s' service for '%s'") :
-                   _("Error resolving '%s' service for '%s'"),
-		   g_network_service_get_service (srv),
-		   g_network_service_get_domain (srv));
-      return FALSE;
-    }
-
-  targets = g_ptr_array_new ();
-  for (rec = results; rec; rec = rec->pNext)
-    {
-      if (rec->wType != DNS_TYPE_SRV)
-        continue;
-
-      target = g_srv_target_new (rec->Data.SRV.pNameTarget,
-                                 rec->Data.SRV.wPort,
-                                 rec->Data.SRV.wPriority,
-                                 rec->Data.SRV.wWeight,
-                                 now + rec->dwTtl);
-      g_ptr_array_add (targets, target);
-    }
-  g_ptr_array_add (targets, NULL);
-  g_network_service_set_targets (srv, (GSrvTarget **)targets->pdata, TRUE);
-  g_ptr_array_free (targets, FALSE);
-  return TRUE;
-}
-
-#endif
 
 /**
  * g_network_service_get_service:
@@ -576,19 +421,6 @@ g_network_service_get_expires (GNetworkService *srv)
         expires = srv->priv->targets[i]->expires;
     }
   return expires;
-}
-
-/* Internal method that gets the resource record name to be looked up
- * in DNS for @srv.
- */
-gchar *
-g_network_service_get_rrname (GNetworkService *srv)
-{
-  g_return_val_if_fail (G_IS_NETWORK_SERVICE (srv), NULL);
-
-  return g_strdup_printf ("_%s._%s.%s",
-                          srv->priv->service, srv->priv->protocol,
-                          srv->priv->domain);
 }
 
 
@@ -773,12 +605,30 @@ compare_target (const void *a, const void *b)
     return ta->priority - tb->priority;
 }
 
-static void
-sort_targets (GSrvTarget **targets,
-              gint         num_targets)
+/**
+ * g_srv_target_array_sort:
+ * @targets: a %NULL-terminated array of #GSrvTarget
+ *
+ * Sorts @targets in place according to the algorithm in RFC 2782.
+ **/ 
+void
+g_srv_target_array_sort (GSrvTarget **targets)
 {
-  gint first, last, i, n, sum;
+  gint num_targets, first, last, i, n, sum;
   GSrvTarget *tmp;
+
+  for (num_targets = 0; targets[num_targets]; num_targets++)
+    ;
+
+  if (num_targets == 1 && !strcmp (targets[0]->hostname, "."))
+    {
+      /* 'A Target of "." means that the service is decidedly not
+       * available at this domain.'
+       */
+      g_srv_target_free (targets[0]);
+      targets[0] = NULL;
+      return;
+    }
 
   /* Sort by priority, and partly by weight */
   qsort (targets, num_targets, sizeof (GSrvTarget *), compare_target);

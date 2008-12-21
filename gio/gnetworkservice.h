@@ -55,6 +55,10 @@ struct _GNetworkServiceClass
 
 GType             g_network_service_get_type      (void) G_GNUC_CONST;
 
+GNetworkService  *g_network_service_new           (const gchar      *service,
+						   const gchar      *protocol,
+						   const gchar      *domain);
+
 const gchar      *g_network_service_get_service   (GNetworkService  *srv);
 const gchar      *g_network_service_get_protocol  (GNetworkService  *srv);
 const gchar      *g_network_service_get_domain    (GNetworkService  *srv);
@@ -76,6 +80,8 @@ const gchar      *g_srv_target_get_hostname       (GSrvTarget       *target);
 guint16           g_srv_target_get_port           (GSrvTarget       *target);
 guint16           g_srv_target_get_priority       (GSrvTarget       *target);
 guint16           g_srv_target_get_weight         (GSrvTarget       *target);
+
+void              g_srv_target_array_sort         (GSrvTarget      **targets);
 
 G_END_DECLS
 
