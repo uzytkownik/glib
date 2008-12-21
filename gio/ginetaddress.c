@@ -35,17 +35,10 @@
  * @short_description: Base class for IPv4/IPv6 addresses
  * @see_also: #GInet4Address, #GInet6Address
  *
- * #GInetAddress represents an IPv4 or IPv6 internet address. It derives from #GInitiallyUnowned,
- * so it is created with a floating reference. This means that one can do:
- *
- * |[
- * GInetSocketAddress *address = g_inet_socket_address_new (g_inet4_address_from_string ("192.168.0.1"), 5134);
- * ]|
- *
- * Here %address will take ownership of the new #GInet4Address.
+ * #GInetAddress represents an IPv4 or IPv6 internet address.
  **/
 
-G_DEFINE_ABSTRACT_TYPE (GInetAddress, g_inet_address, G_TYPE_INITIALLY_UNOWNED);
+G_DEFINE_ABSTRACT_TYPE (GInetAddress, g_inet_address, G_TYPE_OBJECT);
 
 enum
 {

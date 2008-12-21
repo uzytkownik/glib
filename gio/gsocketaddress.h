@@ -43,12 +43,12 @@ typedef struct _GSocketAddressClass   GSocketAddressClass;
 
 struct _GSocketAddress
 {
-  GInitiallyUnowned parent;
+  GObject parent;
 };
 
 struct _GSocketAddressClass
 {
-  GInitiallyUnownedClass parent_class;
+  GObjectClass parent_class;
 
   gssize (*native_size) (GSocketAddress *address);
 

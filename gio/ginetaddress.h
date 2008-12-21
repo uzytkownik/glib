@@ -43,12 +43,12 @@ typedef struct _GInetAddressClass   GInetAddressClass;
 
 struct _GInetAddress
 {
-  GInitiallyUnowned parent;
+  GObject parent;
 };
 
 struct _GInetAddressClass
 {
-  GInitiallyUnownedClass parent_class;
+  GObjectClass parent_class;
 
   gchar *        (*to_string) (GInetAddress *address);
   const guint8 * (*to_bytes)  (GInetAddress *address);

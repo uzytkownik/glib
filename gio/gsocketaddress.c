@@ -44,7 +44,7 @@
  * #GSocketAddress is the equivalent of %struct %sockaddr in the BSD sockets API.
  **/
 
-G_DEFINE_ABSTRACT_TYPE (GSocketAddress, g_socket_address, G_TYPE_INITIALLY_UNOWNED);
+G_DEFINE_ABSTRACT_TYPE (GSocketAddress, g_socket_address, G_TYPE_OBJECT);
 
 static void
 g_socket_address_class_init (GSocketAddressClass *klass)
