@@ -73,6 +73,7 @@
 #include <gio/gresolver.h>
 #include <gio/gseekable.h>
 #include <gio/gsimpleasyncresult.h>
+#include <gio/gsocket.h>
 #include <gio/gsocketaddress.h>
 #include <gio/gsocketconnectable.h>
 #include <gio/gstreamconnection.h>

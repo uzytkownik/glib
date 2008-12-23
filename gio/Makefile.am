@@ -230,6 +230,7 @@ libgio_2_0_la_SOURCES =		\
 	gresolverprivate.h	\
 	gseekable.c 		\
 	gsimpleasyncresult.c 	\
+	gsocket.c		\
 	gsocketaddress.c	\
 	gsocketconnectable.c	\
 	gstreamconnection.c	\
@@ -345,6 +346,7 @@ gio_headers =			\
 	gresolver.h		\
 	gseekable.h 		\
 	gsimpleasyncresult.h 	\
+	gsocket.h		\
 	gsocketaddress.h	\
 	gsocketconnectable.h	\
 	gstreamconnection.h	\
