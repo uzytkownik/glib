@@ -32,6 +32,7 @@
 #include <gio/gbufferedinputstream.h>
 #include <gio/gbufferedoutputstream.h>
 #include <gio/gcancellable.h>
+#include <gio/gconnection.h>
 #include <gio/gcontenttype.h>
 #include <gio/gdatainputstream.h>
 #include <gio/gdataoutputstream.h>
@@ -68,11 +69,13 @@
 #include <gio/gnetworkaddress.h>
 #include <gio/gnetworkservice.h>
 #include <gio/goutputstream.h>
+#include <gio/gpacketconnection.h>
 #include <gio/gresolver.h>
 #include <gio/gseekable.h>
 #include <gio/gsimpleasyncresult.h>
 #include <gio/gsocketaddress.h>
 #include <gio/gsocketconnectable.h>
+#include <gio/gstreamconnection.h>
 #include <gio/gthemedicon.h>
 #include <gio/gvfs.h>
 #include <gio/gvolume.h>

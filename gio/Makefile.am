@@ -178,6 +178,7 @@ libgio_2_0_la_SOURCES =		\
 	gbufferedinputstream.c 	\
 	gbufferedoutputstream.c \
 	gcancellable.c 		\
+	gconnection.h		\
 	gcontenttype.c 		\
 	gcontenttypeprivate.h 	\
 	gdatainputstream.c 	\
@@ -222,6 +223,7 @@ libgio_2_0_la_SOURCES =		\
 	gnetworkaddress.c	\
 	gnetworkservice.c	\
 	goutputstream.c 	\
+	gpacketconnection.c	\
 	gpollfilemonitor.c 	\
 	gpollfilemonitor.h 	\
 	gresolver.c		\
@@ -230,6 +232,7 @@ libgio_2_0_la_SOURCES =		\
 	gsimpleasyncresult.c 	\
 	gsocketaddress.c	\
 	gsocketconnectable.c	\
+	gstreamconnection.c	\
 	gthemedicon.c 		\
 	gthreadedresolver.c	\
 	gthreadedresolver.h	\
@@ -299,6 +302,7 @@ gio_headers =			\
 	gbufferedinputstream.h 	\
 	gbufferedoutputstream.h \
 	gcancellable.h 		\
+	gconnection.h		\
 	gcontenttype.h 		\
 	gdatainputstream.h 	\
 	gdataoutputstream.h 	\
@@ -337,11 +341,13 @@ gio_headers =			\
 	gnetworkaddress.h	\
 	gnetworkservice.h	\
 	goutputstream.h 	\
+	gpacketconnection.h	\
 	gresolver.h		\
 	gseekable.h 		\
 	gsimpleasyncresult.h 	\
 	gsocketaddress.h	\
 	gsocketconnectable.h	\
+	gstreamconnection.h	\
 	gthemedicon.h 		\
 	gvfs.h 			\
 	gvolume.h 		\
