@@ -49,8 +49,6 @@
 #include <gio/gfilterinputstream.h>
 #include <gio/gfilteroutputstream.h>
 #include <gio/gicon.h>
-#include <gio/ginet4address.h>
-#include <gio/ginet6address.h>
 #include <gio/ginetaddress.h>
 #include <gio/ginetsocketaddress.h>
 #include <gio/ginputstream.h>

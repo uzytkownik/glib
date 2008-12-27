@@ -40,10 +40,13 @@ G_BEGIN_DECLS
 #define G_INET_ADDRESS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), G_TYPE_INET_ADDRESS, GInetAddressClass))
 
 typedef struct _GInetAddressClass   GInetAddressClass;
+typedef struct _GInetAddressPrivate GInetAddressPrivate;
 
 struct _GInetAddress
 {
   GObject parent;
+
+  GInetAddressPrivate *priv;
 };
 
 struct _GInetAddressClass
@@ -54,33 +57,42 @@ struct _GInetAddressClass
   const guint8 * (*to_bytes)  (GInetAddress *address);
 };
 
-GType           g_inet_address_get_type         (void) G_GNUC_CONST;
+GType               g_inet_address_get_type         (void) G_GNUC_CONST;
 
-GInetAddress *  g_inet_address_from_string      (const gchar  *string);
+GInetAddress *      g_inet_address_from_string      (const gchar        *string);
 
-gchar *         g_inet_address_to_string        (GInetAddress *address);
+GInetAddress *      g_inet_address_from_bytes       (const guint8       *bytes,
+						     GInetAddressFamily  family);
 
-const guint8 *  g_inet_address_to_bytes         (GInetAddress *address);
+GInetAddress *      g_inet_address_new_loopback     (GInetAddressFamily  family);
 
-gboolean        g_inet_address_is_any           (GInetAddress *address);
+GInetAddress *      g_inet_address_new_any          (GInetAddressFamily  family);
 
-gboolean        g_inet_address_is_loopback      (GInetAddress *address);
+gchar *             g_inet_address_to_string        (GInetAddress       *address);
 
-gboolean        g_inet_address_is_link_local    (GInetAddress *address);
+const guint8 *      g_inet_address_to_bytes         (GInetAddress       *address);
 
-gboolean        g_inet_address_is_site_local    (GInetAddress *address);
+GInetAddressFamily  g_inet_address_get_family       (GInetAddress       *address);
 
-gboolean        g_inet_address_is_multicast     (GInetAddress *address);
+gboolean            g_inet_address_is_any           (GInetAddress       *address);
 
-gboolean        g_inet_address_is_mc_global     (GInetAddress *address);
+gboolean            g_inet_address_is_loopback      (GInetAddress       *address);
 
-gboolean        g_inet_address_is_mc_link_local (GInetAddress *address);
+gboolean            g_inet_address_is_link_local    (GInetAddress       *address);
 
-gboolean        g_inet_address_is_mc_node_local (GInetAddress *address);
+gboolean            g_inet_address_is_site_local    (GInetAddress       *address);
 
-gboolean        g_inet_address_is_mc_org_local  (GInetAddress *address);
+gboolean            g_inet_address_is_multicast     (GInetAddress       *address);
 
-gboolean        g_inet_address_is_mc_site_local (GInetAddress *address);
+gboolean            g_inet_address_is_mc_global     (GInetAddress       *address);
+
+gboolean            g_inet_address_is_mc_link_local (GInetAddress       *address);
+
+gboolean            g_inet_address_is_mc_node_local (GInetAddress       *address);
+
+gboolean            g_inet_address_is_mc_org_local  (GInetAddress       *address);
+
+gboolean            g_inet_address_is_mc_site_local (GInetAddress       *address);
 
 G_END_DECLS
 

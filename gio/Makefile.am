@@ -202,8 +202,6 @@ libgio_2_0_la_SOURCES =		\
 	gfilterinputstream.c 	\
 	gfilteroutputstream.c 	\
 	gicon.c 		\
-	ginet4address.c		\
-	ginet6address.c		\
 	ginetaddress.c		\
 	ginetsocketaddress.c	\
 	ginputstream.c 		\
@@ -318,8 +316,6 @@ gio_headers =			\
 	gfilterinputstream.h 	\
 	gfilteroutputstream.h 	\
 	gicon.h 		\
-	ginet4address.h		\
-	ginet6address.h		\
 	ginetaddress.h		\
 	ginetsocketaddress.h	\
 	ginputstream.h 		\

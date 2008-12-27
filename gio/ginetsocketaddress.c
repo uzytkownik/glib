@@ -27,8 +27,6 @@
 
 #include "ginetsocketaddress.h"
 #include "ginetaddress.h"
-#include "ginet4address.h"
-#include "ginet6address.h"
 #include "gresolverprivate.h"
 
 #include "gioalias.h"
@@ -122,14 +120,16 @@ static gssize
 g_inet_socket_address_native_size (GSocketAddress *address)
 {
   GInetSocketAddress *addr;
+  GInetAddressFamily family;
 
   g_return_val_if_fail (G_IS_INET_SOCKET_ADDRESS (address), 0);
 
   addr = G_INET_SOCKET_ADDRESS (address);
+  family = g_inet_address_get_family (addr->priv->address);
 
-  if (G_IS_INET4_ADDRESS (addr->priv->address))
+  if (family == AF_INET)
     return sizeof (struct sockaddr_in);
-  else if (G_IS_INET6_ADDRESS (addr->priv->address))
+  else if (family == AF_INET6)
     return sizeof (struct sockaddr_in6);
   else
     return -1;
@@ -140,12 +140,14 @@ g_inet_socket_address_to_native (GSocketAddress *address,
                                  gpointer        dest)
 {
   GInetSocketAddress *addr;
+  GInetAddressFamily family;
 
   g_return_val_if_fail (G_IS_INET_SOCKET_ADDRESS (address), 0);
 
   addr = G_INET_SOCKET_ADDRESS (address);
+  family = g_inet_address_get_family (addr->priv->address);
 
-  if (G_IS_INET4_ADDRESS (addr->priv->address))
+  if (family == AF_INET)
     {
       struct sockaddr_in *sock = (struct sockaddr_in *) dest;
 
@@ -155,7 +157,7 @@ g_inet_socket_address_to_native (GSocketAddress *address,
       memset (sock->sin_zero, 0, sizeof (sock->sin_zero));
       return TRUE;
     }
-  else if (G_IS_INET6_ADDRESS (addr->priv->address))
+  else if (family == AF_INET6)
     {
       struct sockaddr_in6 *sock = (struct sockaddr_in6 *) dest;
       memset (sock, 0, sizeof (sock));

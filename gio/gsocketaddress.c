@@ -25,9 +25,8 @@
 #include <glib.h>
 
 #include "gsocketaddress.h"
+#include "ginetaddress.h"
 #include "ginetsocketaddress.h"
-#include "ginet4address.h"
-#include "ginet6address.h"
 #include "gresolverprivate.h"
 #include "gsocketaddressenumerator.h"
 #include "gsocketconnectable.h"
@@ -127,15 +126,23 @@ g_socket_address_from_native (gpointer native, gsize len)
   if (family == AF_INET)
     {
       struct sockaddr_in *addr = (struct sockaddr_in *) native;
+      GInetAddress *iaddr = g_inet_address_from_bytes ((guint8 *) &(addr->sin_addr), AF_INET);
+      GInetSocketAddress *isa;
 
-      return G_SOCKET_ADDRESS (g_inet_socket_address_new (g_inet4_address_from_bytes ((guint8 *) &(addr->sin_addr)), g_ntohs (addr->sin_port)));
+      isa = g_inet_socket_address_new (iaddr, g_ntohs (addr->sin_port));
+      g_object_unref (iaddr);
+      return G_SOCKET_ADDRESS (isa);
     }
 
   if (family == AF_INET6)
     {
       struct sockaddr_in6 *addr = (struct sockaddr_in6 *) native;
+      GInetAddress *iaddr = g_inet_address_from_bytes ((guint8 *) &(addr->sin6_addr), AF_INET6);
+      GInetSocketAddress *isa;
 
-      return G_SOCKET_ADDRESS (g_inet_socket_address_new (g_inet6_address_from_bytes ((guint8 *) &(addr->sin6_addr)), g_ntohs (addr->sin6_port)));
+      isa = g_inet_socket_address_new (iaddr, g_ntohs (addr->sin6_port));
+      g_object_unref (iaddr);
+      return G_SOCKET_ADDRESS (isa);
     }
 
 #ifdef G_OS_UNIX
