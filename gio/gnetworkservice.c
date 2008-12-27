@@ -772,7 +772,7 @@ g_network_service_address_enumerator_get_next (GSocketAddressEnumerator  *enumer
   GNetworkServiceAddressEnumerator *srv_enum =
     G_NETWORK_SERVICE_ADDRESS_ENUMERATOR (enumerator);
   GSrvTarget *target;
-  GInetSocketAddress *isa;
+  GSocketAddress *sockaddr;
 
   /* If we haven't yet resolved srv, do that */
   if (!srv_enum->srv->priv->targets)
@@ -848,8 +848,8 @@ g_network_service_address_enumerator_get_next (GSocketAddressEnumerator  *enumer
   /* Return the next address for this target. If it's the last one,
    * advance the target counter.
    */
-  isa = g_inet_socket_address_new (srv_enum->addrs[srv_enum->a],
-                                   target->port);
+  sockaddr = g_inet_socket_address_new (srv_enum->addrs[srv_enum->a],
+                                        target->port);
 
   if (!srv_enum->addrs[++srv_enum->a])
     {
@@ -858,7 +858,7 @@ g_network_service_address_enumerator_get_next (GSocketAddressEnumerator  *enumer
       srv_enum->t++;
     }
 
-  return (GSocketAddress *)isa;
+  return sockaddr;
 }
 
 static void get_next_async_resolved_targets   (GObject                          *source_object,
@@ -1018,7 +1018,7 @@ get_next_async_resolved_addresses (GObject      *source_object,
 static void
 get_next_async_have_addresses (GNetworkServiceAddressEnumerator *srv_enum)
 {
-  GInetSocketAddress *isa;
+  GSocketAddress *sockaddr;
   GSimpleAsyncResult *simple = srv_enum->result;
 
   g_return_if_fail (srv_enum->addrs[srv_enum->a] != NULL);
@@ -1026,8 +1026,8 @@ get_next_async_have_addresses (GNetworkServiceAddressEnumerator *srv_enum)
   /* Return the next address for this target. If it's the last one,
    * advance the target counter.
    */
-  isa = g_inet_socket_address_new (srv_enum->addrs[srv_enum->a],
-                                   srv_enum->srv->priv->targets[srv_enum->t]->port);
+  sockaddr = g_inet_socket_address_new (srv_enum->addrs[srv_enum->a],
+                                        srv_enum->srv->priv->targets[srv_enum->t]->port);
 
   if (!srv_enum->addrs[++srv_enum->a])
     {
@@ -1037,7 +1037,7 @@ get_next_async_have_addresses (GNetworkServiceAddressEnumerator *srv_enum)
     }
 
   srv_enum->result = NULL;
-  g_simple_async_result_set_op_res_gpointer (simple, isa, NULL);
+  g_simple_async_result_set_op_res_gpointer (simple, sockaddr, NULL);
   g_simple_async_result_complete_in_idle (simple);
   g_object_unref (simple);
 }

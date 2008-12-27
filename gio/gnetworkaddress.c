@@ -361,8 +361,8 @@ g_network_address_set_addresses (GNetworkAddress  *addr,
 
   for (n = 0; addresses[n]; n++)
     {
-      addr->priv->sockaddrs[n] = g_inet_socket_address_new (addresses[n],
-                                                            addr->priv->port);
+      addr->priv->sockaddrs[n] = (GInetSocketAddress *)
+        g_inet_socket_address_new (addresses[n], addr->priv->port);
     }
 }
 

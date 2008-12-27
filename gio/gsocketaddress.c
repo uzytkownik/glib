@@ -133,22 +133,22 @@ g_socket_address_from_native (gpointer native,
     {
       struct sockaddr_in *addr = (struct sockaddr_in *) native;
       GInetAddress *iaddr = g_inet_address_from_bytes ((guint8 *) &(addr->sin_addr), AF_INET);
-      GInetSocketAddress *isa;
+      GSocketAddress *sockaddr;
 
-      isa = g_inet_socket_address_new (iaddr, g_ntohs (addr->sin_port));
+      sockaddr = g_inet_socket_address_new (iaddr, g_ntohs (addr->sin_port));
       g_object_unref (iaddr);
-      return G_SOCKET_ADDRESS (isa);
+      return sockaddr;
     }
 
   if (family == AF_INET6)
     {
       struct sockaddr_in6 *addr = (struct sockaddr_in6 *) native;
       GInetAddress *iaddr = g_inet_address_from_bytes ((guint8 *) &(addr->sin6_addr), AF_INET6);
-      GInetSocketAddress *isa;
+      GSocketAddress *sockaddr;
 
-      isa = g_inet_socket_address_new (iaddr, g_ntohs (addr->sin6_port));
+      sockaddr = g_inet_socket_address_new (iaddr, g_ntohs (addr->sin6_port));
       g_object_unref (iaddr);
-      return G_SOCKET_ADDRESS (isa);
+      return sockaddr;
     }
 
 #ifdef G_OS_UNIX

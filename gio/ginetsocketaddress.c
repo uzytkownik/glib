@@ -227,13 +227,16 @@ g_inet_socket_address_init (GInetSocketAddress *address)
  * @address: a #GInetAddress
  * @port: a port number
  *
- * Returns: a new #GInetSocketAddress with a floating reference
+ * Returns: a new #GInetSocketAddress
  */
-GInetSocketAddress *
+GSocketAddress *
 g_inet_socket_address_new (GInetAddress *address,
                            guint16       port)
 {
-  return G_INET_SOCKET_ADDRESS (g_object_new (G_TYPE_INET_SOCKET_ADDRESS, "address", address, "port", port, NULL));
+  return g_object_new (G_TYPE_INET_SOCKET_ADDRESS,
+		       "address", address,
+		       "port", port,
+		       NULL);
 }
 
 /**

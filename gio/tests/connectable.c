@@ -200,7 +200,7 @@ main (int argc, char **argv)
       if (g_hostname_is_ip_address (arg))
 	{
 	  GInetAddress *addr = g_inet_address_from_string (arg);
-	  GInetSocketAddress *sockaddr = g_inet_socket_address_new (addr, port);
+	  GSocketAddress *sockaddr = g_inet_socket_address_new (addr, port);
 
 	  g_object_unref (addr);
 	  connectable = G_SOCKET_CONNECTABLE (sockaddr);

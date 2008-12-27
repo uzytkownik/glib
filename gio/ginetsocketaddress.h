@@ -54,14 +54,14 @@ struct _GInetSocketAddressClass
   GSocketAddressClass parent_class;
 };
 
-GType               g_inet_socket_address_get_type    (void) G_GNUC_CONST;
+GType           g_inet_socket_address_get_type    (void) G_GNUC_CONST;
 
-GInetSocketAddress *g_inet_socket_address_new         (GInetAddress       *address,
-                                                       guint16             port);
+GSocketAddress *g_inet_socket_address_new         (GInetAddress       *address,
+						   guint16             port);
 
-GInetAddress *      g_inet_socket_address_get_address (GInetSocketAddress *address);
+GInetAddress *  g_inet_socket_address_get_address (GInetSocketAddress *address);
 
-guint16             g_inet_socket_address_get_port    (GInetSocketAddress *address);
+guint16         g_inet_socket_address_get_port    (GInetSocketAddress *address);
 
 G_END_DECLS
 
