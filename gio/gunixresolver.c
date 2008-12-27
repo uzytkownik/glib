@@ -264,7 +264,7 @@ lookup_by_name_async (GResolver           *resolver,
   _g_asyncns_query_t *qy;
 
   qy = _g_asyncns_getaddrinfo (gur->asyncns, hostname, NULL,
-                               &g_resolver_addrinfo_hints);
+                               &_g_resolver_addrinfo_hints);
   req = resolve_async (gur, qy, cancellable,
                        callback, user_data, lookup_by_name_async);
   req->u.hostname = g_strdup (hostname);
@@ -293,7 +293,7 @@ lookup_by_name_finish (GResolver     *resolver,
 
   req = g_simple_async_result_get_op_res_gpointer (simple);
   retval = _g_asyncns_getaddrinfo_done (req->gur->asyncns, req->qy, &res);
-  addresses = g_resolver_addresses_from_addrinfo (req->u.hostname, res, retval, error);
+  addresses = _g_resolver_addresses_from_addrinfo (req->u.hostname, res, retval, error);
   g_free (req->u.hostname);
   if (res)
     freeaddrinfo (res);
@@ -315,7 +315,7 @@ lookup_by_address_async (GResolver           *resolver,
   struct sockaddr_storage sockaddr;
   gsize sockaddr_size;
 
-  g_resolver_address_to_sockaddr (address, &sockaddr, &sockaddr_size);
+  _g_resolver_address_to_sockaddr (address, &sockaddr, &sockaddr_size);
   qy = _g_asyncns_getnameinfo (gur->asyncns,
                                (struct sockaddr *)&sockaddr, sockaddr_size,
                                NI_NAMEREQD, TRUE, FALSE);
@@ -347,7 +347,7 @@ lookup_by_address_finish (GResolver     *resolver,
   req = g_simple_async_result_get_op_res_gpointer (simple);
   retval = _g_asyncns_getnameinfo_done (req->gur->asyncns, req->qy,
                                         host, sizeof (host), NULL, 0);
-  name = g_resolver_name_from_nameinfo (req->u.address, host, retval, error);
+  name = _g_resolver_name_from_nameinfo (req->u.address, host, retval, error);
   g_object_unref (req->u.address);
 
   return name;
@@ -399,7 +399,7 @@ lookup_service_finish (GResolver     *resolver,
   else
     herr = 0;
 
-  targets = g_resolver_targets_from_res_query (req->u.service, answer, len, herr, error);
+  targets = _g_resolver_targets_from_res_query (req->u.service, answer, len, herr, error);
   _g_asyncns_freeanswer (answer);
 
   g_free (req->u.service);

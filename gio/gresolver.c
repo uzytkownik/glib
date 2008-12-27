@@ -60,7 +60,7 @@ G_DEFINE_TYPE (GResolver, g_resolver, G_TYPE_OBJECT)
 static void
 g_resolver_class_init (GResolverClass *resolver_class)
 {
-  g_resolver_os_init ();
+  _g_resolver_os_init ();
 }
 
 static void
@@ -70,7 +70,7 @@ g_resolver_init (GResolver *resolver)
 }
 
 void
-g_resolver_os_init (void)
+_g_resolver_os_init (void)
 {
 #ifdef G_OS_WIN32
   WSADATA wsadata;
@@ -80,14 +80,14 @@ g_resolver_os_init (void)
 #endif
 
 #ifdef AI_ADDRCONFIG
-  g_resolver_addrinfo_hints.ai_flags |= AI_ADDRCONFIG;
+  _g_resolver_addrinfo_hints.ai_flags |= AI_ADDRCONFIG;
 #endif
   /* These two don't actually matter, they just get copied into the
    * returned addrinfo structures (and then we ignore them). But if
    * we leave them unset, we'll get back duplicate answers.
    */
-  g_resolver_addrinfo_hints.ai_socktype = SOCK_STREAM;
-  g_resolver_addrinfo_hints.ai_protocol = IPPROTO_TCP;
+  _g_resolver_addrinfo_hints.ai_socktype = SOCK_STREAM;
+  _g_resolver_addrinfo_hints.ai_protocol = IPPROTO_TCP;
 }
 
 static GResolver *default_resolver;
@@ -611,14 +611,14 @@ g_resolver_error_from_addrinfo_error (gint err)
     }
 }
 
-struct addrinfo g_resolver_addrinfo_hints;
+struct addrinfo _g_resolver_addrinfo_hints;
 
 /* Private method to process a getaddrinfo() response. */
 GInetAddress **
-g_resolver_addresses_from_addrinfo (const char       *hostname,
-                                    struct addrinfo  *res,
-                                    gint              gai_retval,
-                                    GError          **error)
+_g_resolver_addresses_from_addrinfo (const char       *hostname,
+                                     struct addrinfo  *res,
+                                     gint              gai_retval,
+                                     GError          **error)
 {
   struct addrinfo *ai;
   GInetAddress **addrs;
@@ -656,9 +656,9 @@ g_resolver_addresses_from_addrinfo (const char       *hostname,
 
 /* Private method to set up a getnameinfo() request */
 void
-g_resolver_address_to_sockaddr (GInetAddress            *address,
-                                struct sockaddr_storage *sa,
-                                gsize                   *sa_len)
+_g_resolver_address_to_sockaddr (GInetAddress            *address,
+                                 struct sockaddr_storage *sa,
+                                 gsize                   *sa_len)
 {
   GSocketAddress *isa;
 
@@ -670,10 +670,10 @@ g_resolver_address_to_sockaddr (GInetAddress            *address,
 
 /* Private method to process a getnameinfo() response. */
 char *
-g_resolver_name_from_nameinfo (GInetAddress  *address,
-                               const gchar   *name,
-                               gint           gni_retval,
-                               GError       **error)
+_g_resolver_name_from_nameinfo (GInetAddress  *address,
+                                const gchar   *name,
+                                gint           gni_retval,
+                                GError       **error)
 {
   if (gni_retval != 0)
     {
@@ -694,11 +694,11 @@ g_resolver_name_from_nameinfo (GInetAddress  *address,
 #if defined(G_OS_UNIX)
 /* Private method to process a res_query response into GSrvTargets */
 GSrvTarget **
-g_resolver_targets_from_res_query (const gchar      *rrname,
-                                   guchar           *answer,
-                                   gint              len,
-                                   gint              herr,
-                                   GError          **error)
+_g_resolver_targets_from_res_query (const gchar      *rrname,
+                                    guchar           *answer,
+                                    gint              len,
+                                    gint              herr,
+                                    GError          **error)
 {
   gint count;
   gchar namebuf[1024];
@@ -783,10 +783,10 @@ g_resolver_targets_from_res_query (const gchar      *rrname,
 #elif defined(G_OS_WIN32)
 /* Private method to process a DnsQuery response into GSrvTargets */
 GSrvTarget **
-g_resolver_targets_from_DnsQuery (const gchar  *rrname,
-                                  DNS_STATUS    status,
-                                  DNS_RECORD   *results,
-                                  GError      **error)
+_g_resolver_targets_from_DnsQuery (const gchar  *rrname,
+                                   DNS_STATUS    status,
+                                   DNS_RECORD   *results,
+                                   GError      **error)
 {
   DNS_RECORD *rec;
   GSrvTarget *target, **ret;

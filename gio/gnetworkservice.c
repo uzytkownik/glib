@@ -723,7 +723,7 @@ g_srv_target_array_sort (GSrvTarget **targets)
     }
 }
 
-#define G_TYPE_NETWORK_SERVICE_ADDRESS_ENUMERATOR (g_network_service_address_enumerator_get_type ())
+#define G_TYPE_NETWORK_SERVICE_ADDRESS_ENUMERATOR (_g_network_service_address_enumerator_get_type ())
 #define G_NETWORK_SERVICE_ADDRESS_ENUMERATOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), G_TYPE_NETWORK_SERVICE_ADDRESS_ENUMERATOR, GNetworkServiceAddressEnumerator))
 
 typedef struct {
@@ -746,7 +746,7 @@ typedef struct {
 
 } GNetworkServiceAddressEnumeratorClass;
 
-G_DEFINE_TYPE (GNetworkServiceAddressEnumerator, g_network_service_address_enumerator, G_TYPE_SOCKET_ADDRESS_ENUMERATOR)
+G_DEFINE_TYPE (GNetworkServiceAddressEnumerator, _g_network_service_address_enumerator, G_TYPE_SOCKET_ADDRESS_ENUMERATOR)
 
 static void
 g_network_service_address_enumerator_finalize (GObject *object)
@@ -761,7 +761,7 @@ g_network_service_address_enumerator_finalize (GObject *object)
   if (srv_enum->error)
     g_error_free (srv_enum->error);
 
-  G_OBJECT_CLASS (g_network_service_address_enumerator_parent_class)->finalize (object);
+  G_OBJECT_CLASS (_g_network_service_address_enumerator_parent_class)->finalize (object);
 }
 
 static GSocketAddress *
@@ -1042,7 +1042,7 @@ get_next_async_have_addresses (GNetworkServiceAddressEnumerator *srv_enum)
   g_object_unref (simple);
 }
 
-GSocketAddress *
+static GSocketAddress *
 g_network_service_address_enumerator_get_next_finish (GSocketAddressEnumerator  *enumerator,
                                                       GAsyncResult              *result,
                                                       GError                   **error)
@@ -1054,12 +1054,12 @@ g_network_service_address_enumerator_get_next_finish (GSocketAddressEnumerator  
 }
 
 static void
-g_network_service_address_enumerator_init (GNetworkServiceAddressEnumerator *enumerator)
+_g_network_service_address_enumerator_init (GNetworkServiceAddressEnumerator *enumerator)
 {
 }
 
 static void
-g_network_service_address_enumerator_class_init (GNetworkServiceAddressEnumeratorClass *addrenum_class)
+_g_network_service_address_enumerator_class_init (GNetworkServiceAddressEnumeratorClass *addrenum_class)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (addrenum_class);
   GSocketAddressEnumeratorClass *enumerator_class =

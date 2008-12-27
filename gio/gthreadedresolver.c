@@ -367,9 +367,9 @@ do_lookup_by_name (GThreadedResolverRequest  *req,
   gint retval;
 
   retval = getaddrinfo (req->u.name.hostname, NULL,
-                        &g_resolver_addrinfo_hints, &res);
+                        &_g_resolver_addrinfo_hints, &res);
   req->u.name.addresses =
-    g_resolver_addresses_from_addrinfo (req->u.name.hostname, res, retval, error);
+    _g_resolver_addresses_from_addrinfo (req->u.name.hostname, res, retval, error);
   if (res)
     freeaddrinfo (res);
 }
@@ -433,13 +433,13 @@ do_lookup_by_address (GThreadedResolverRequest  *req,
   gchar name[NI_MAXHOST];
   gint retval;
 
-  g_resolver_address_to_sockaddr (req->u.address.address,
-                                  &sockaddr, &sockaddr_size);
+  _g_resolver_address_to_sockaddr (req->u.address.address,
+                                   &sockaddr, &sockaddr_size);
 
   retval = getnameinfo ((struct sockaddr *)&sockaddr, sockaddr_size,
                         name, sizeof (name), NULL, 0, NI_NAMEREQD);
-  req->u.address.name = g_resolver_name_from_nameinfo (req->u.address.address,
-                                                       name, retval, error);
+  req->u.address.name = _g_resolver_name_from_nameinfo (req->u.address.address,
+                                                        name, retval, error);
 }
 
 static gchar *
@@ -507,11 +507,11 @@ do_lookup_service (GThreadedResolverRequest *req,
 #if defined(G_OS_UNIX)
   len = res_query (req->u.service.rrname, C_IN, T_SRV, answer, sizeof (answer));
   herr = h_errno;
-  req->u.service.targets = g_resolver_targets_from_res_query (req->u.service.rrname, answer, len, herr, error);
+  req->u.service.targets = _g_resolver_targets_from_res_query (req->u.service.rrname, answer, len, herr, error);
 #elif defined(G_OS_WIN32)
   status = DnsQuery_A (req->u.service.rrname, DNS_TYPE_SRV,
                        DNS_QUERY_STANDARD, NULL, &results, NULL);
-  req->u.service.targets = g_resolver_targets_from_DnsQuery (req->u.service.rrname, status, results, error);
+  req->u.service.targets = _g_resolver_targets_from_DnsQuery (req->u.service.rrname, status, results, error);
   DnsRecordListFree (results, DnsFreeRecordList);
 #endif
 }

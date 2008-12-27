@@ -239,7 +239,7 @@ lookup_by_name_in_thread (LPVOID data)
   GWin32ResolverRequest *req = data;
 
   req->u.name.retval = getaddrinfo (req->u.name.name, NULL,
-                                    &g_resolver_addrinfo_hints,
+                                    &_g_resolver_addrinfo_hints,
                                     &req->u.name.res);
   SetEvent (req->event);
   return 0;
@@ -286,8 +286,8 @@ lookup_by_name_finish (GResolver     *resolver,
     return FALSE;
 
   req = g_simple_async_result_get_op_res_gpointer (simple);
-  return g_resolver_addresses_from_addrinfo (req->u.name.name, req->u.name.res,
-                                             req->u.name.retval, error);
+  return _g_resolver_addresses_from_addrinfo (req->u.name.name, req->u.name.res,
+                                              req->u.name.retval, error);
 }
 
 
@@ -325,8 +325,8 @@ lookup_by_address_async (GResolver           *resolver,
                                       lookup_by_address_async);
 
   req->u.address.iaddr = g_object_ref (address);
-  g_resolver_address_to_sockaddr (address, &req->u.address.addr,
-                                  &req->u.address.addrlen);
+  _g_resolver_address_to_sockaddr (address, &req->u.address.addr,
+                                   &req->u.address.addrlen);
   req->u.address.namebuf = g_malloc (NI_MAXHOST);
 
   QueueUserWorkItem (lookup_by_addresses_in_thread, req, 0);
@@ -348,9 +348,9 @@ lookup_by_address_finish (GResolver     *resolver,
     return FALSE;
 
   req = g_simple_async_result_get_op_res_gpointer (simple);
-  return g_resolver_name_from_nameinfo (req->u.address.iaddr,
-                                        req->u.address.namebuf,
-                                        req->u.address.retval, error);
+  return _g_resolver_name_from_nameinfo (req->u.address.iaddr,
+                                         req->u.address.namebuf,
+                                         req->u.address.retval, error);
 }
 
 
@@ -407,9 +407,9 @@ lookup_service_finish (GResolver     *resolver,
     return FALSE;
 
   req = g_simple_async_result_get_op_res_gpointer (simple);
-  return g_resolver_targets_from_DnsQuery (req->u.service.rrname,
-                                           req->u.service.retval,
-                                           req->u.service.results, error);
+  return _g_resolver_targets_from_DnsQuery (req->u.service.rrname,
+                                            req->u.service.retval,
+                                            req->u.service.results, error);
 }
 
 

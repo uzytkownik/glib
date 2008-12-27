@@ -816,6 +816,7 @@ g_output_stream_splice_flags_get_type G_GNUC_CONST
 g_ask_password_flags_get_type G_GNUC_CONST
 g_password_save_get_type G_GNUC_CONST
 g_emblem_origin_get_type G_GNUC_CONST
+g_resolver_error_get_type G_GNUC_CONST
 #endif
 #endif
 
@@ -854,6 +855,31 @@ g_resolver_lookup_by_address_finish
 g_resolver_lookup_service
 g_resolver_lookup_service_async
 g_resolver_lookup_service_finish
+g_resolver_free_addresses
+g_resolver_free_targets
+g_resolver_error_quark
+#endif
+#endif
+
+#if IN_HEADER(__G_THREADED_RESOLVER_H__)
+#if IN_FILE(__G_THREADED_RESOLVER_C__)
+g_threaded_resolver_get_type G_GNUC_CONST
+#endif
+#endif
+
+#if IN_HEADER(__G_UNIX_RESOLVER_H__)
+#if IN_FILE(__G_UNIX_RESOLVER_C__)
+#ifdef G_OS_UNIX
+g_unix_resolver_get_type G_GNUC_CONST
+#endif
+#endif
+#endif
+
+#if IN_HEADER(__G_WIN32_RESOLVER_H__)
+#if IN_FILE(__G_WIN32_RESOLVER_C__)
+#ifdef G_OS_WIN32
+g_win32_resolver_get_type G_GNUC_CONST
+#endif
 #endif
 #endif
 
@@ -864,6 +890,7 @@ g_network_address_get_hostname
 g_network_address_get_ascii_name
 g_network_address_get_port
 g_network_address_get_sockaddrs
+g_network_address_new
 #endif
 #endif
 
@@ -875,6 +902,7 @@ g_network_service_get_protocol
 g_network_service_get_domain
 g_network_service_get_targets
 g_network_service_get_expires
+g_network_service_new
 g_srv_target_get_type G_GNUC_CONST
 g_srv_target_new
 g_srv_target_copy
@@ -883,6 +911,7 @@ g_srv_target_get_hostname
 g_srv_target_get_port
 g_srv_target_get_priority
 g_srv_target_get_weight
+g_srv_target_array_sort
 #endif
 #endif
 
@@ -956,5 +985,14 @@ g_socket_address_to_native
 #if IN_FILE(__G_SOCKET_CONNECTABLE_C__)
 g_socket_connectable_get_enumerator
 g_socket_connectable_get_type G_GNUC_CONST
+#endif
+#endif
+
+#if IN_HEADER(__G_SOCKET_ADDRESS_ENUMERATOR_H__)
+#if IN_FILE(__G_SOCKET_ADDRESS_ENUMERATOR_C__)
+g_socket_address_enumerator_get_next
+g_socket_address_enumerator_get_next_async
+g_socket_address_enumerator_get_next_finish
+g_socket_address_enumerator_get_type G_GNUC_CONST
 #endif
 #endif
