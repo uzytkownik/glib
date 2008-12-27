@@ -186,7 +186,8 @@ g_threaded_resolver_request_new (GThreadedResolverResolveFunc  resolve_func,
   /* Initial refcount is 2; one for the caller and one for resolve_func */
   req->ref_count = 2;
 
-  req->mutex = g_mutex_new ();
+  if (g_thread_supported ())
+    req->mutex = g_mutex_new ();
   /* Initially locked; caller must unlock */
   g_mutex_lock (req->mutex);
 
