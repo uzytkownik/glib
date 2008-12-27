@@ -87,19 +87,24 @@ g_socket_address_native_size (GSocketAddress *address)
 /**
  * g_socket_address_to_native:
  * @address: a #GSocketAddress
- * @dest: a pointer to a memory location that will contain the native %struct %sockaddr.
+ * @dest: a pointer to a memory location that will contain the native
+ * %struct %sockaddr.
+ * @destlen: the size of @dest. Must be at least as large as
+ * g_socket_address_native_size().
  *
- * Converts a #GSocketAddress to a native %struct %sockaddr. @dest must be able to hold at least
- * as many bytes as g_socket_address_native_size() returns for @address.
+ * Converts a #GSocketAddress to a native %struct %sockaddr.
  *
- * Returns: the size of the native %struct %sockaddr that @address represents
+ * Returns: %TRUE if @dest was filled in, %FALSE if @address is invalid
+ * or @destlen is too small.
  */
 gboolean
-g_socket_address_to_native (GSocketAddress *address, gpointer dest)
+g_socket_address_to_native (GSocketAddress *address,
+			    gpointer        dest,
+			    gsize           destlen)
 {
   g_return_val_if_fail (G_IS_SOCKET_ADDRESS (address), FALSE);
 
-  return G_SOCKET_ADDRESS_GET_CLASS (address)->to_native (address, dest);
+  return G_SOCKET_ADDRESS_GET_CLASS (address)->to_native (address, dest, destlen);
 }
 
 /**
@@ -111,7 +116,8 @@ g_socket_address_to_native (GSocketAddress *address, gpointer dest)
  * otherwise %NULL.
  */
 GSocketAddress *
-g_socket_address_from_native (gpointer native, gsize len)
+g_socket_address_from_native (gpointer native,
+			      gsize    len)
 {
   gshort family;
 

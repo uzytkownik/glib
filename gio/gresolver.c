@@ -663,7 +663,7 @@ _g_resolver_address_to_sockaddr (GInetAddress            *address,
   GSocketAddress *isa;
 
   isa = (GSocketAddress *)g_inet_socket_address_new (address, 0);
-  g_socket_address_to_native (isa, (struct sockaddr *)sa);
+  g_socket_address_to_native (isa, (struct sockaddr *)sa, sizeof (*sa));
   *sa_len = g_socket_address_native_size (isa);
   g_object_unref (isa);
 }

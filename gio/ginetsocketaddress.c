@@ -137,7 +137,8 @@ g_inet_socket_address_native_size (GSocketAddress *address)
 
 static gboolean
 g_inet_socket_address_to_native (GSocketAddress *address,
-                                 gpointer        dest)
+                                 gpointer        dest,
+				 gsize           destlen)
 {
   GInetSocketAddress *addr;
   GInetAddressFamily family;
@@ -151,6 +152,9 @@ g_inet_socket_address_to_native (GSocketAddress *address,
     {
       struct sockaddr_in *sock = (struct sockaddr_in *) dest;
 
+      if (destlen < sizeof (*sock))
+	return FALSE;
+
       sock->sin_family = AF_INET;
       sock->sin_port = g_htons (addr->priv->port);
       memcpy (&(sock->sin_addr.s_addr), g_inet_address_to_bytes (addr->priv->address), sizeof (sock->sin_addr));
@@ -160,6 +164,10 @@ g_inet_socket_address_to_native (GSocketAddress *address,
   else if (family == AF_INET6)
     {
       struct sockaddr_in6 *sock = (struct sockaddr_in6 *) dest;
+
+      if (destlen < sizeof (*sock))
+	return FALSE;
+
       memset (sock, 0, sizeof (sock));
       sock->sin6_family = AF_INET6;
       sock->sin6_port = g_htons (addr->priv->port);

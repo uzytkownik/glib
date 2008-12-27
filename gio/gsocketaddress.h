@@ -50,18 +50,23 @@ struct _GSocketAddressClass
 {
   GObjectClass parent_class;
 
-  gssize (*native_size) (GSocketAddress *address);
+  gssize   (*native_size) (GSocketAddress *address);
 
-  gboolean (*to_native) (GSocketAddress *address, gpointer dest);
+  gboolean (*to_native)   (GSocketAddress *address,
+			   gpointer        dest,
+			   gsize           destlen);
 };
 
-GType            g_socket_address_get_type    (void) G_GNUC_CONST;
+GType           g_socket_address_get_type    (void) G_GNUC_CONST;
 
-gboolean         g_socket_address_to_native   (GSocketAddress *address, gpointer dest);
+gboolean        g_socket_address_to_native   (GSocketAddress *address,
+					      gpointer        dest,
+					      gsize           destlen);
 
-gssize           g_socket_address_native_size (GSocketAddress *address);
+gssize          g_socket_address_native_size (GSocketAddress *address);
 
-GSocketAddress * g_socket_address_from_native (gpointer native, gsize len);
+GSocketAddress *g_socket_address_from_native (gpointer        native,
+					      gsize           len);
 
 G_END_DECLS
 

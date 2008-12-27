@@ -115,10 +115,14 @@ g_unix_socket_address_native_size (GSocketAddress *address)
 
 static gboolean
 g_unix_socket_address_to_native (GSocketAddress *address,
-				 gpointer        dest)
+				 gpointer        dest,
+				 gsize           destlen)
 {
   GUnixSocketAddress *addr = G_UNIX_SOCKET_ADDRESS (address);
   struct sockaddr_un *sock;
+
+  if (destlen < sizeof (*sock))
+    return FALSE;
 
   sock = (struct sockaddr_un *) dest;
   sock->sun_family = AF_UNIX;

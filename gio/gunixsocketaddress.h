@@ -51,9 +51,9 @@ struct _GUnixSocketAddressClass
   GSocketAddressClass parent_class;
 };
 
-GType                g_unix_socket_address_get_type    (void) G_GNUC_CONST;
+GType               g_unix_socket_address_get_type    (void) G_GNUC_CONST;
 
-GUnixSocketAddress * g_unix_socket_address_new         (const gchar *path);
+GUnixSocketAddress *g_unix_socket_address_new         (const gchar *path);
 
 G_END_DECLS
 
