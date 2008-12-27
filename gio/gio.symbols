@@ -951,3 +951,10 @@ g_socket_address_native_size
 g_socket_address_to_native
 #endif
 #endif
+
+#if IN_HEADER(__G_SOCKET_CONNECTABLE_H__)
+#if IN_FILE(__G_SOCKET_CONNECTABLE_C__)
+g_socket_connectable_get_enumerator
+g_socket_connectable_get_type G_GNUC_CONST
+#endif
+#endif

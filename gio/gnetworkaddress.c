@@ -28,6 +28,9 @@
 #include "ginetaddress.h"
 #include "ginetsocketaddress.h"
 #include "gresolverprivate.h"
+#include "gsimpleasyncresult.h"
+#include "gsocketaddressenumerator.h"
+#include "gsocketconnectable.h"
 
 #include <string.h>
 
@@ -119,7 +122,12 @@ static void g_network_address_get_property (GObject      *object,
                                             GValue       *value,
                                             GParamSpec   *pspec);
 
-G_DEFINE_TYPE (GNetworkAddress, g_network_address, G_TYPE_OBJECT);
+static void                      g_network_address_connectable_iface_init     (GSocketConnectableIface *iface);
+static GSocketAddressEnumerator *g_network_address_connectable_get_enumerator (GSocketConnectable      *connectable);
+
+G_DEFINE_TYPE_WITH_CODE (GNetworkAddress, g_network_address, G_TYPE_OBJECT,
+                         G_IMPLEMENT_INTERFACE (G_TYPE_SOCKET_CONNECTABLE,
+                                                g_network_address_connectable_iface_init))
 
 static void
 g_network_address_finalize (GObject *object)
@@ -180,6 +188,12 @@ g_network_address_class_init (GNetworkAddressClass *klass)
                                                          P_("Sockaddrs"),
                                                          P_("Sockaddrs for this address, an array of GInetSocketAddress"),
                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+}
+
+static void
+g_network_address_connectable_iface_init (GSocketConnectableIface *connectable_iface)
+{
+  connectable_iface->get_enumerator  = g_network_address_connectable_get_enumerator;
 }
 
 static void
@@ -333,6 +347,25 @@ g_network_address_set_sockaddrs (GNetworkAddress     *addr,
     addr->priv->port = port;
 }
 
+static void
+g_network_address_set_addresses (GNetworkAddress  *addr,
+                                 GInetAddress    **addresses)
+{
+  gint n;
+
+  g_return_if_fail (addresses != NULL && addresses[0] != NULL);
+
+  for (n = 1; addresses[n]; n++)
+    ;
+  addr->priv->sockaddrs = g_new0 (GInetSocketAddress *, n + 1);
+
+  for (n = 0; addresses[n]; n++)
+    {
+      addr->priv->sockaddrs[n] = g_inet_socket_address_new (addresses[n],
+                                                            addr->priv->port);
+    }
+}
+
 /**
  * g_network_address_new:
  * @hostname: the hostname
@@ -440,6 +473,177 @@ g_network_address_get_sockaddrs (GNetworkAddress *addr)
   g_return_val_if_fail (G_IS_NETWORK_ADDRESS (addr), NULL);
 
   return addr->priv->sockaddrs;
+}
+
+#define G_TYPE_NETWORK_ADDRESS_ADDRESS_ENUMERATOR (g_network_address_address_enumerator_get_type ())
+#define G_NETWORK_ADDRESS_ADDRESS_ENUMERATOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), G_TYPE_NETWORK_ADDRESS_ADDRESS_ENUMERATOR, GNetworkAddressAddressEnumerator))
+
+typedef struct {
+  GSocketAddressEnumerator parent_instance;
+
+  GNetworkAddress *addr;
+  gint i;
+} GNetworkAddressAddressEnumerator;
+
+typedef struct {
+  GSocketAddressEnumeratorClass parent_class;
+
+} GNetworkAddressAddressEnumeratorClass;
+
+G_DEFINE_TYPE (GNetworkAddressAddressEnumerator, g_network_address_address_enumerator, G_TYPE_SOCKET_ADDRESS_ENUMERATOR)
+
+static void
+g_network_address_address_enumerator_finalize (GObject *object)
+{
+  GNetworkAddressAddressEnumerator *addr_enum =
+    G_NETWORK_ADDRESS_ADDRESS_ENUMERATOR (object);
+
+  g_object_unref (addr_enum->addr);
+
+  G_OBJECT_CLASS (g_network_address_address_enumerator_parent_class)->finalize (object);
+}
+
+static GSocketAddress *
+g_network_address_address_enumerator_get_next (GSocketAddressEnumerator  *enumerator,
+                                               GCancellable              *cancellable,
+                                               GError                   **error)
+{
+  GNetworkAddressAddressEnumerator *addr_enum =
+    G_NETWORK_ADDRESS_ADDRESS_ENUMERATOR (enumerator);
+
+  if (!addr_enum->addr->priv->sockaddrs)
+    {
+      GResolver *resolver = g_resolver_get_default ();
+      GInetAddress **addresses;
+
+      addresses = g_resolver_lookup_by_name (resolver,
+                                             g_network_address_get_ascii_name (addr_enum->addr),
+                                             cancellable, error);
+      if (!addresses)
+        {
+          g_object_unref (resolver);
+          return NULL;
+        }
+
+      g_network_address_set_addresses (addr_enum->addr, addresses);
+      g_resolver_free_addresses (resolver, addresses);
+      g_object_unref (resolver);
+    }
+
+  if (!addr_enum->addr->priv->sockaddrs[addr_enum->i])
+    return NULL;
+  else
+    return (GSocketAddress *)addr_enum->addr->priv->sockaddrs[addr_enum->i++];
+}
+
+static void
+got_addresses (GObject      *source_object,
+               GAsyncResult *result,
+               gpointer      user_data)
+{
+  GSimpleAsyncResult *simple = user_data;
+  GNetworkAddressAddressEnumerator *addr_enum =
+    g_simple_async_result_get_op_res_gpointer (simple);
+  GResolver *resolver = G_RESOLVER (source_object);
+  GInetAddress **addresses;
+  GError *error = NULL;
+
+  addresses = g_resolver_lookup_by_name_finish (resolver, result, &error);
+  if (!addr_enum->addr->priv->sockaddrs)
+    {
+      if (error)
+        {
+          g_simple_async_result_set_from_error (simple, error);
+          g_error_free (error);
+        }
+      else
+        g_network_address_set_addresses (addr_enum->addr, addresses);
+    }
+  else if (error)
+    g_error_free (error);
+
+  g_resolver_free_addresses (resolver, addresses);
+  g_object_unref (resolver);
+
+  g_simple_async_result_complete (simple);
+  g_object_unref (simple);
+}
+
+static void
+g_network_address_address_enumerator_get_next_async (GSocketAddressEnumerator  *enumerator,
+                                                     GCancellable              *cancellable,
+                                                     GAsyncReadyCallback        callback,
+                                                     gpointer                   user_data)
+{
+  GNetworkAddressAddressEnumerator *addr_enum =
+    G_NETWORK_ADDRESS_ADDRESS_ENUMERATOR (enumerator);
+  GSimpleAsyncResult *simple;
+
+  simple = g_simple_async_result_new (G_OBJECT (enumerator),
+                                      callback, user_data,
+                                      g_network_address_address_enumerator_get_next_async);
+
+  if (!addr_enum->addr->priv->sockaddrs)
+    {
+      GResolver *resolver = g_resolver_get_default ();
+
+      g_simple_async_result_set_op_res_gpointer (simple, g_object_ref (addr_enum), g_object_unref);
+      g_resolver_lookup_by_name_async (resolver,
+                                       g_network_address_get_ascii_name (addr_enum->addr),
+                                       cancellable,
+                                       got_addresses, simple);
+    }
+  else
+    {
+      g_simple_async_result_complete_in_idle (simple);
+      g_object_unref (simple);
+    }
+}
+
+GSocketAddress *
+g_network_address_address_enumerator_get_next_finish (GSocketAddressEnumerator  *enumerator,
+                                                      GAsyncResult              *result,
+                                                      GError                   **error)
+{
+  GNetworkAddressAddressEnumerator *addr_enum =
+    G_NETWORK_ADDRESS_ADDRESS_ENUMERATOR (enumerator);
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (result);
+
+  if (g_simple_async_result_propagate_error (simple, error))
+    return NULL;
+  else if (!addr_enum->addr->priv->sockaddrs[addr_enum->i])
+    return NULL;
+  else
+    return (GSocketAddress *)addr_enum->addr->priv->sockaddrs[addr_enum->i++];
+}
+
+static void
+g_network_address_address_enumerator_init (GNetworkAddressAddressEnumerator *enumerator)
+{
+}
+
+static void
+g_network_address_address_enumerator_class_init (GNetworkAddressAddressEnumeratorClass *addrenum_class)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS (addrenum_class);
+  GSocketAddressEnumeratorClass *enumerator_class =
+    G_SOCKET_ADDRESS_ENUMERATOR_CLASS (addrenum_class);
+
+  enumerator_class->get_next = g_network_address_address_enumerator_get_next;
+  enumerator_class->get_next_async = g_network_address_address_enumerator_get_next_async;
+  enumerator_class->get_next_finish = g_network_address_address_enumerator_get_next_finish;
+  object_class->finalize = g_network_address_address_enumerator_finalize;
+}
+
+static GSocketAddressEnumerator *
+g_network_address_connectable_get_enumerator (GSocketConnectable *connectable)
+{
+  GNetworkAddressAddressEnumerator *addr_enum;
+
+  addr_enum = g_object_new (G_TYPE_NETWORK_ADDRESS_ADDRESS_ENUMERATOR, NULL);
+  addr_enum->addr = g_object_ref (connectable);
+
+  return (GSocketAddressEnumerator *)addr_enum;
 }
 
 #define __G_NETWORK_ADDRESS_C__

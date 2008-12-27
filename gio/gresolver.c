@@ -303,6 +303,24 @@ g_resolver_lookup_by_name_finish (GResolver     *resolver,
     lookup_by_name_finish (resolver, result, error);
 }
 
+/**
+ * g_resolver_free_addresses:
+ * @resolver: a #GResolver
+ * @addresses: an array of #GInetAddress returned from a @resolver method
+ *
+ * Frees @addresses and its contents.
+ **/
+void
+g_resolver_free_addresses (GResolver   *resolver,
+                           GInetAddress **addresses)
+{
+  gint i;
+
+  for (i = 0; addresses[i]; i++)
+    g_object_unref (addresses[i]);
+  g_free (addresses);
+}
+
 
 /**
  * g_resolver_lookup_by_address:
@@ -541,6 +559,23 @@ g_resolver_lookup_service_finish (GResolver     *resolver,
     lookup_service_finish (resolver, result, error);
 }
 
+/**
+ * g_resolver_free_targets:
+ * @resolver: a #GResolver
+ * @targets: an array of #GSrvTarget returned from a @resolver method
+ *
+ * Frees @targets and its contents.
+ **/
+void
+g_resolver_free_targets (GResolver   *resolver,
+                         GSrvTarget **targets)
+{
+  gint i;
+
+  for (i = 0; targets[i]; i++)
+    g_object_unref (targets[i]);
+  g_free (targets);
+}
 
 /**
  * g_resolver_error_quark:

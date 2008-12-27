@@ -110,6 +110,8 @@ GInetAddress **g_resolver_lookup_by_name_finish     (GResolver            *resol
 						     GAsyncResult         *result,
 						     GError              **error);
 
+void           g_resolver_free_addresses            (GResolver            *resolver,
+						     GInetAddress        **addresses);
 gchar         *g_resolver_lookup_by_address         (GResolver            *resolver,
 						     GInetAddress         *address,
 						     GCancellable         *cancellable,
@@ -139,6 +141,8 @@ void           g_resolver_lookup_service_async      (GResolver            *resol
 GSrvTarget   **g_resolver_lookup_service_finish     (GResolver            *resolver,
 						     GAsyncResult         *result,
 						     GError              **error);
+void           g_resolver_free_targets              (GResolver            *resolver,
+						     GSrvTarget          **targets);
 
 /**
  * G_RESOLVER_ERROR:
