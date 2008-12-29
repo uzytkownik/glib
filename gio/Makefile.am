@@ -178,7 +178,7 @@ libgio_2_0_la_SOURCES =		\
 	gbufferedinputstream.c 	\
 	gbufferedoutputstream.c \
 	gcancellable.c 		\
-	gconnection.h		\
+	gconnection.c		\
 	gcontenttype.c 		\
 	gcontenttypeprivate.h 	\
 	gdatagramsocket.c	\
