@@ -47,9 +47,24 @@ typedef int SOCKET;
 struct _GUDPSocketPrivate
 {
   SOCKET socket;
+  GInetAddressFamily familly;
   volatile GInetSocketAddress *local;
 };
 
+enum
+  {
+    PROP_0,
+    PROP_AF
+  };
+
+static void           g_udp_socket_get_property       (GObject              *object,
+						       guint                 prop_id,
+						       GValue               *value,
+						       GParamSpec           *pspec);
+static void           g_udp_socket_set_property       (GObject              *object,
+						       guint                 prop_id,
+						       const GValue         *value,
+						       GParamSpec           *pspec);
 static void            g_udp_socket_finalize          (GObject              *object);
 static void            g_udp_socket_dispose           (GObject              *object);
 static GSocketAddress *g_udp_socket_get_local_address (GSocket              *self);
@@ -117,10 +132,20 @@ g_udp_socket_class_init (GUDPSocketClass *klass)
   GDatagramSocketClass *datagram_socket_class = (GDatagramSocketClass *)klass;
   
   g_type_class_add_private (gobject_class, sizeof (GUDPSocketPrivate));
-  
+
+  gobject_class->set_property = g_udp_socket_set_property;
+  gobject_class->get_property = g_udp_socket_get_property;
   gobject_class->finalize = g_udp_socket_finalize;
   gobject_class->dispose = g_udp_socket_dispose;
 
+  g_object_class_install_property (gobject_class, PROP_AF,
+				   g_param_spec_enum ("address-familly",
+						      "address familly"
+						      "Adress familly of the socket",
+						      G_TYPE_INET_ADDRESS_FAMILY,
+						      G_INET_ADDRESS_IPV4,
+						      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT | G_PARAM_CONSTRUCT_ONLY));
+  
   socket_class->get_local_address = g_udp_socket_get_local_address;
 
   datagram_socket_class->bind = g_udp_socket_bind;
@@ -147,6 +172,50 @@ g_udp_socket_init (GUDPSocket *self)
 					    GUDPSocketPrivate);
   self->priv->socket = INVALID_SOCKET;
   self->priv->local = NULL;
+}
+
+static void
+g_udp_socket_get_property (GObject    *object,
+			   guint       prop_id,
+			   GValue     *value,
+			   GParamSpec *pspec)
+{
+  GUDPSocket *socket;
+
+  g_return_if_fail ((socket = G_UDP_SOCKET (object)));
+  g_return_if_fail (socket->priv);
+  
+  switch (prop_id)
+    {
+    case PROP_AF:
+      g_value_set_enum (value, socket->priv->familly);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
+static void
+g_udp_socket_set_property (GObject      *object,
+			   guint         prop_id,
+			   const GValue *value,
+			   GParamSpec   *pspec)
+{
+  GUDPSocket *udp_socket;
+
+  g_return_if_fail ((udp_socket = G_UDP_SOCKET (object)));
+  g_return_if_fail (udp_socket->priv);
+  
+  switch (prop_id)
+    {
+    case PROP_AF:
+      udp_socket->priv->familly = g_value_get_enum (value);
+      udp_socket->priv->socket = socket (udp_socket->priv->familly,
+					 SOCK_STREAM, 0);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
 }
 
 static void
@@ -368,8 +437,10 @@ g_udp_socket_receive_finish (GDatagramSocket      *self,
 */
 
 GUDPSocket *
-g_udp_socket_new ()
+g_udp_socket_new (GInetAddressFamily inet)
 {
-  return (GUDPSocket *)g_object_new (G_TYPE_UDP_SOCKET, NULL);
+  return (GUDPSocket *)g_object_new (G_TYPE_UDP_SOCKET,
+				     "address-familly", inet,
+				     NULL);
 }
 

@@ -28,7 +28,8 @@
 #define G_UDP_SOCKET_H
 
 #include <glib-object.h>
-#include "gdatagramsocket.h"
+#include <gio/gdatagramsocket.h>
+#include <gio/gioenums.h>
 
 G_BEGIN_DECLS
 
@@ -68,9 +69,9 @@ struct _GUDPSocketClass
   GDatagramSocketClass parent_class;
 };
 
-GType       g_udp_socket_get_type (void) G_GNUC_CONST;
-GUDPSocket *g_udp_socket_new ();
-
+GType               g_udp_socket_get_type         (void) G_GNUC_CONST;
+GUDPSocket         *g_udp_socket_new              (GInetAddressFamily inet);
+GInetAddressFamily  g_udp_socket_get_inet_familly (GUDPSocket *socket);
 G_END_DECLS
 
 #endif
