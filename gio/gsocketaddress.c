@@ -25,10 +25,10 @@
 #include <glib.h>
 
 #include "gsocketaddress.h"
+#include "ginetaddress.h"
 #include "ginetsocketaddress.h"
-#include "ginet4address.h"
-#include "ginet6address.h"
 #include "gresolverprivate.h"
+#include "gsocketaddressenumerator.h"
 #include "gsocketconnectable.h"
 
 #ifdef G_OS_UNIX
@@ -45,16 +45,10 @@
  * #GSocketAddress is the equivalent of %struct %sockaddr in the BSD sockets API.
  **/
 
-static void                    g_socket_address_connectable_iface_init      (GSocketConnectableIface *iface);
-static GSocketConnectableIter *g_socket_address_connectable_get_iter        (GSocketConnectable      *connectable);
-void                           g_socket_address_connectable_free_iter       (GSocketConnectable      *connectable,
-									     GSocketConnectableIter  *iter);
-static GSocketAddress         *g_socket_address_connectable_get_next        (GSocketConnectable      *connectable,
-									     GSocketConnectableIter  *iter,
-									     GCancellable            *cancellable,
-									     GError                 **error);
+static void                      g_socket_address_connectable_iface_init     (GSocketConnectableIface *iface);
+static GSocketAddressEnumerator *g_socket_address_connectable_get_enumerator (GSocketConnectable      *connectable);
 
-G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GSocketAddress, g_socket_address, G_TYPE_INITIALLY_UNOWNED,
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GSocketAddress, g_socket_address, G_TYPE_OBJECT,
 				  G_IMPLEMENT_INTERFACE (G_TYPE_SOCKET_CONNECTABLE,
 							 g_socket_address_connectable_iface_init))
 
@@ -67,9 +61,7 @@ g_socket_address_class_init (GSocketAddressClass *klass)
 static void
 g_socket_address_connectable_iface_init (GSocketConnectableIface *connectable_iface)
 {
-  connectable_iface->get_iter  = g_socket_address_connectable_get_iter;
-  connectable_iface->free_iter = g_socket_address_connectable_free_iter;
-  connectable_iface->get_next  = g_socket_address_connectable_get_next;
+  connectable_iface->get_enumerator  = g_socket_address_connectable_get_enumerator;
 }
 
 static void
@@ -95,19 +87,24 @@ g_socket_address_native_size (GSocketAddress *address)
 /**
  * g_socket_address_to_native:
  * @address: a #GSocketAddress
- * @dest: a pointer to a memory location that will contain the native %struct %sockaddr.
+ * @dest: a pointer to a memory location that will contain the native
+ * %struct %sockaddr.
+ * @destlen: the size of @dest. Must be at least as large as
+ * g_socket_address_native_size().
  *
- * Converts a #GSocketAddress to a native %struct %sockaddr. @dest must be able to hold at least
- * as many bytes as g_socket_address_native_size() returns for @address.
+ * Converts a #GSocketAddress to a native %struct %sockaddr.
  *
- * Returns: the size of the native %struct %sockaddr that @address represents
+ * Returns: %TRUE if @dest was filled in, %FALSE if @address is invalid
+ * or @destlen is too small.
  */
 gboolean
-g_socket_address_to_native (GSocketAddress *address, gpointer dest)
+g_socket_address_to_native (GSocketAddress *address,
+			    gpointer        dest,
+			    gsize           destlen)
 {
   g_return_val_if_fail (G_IS_SOCKET_ADDRESS (address), FALSE);
 
-  return G_SOCKET_ADDRESS_GET_CLASS (address)->to_native (address, dest);
+  return G_SOCKET_ADDRESS_GET_CLASS (address)->to_native (address, dest, destlen);
 }
 
 /**
@@ -119,7 +116,8 @@ g_socket_address_to_native (GSocketAddress *address, gpointer dest)
  * otherwise %NULL.
  */
 GSocketAddress *
-g_socket_address_from_native (gpointer native, gsize len)
+g_socket_address_from_native (gpointer native,
+			      gsize    len)
 {
   gshort family;
 
@@ -134,15 +132,23 @@ g_socket_address_from_native (gpointer native, gsize len)
   if (family == AF_INET)
     {
       struct sockaddr_in *addr = (struct sockaddr_in *) native;
+      GInetAddress *iaddr = g_inet_address_from_bytes ((guint8 *) &(addr->sin_addr), AF_INET);
+      GSocketAddress *sockaddr;
 
-      return G_SOCKET_ADDRESS (g_inet_socket_address_new (g_inet4_address_from_bytes ((guint8 *) &(addr->sin_addr)), g_ntohs (addr->sin_port)));
+      sockaddr = g_inet_socket_address_new (iaddr, g_ntohs (addr->sin_port));
+      g_object_unref (iaddr);
+      return sockaddr;
     }
 
   if (family == AF_INET6)
     {
       struct sockaddr_in6 *addr = (struct sockaddr_in6 *) native;
+      GInetAddress *iaddr = g_inet_address_from_bytes ((guint8 *) &(addr->sin6_addr), AF_INET6);
+      GSocketAddress *sockaddr;
 
-      return G_SOCKET_ADDRESS (g_inet_socket_address_new (g_inet6_address_from_bytes ((guint8 *) &(addr->sin6_addr)), g_ntohs (addr->sin6_port)));
+      sockaddr = g_inet_socket_address_new (iaddr, g_ntohs (addr->sin6_port));
+      g_object_unref (iaddr);
+      return sockaddr;
     }
 
 #ifdef G_OS_UNIX
@@ -157,38 +163,78 @@ g_socket_address_from_native (gpointer native, gsize len)
   return NULL;
 }
 
-static GSocketConnectableIter *
-g_socket_address_connectable_get_iter (GSocketConnectable *connectable)
+#define G_TYPE_SOCKET_ADDRESS_ADDRESS_ENUMERATOR (_g_socket_address_address_enumerator_get_type ())
+#define G_SOCKET_ADDRESS_ADDRESS_ENUMERATOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), G_TYPE_SOCKET_ADDRESS_ADDRESS_ENUMERATOR, GSocketAddressAddressEnumerator))
+
+typedef struct {
+  GSocketAddressEnumerator parent_instance;
+
+  GSocketAddress *sockaddr;
+} GSocketAddressAddressEnumerator;
+
+typedef struct {
+  GSocketAddressEnumeratorClass parent_class;
+
+} GSocketAddressAddressEnumeratorClass;
+
+G_DEFINE_TYPE (GSocketAddressAddressEnumerator, _g_socket_address_address_enumerator, G_TYPE_SOCKET_ADDRESS_ENUMERATOR)
+
+static void
+g_socket_address_address_enumerator_finalize (GObject *object)
 {
-  gboolean iter_real = TRUE;
+  GSocketAddressAddressEnumerator *sockaddr_enum =
+    G_SOCKET_ADDRESS_ADDRESS_ENUMERATOR (object);
 
-  return (GSocketConnectableIter *)g_slice_dup (gboolean, &iter_real);
-}
+  if (sockaddr_enum->sockaddr)
+    g_object_unref (sockaddr_enum->sockaddr);
 
-void
-g_socket_address_connectable_free_iter (GSocketConnectable     *connectable,
-					GSocketConnectableIter *iter)
-{
-  gboolean *iter_real = (gboolean *)iter;
-
-  g_slice_free (gboolean, iter_real);
+  G_OBJECT_CLASS (_g_socket_address_address_enumerator_parent_class)->finalize (object);
 }
 
 static GSocketAddress *
-g_socket_address_connectable_get_next (GSocketConnectable      *connectable,
-				       GSocketConnectableIter  *iter,
-				       GCancellable            *cancellable,
-				       GError                 **error)
+g_socket_address_address_enumerator_get_next (GSocketAddressEnumerator  *enumerator,
+					      GCancellable              *cancellable,
+					      GError                   **error)
 {
-  gboolean *iter_real = (gboolean *)iter;
+  GSocketAddressAddressEnumerator *sockaddr_enum =
+    G_SOCKET_ADDRESS_ADDRESS_ENUMERATOR (enumerator);
 
-  if (*iter_real)
+  if (sockaddr_enum->sockaddr)
     {
-      *iter_real = FALSE;
-      return G_SOCKET_ADDRESS (connectable);
+      GSocketAddress *ret = sockaddr_enum->sockaddr;
+
+      sockaddr_enum->sockaddr = NULL;
+      return ret;
     }
   else
     return NULL;
+}
+
+static void
+_g_socket_address_address_enumerator_init (GSocketAddressAddressEnumerator *enumerator)
+{
+}
+
+static void
+_g_socket_address_address_enumerator_class_init (GSocketAddressAddressEnumeratorClass *sockaddrenum_class)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS (sockaddrenum_class);
+  GSocketAddressEnumeratorClass *enumerator_class =
+    G_SOCKET_ADDRESS_ENUMERATOR_CLASS (sockaddrenum_class);
+
+  enumerator_class->get_next = g_socket_address_address_enumerator_get_next;
+  object_class->finalize = g_socket_address_address_enumerator_finalize;
+}
+
+static GSocketAddressEnumerator *
+g_socket_address_connectable_get_enumerator (GSocketConnectable *connectable)
+{
+  GSocketAddressAddressEnumerator *sockaddr_enum;
+
+  sockaddr_enum = g_object_new (G_TYPE_SOCKET_ADDRESS_ADDRESS_ENUMERATOR, NULL);
+  sockaddr_enum->sockaddr = g_object_ref (connectable);
+
+  return (GSocketAddressEnumerator *)sockaddr_enum;
 }
 
 #define __G_SOCKET_ADDRESS_C__

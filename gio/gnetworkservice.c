@@ -25,7 +25,13 @@
 #include "glibintl.h"
 
 #include "gnetworkservice.h"
+#include "gcancellable.h"
+#include "ginetaddress.h"
+#include "ginetsocketaddress.h"
 #include "gresolverprivate.h"
+#include "gsimpleasyncresult.h"
+#include "gsocketaddressenumerator.h"
+#include "gsocketconnectable.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -98,9 +104,6 @@ struct _GSrvTarget {
   time_t   expires;
 };
 
-static void sort_targets (GSrvTarget **targets,
-                          gint         num_targets);
-
 /**
  * GNetworkService:
  *
@@ -133,7 +136,12 @@ static void g_network_service_get_property (GObject      *object,
                                             GValue       *value,
                                             GParamSpec   *pspec);
 
-G_DEFINE_TYPE (GNetworkService, g_network_service, G_TYPE_OBJECT)
+static void                      g_network_service_connectable_iface_init     (GSocketConnectableIface *iface);
+static GSocketAddressEnumerator *g_network_service_connectable_get_enumerator (GSocketConnectable      *connectable);
+
+G_DEFINE_TYPE_WITH_CODE (GNetworkService, g_network_service, G_TYPE_OBJECT,
+                         G_IMPLEMENT_INTERFACE (G_TYPE_SOCKET_CONNECTABLE,
+                                                g_network_service_connectable_iface_init))
 
 static void
 g_network_service_finalize (GObject *object)
@@ -188,7 +196,13 @@ g_network_service_class_init (GNetworkServiceClass *klass)
                                    g_param_spec_pointer ("targets",
                                                          P_("Targets"),
                                                          P_("Targets for this service, an array of GSrvTarget"),
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                         G_PARAM_READWRITE));
+}
+
+static void
+g_network_service_connectable_iface_init (GSocketConnectableIface *connectable_iface)
+{
+  connectable_iface->get_enumerator = g_network_service_connectable_get_enumerator;
 }
 
 static void
@@ -308,161 +322,31 @@ g_network_service_set_targets (GNetworkService  *srv,
       srv->priv->targets[0] = NULL;
       return;
     }
-
-  /* Sort by priority and weight */
-  sort_targets (srv->priv->targets, n);
 }
 
-#if defined(G_OS_UNIX)
-
-/* Internal method to set a service's targets from the results of a
- * res_query() call.
- */
-gboolean
-g_network_service_set_from_res_query (GNetworkService  *srv,
-                                      guchar           *answer,
-                                      gint              len,
-                                      gint              herr,
-                                      GError          **error)
+/**
+ * g_network_service_new:
+ * @service: the service type to look up (eg, "ldap")
+ * @protocol: the networking protocol to use for @service (eg, "tcp")
+ * @domain: the DNS domain to look up the service in
+ *
+ * Creates a new #GNetworkService representing the given @service,
+ * @protocol, and @domain. This will initially be unresolved; use the
+ * #GSocketConnectable interface to resolve it.
+ *
+ * Return value: a new #GNetworkService
+ **/
+GNetworkService *
+g_network_service_new (const gchar *service,
+                       const gchar *protocol,
+                       const gchar *domain)
 {
-  gint count;
-  gchar namebuf[1024];
-  guchar *end, *p;
-  guint16 type, qclass, rdlength, priority, weight, port;
-  guint32 ttl;
-  HEADER *header;
-  time_t now = time (NULL);
-  GSrvTarget *target;
-  GPtrArray *targets;
-
-  if (len < 0)
-    {
-      GResolverError errnum;
-      const gchar *format;
-
-      if (herr == HOST_NOT_FOUND || herr == NO_DATA)
-        {
-          errnum = G_RESOLVER_ERROR_NOT_FOUND;
-          format = _("No '%s' service for '%s'");
-        }
-      else if (herr == TRY_AGAIN)
-        {
-          errnum = G_RESOLVER_ERROR_TEMPORARY_FAILURE;
-          format = _("Temporarily unable to resolve '%s' service for '%s'");
-        }
-      else
-        {
-          errnum = G_RESOLVER_ERROR_INTERNAL;
-          format = _("Error resolving '%s' service for '%s'");
-        }
-
-      g_set_error (error, G_RESOLVER_ERROR, errnum, format,
-		   g_network_service_get_service (srv),
-		   g_network_service_get_domain (srv));
-      return FALSE;
-    }
-
-  targets = g_ptr_array_new ();
-
-  header = (HEADER *)answer;
-  p = answer + sizeof (HEADER);
-  end = answer + len;
-
-  /* Skip query */
-  count = ntohs (header->qdcount);
-  while (count-- && p < end)
-    {
-      p += dn_expand (answer, end, p, namebuf, sizeof (namebuf));
-      p += 4;
-    }
-
-  /* Read answers */
-  count = ntohs (header->ancount);
-  while (count-- && p < end)
-    {
-      p += dn_expand (answer, end, p, namebuf, sizeof (namebuf));
-      GETSHORT (type, p);
-      GETSHORT (qclass, p);
-      GETLONG  (ttl, p);
-      GETSHORT (rdlength, p);
-
-      if (type != T_SRV || qclass != C_IN)
-        {
-          p += rdlength;
-          continue;
-        }
-
-      GETSHORT (priority, p);
-      GETSHORT (weight, p);
-      GETSHORT (port, p);
-      p += dn_expand (answer, end, p, namebuf, sizeof (namebuf));
-
-      target = g_srv_target_new (namebuf, port, priority, weight, now + ttl);
-      g_ptr_array_add (targets, target);
-    }
-
-  g_ptr_array_add (targets, NULL);
-  g_network_service_set_targets (srv, (GSrvTarget **)targets->pdata, TRUE);
-  g_ptr_array_free (targets, FALSE);
-  return TRUE;
+  return g_object_new (G_TYPE_NETWORK_SERVICE,
+                       "service", service,
+                       "protocol", protocol,
+                       "domain", domain,
+                       NULL);
 }
-
-#elif defined(G_OS_WIN32)
-
-/* Internal method to set a service's targets from the results of a
- * DnsQuery() call.
- */
-gboolean
-g_network_service_set_from_DnsQuery (GNetworkService  *srv,
-                                     DNS_STATUS        status,
-                                     DNS_RECORD       *results,
-                                     GError          **error)
-{
-  DNS_RECORD *rec;
-  GSrvTarget *target;
-  GPtrArray *targets;
-  time_t now = time (NULL);
-
-  if (status != ERROR_SUCCESS)
-    {
-      GResolverError errnum;
-
-      if (status == DNS_ERROR_RCODE_NAME_ERROR)
-        errnum = G_RESOLVER_ERROR_NOT_FOUND;
-      else if (status == DNS_ERROR_RCODE_SERVER_FAILURE)
-        errnum = G_RESOLVER_ERROR_TEMPORARY_FAILURE;
-      else
-        errnum = G_RESOLVER_ERROR_INTERNAL;
-
-      g_set_error (error, G_RESOLVER_ERROR, errnum,
-		   errnum == G_RESOLVER_ERROR_NOT_FOUND ?
-                   _("No '%s' service for '%s'") :
-                   _("Error resolving '%s' service for '%s'"),
-		   g_network_service_get_service (srv),
-		   g_network_service_get_domain (srv));
-      return FALSE;
-    }
-
-  targets = g_ptr_array_new ();
-  for (rec = results; rec; rec = rec->pNext)
-    {
-      if (rec->wType != DNS_TYPE_SRV)
-        continue;
-
-      target = g_srv_target_new (rec->Data.SRV.pNameTarget,
-                                 rec->Data.SRV.wPort,
-                                 rec->Data.SRV.wPriority,
-                                 rec->Data.SRV.wWeight,
-                                 now + rec->dwTtl);
-      g_ptr_array_add (targets, target);
-    }
-  g_ptr_array_add (targets, NULL);
-  g_network_service_set_targets (srv, (GSrvTarget **)targets->pdata, TRUE);
-  g_ptr_array_free (targets, FALSE);
-  return TRUE;
-}
-
-#endif
 
 /**
  * g_network_service_get_service:
@@ -576,19 +460,6 @@ g_network_service_get_expires (GNetworkService *srv)
         expires = srv->priv->targets[i]->expires;
     }
   return expires;
-}
-
-/* Internal method that gets the resource record name to be looked up
- * in DNS for @srv.
- */
-gchar *
-g_network_service_get_rrname (GNetworkService *srv)
-{
-  g_return_val_if_fail (G_IS_NETWORK_SERVICE (srv), NULL);
-
-  return g_strdup_printf ("_%s._%s.%s",
-                          srv->priv->service, srv->priv->protocol,
-                          srv->priv->domain);
 }
 
 
@@ -773,12 +644,30 @@ compare_target (const void *a, const void *b)
     return ta->priority - tb->priority;
 }
 
-static void
-sort_targets (GSrvTarget **targets,
-              gint         num_targets)
+/**
+ * g_srv_target_array_sort:
+ * @targets: a %NULL-terminated array of #GSrvTarget
+ *
+ * Sorts @targets in place according to the algorithm in RFC 2782.
+ **/ 
+void
+g_srv_target_array_sort (GSrvTarget **targets)
 {
-  gint first, last, i, n, sum;
+  gint num_targets, first, last, i, n, sum;
   GSrvTarget *tmp;
+
+  for (num_targets = 0; targets[num_targets]; num_targets++)
+    ;
+
+  if (num_targets == 1 && !strcmp (targets[0]->hostname, "."))
+    {
+      /* 'A Target of "." means that the service is decidedly not
+       * available at this domain.'
+       */
+      g_srv_target_free (targets[0]);
+      targets[0] = NULL;
+      return;
+    }
 
   /* Sort by priority, and partly by weight */
   qsort (targets, num_targets, sizeof (GSrvTarget *), compare_target);
@@ -832,6 +721,366 @@ sort_targets (GSrvTarget **targets,
           first++;
         }
     }
+}
+
+#define G_TYPE_NETWORK_SERVICE_ADDRESS_ENUMERATOR (_g_network_service_address_enumerator_get_type ())
+#define G_NETWORK_SERVICE_ADDRESS_ENUMERATOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), G_TYPE_NETWORK_SERVICE_ADDRESS_ENUMERATOR, GNetworkServiceAddressEnumerator))
+
+typedef struct {
+  GSocketAddressEnumerator parent_instance;
+
+  GResolver *resolver;
+  GNetworkService *srv;
+  GInetAddress **addrs;
+  gint t, a;
+
+  GError *error;
+
+  /* For async operation */
+  GCancellable *cancellable;
+  GSimpleAsyncResult *result;
+} GNetworkServiceAddressEnumerator;
+
+typedef struct {
+  GSocketAddressEnumeratorClass parent_class;
+
+} GNetworkServiceAddressEnumeratorClass;
+
+G_DEFINE_TYPE (GNetworkServiceAddressEnumerator, _g_network_service_address_enumerator, G_TYPE_SOCKET_ADDRESS_ENUMERATOR)
+
+static void
+g_network_service_address_enumerator_finalize (GObject *object)
+{
+  GNetworkServiceAddressEnumerator *srv_enum =
+    G_NETWORK_SERVICE_ADDRESS_ENUMERATOR (object);
+
+  g_object_unref (srv_enum->srv);
+  if (srv_enum->addrs)
+    g_resolver_free_addresses (srv_enum->resolver, srv_enum->addrs);
+  g_object_unref (srv_enum->resolver);
+  if (srv_enum->error)
+    g_error_free (srv_enum->error);
+
+  G_OBJECT_CLASS (_g_network_service_address_enumerator_parent_class)->finalize (object);
+}
+
+static GSocketAddress *
+g_network_service_address_enumerator_get_next (GSocketAddressEnumerator  *enumerator,
+                                               GCancellable              *cancellable,
+                                               GError                   **error)
+{
+  GNetworkServiceAddressEnumerator *srv_enum =
+    G_NETWORK_SERVICE_ADDRESS_ENUMERATOR (enumerator);
+  GSrvTarget *target;
+  GSocketAddress *sockaddr;
+
+  /* If we haven't yet resolved srv, do that */
+  if (!srv_enum->srv->priv->targets)
+    {
+      GSrvTarget **targets;
+
+      targets = g_resolver_lookup_service (srv_enum->resolver,
+                                           srv_enum->srv->priv->service,
+                                           srv_enum->srv->priv->protocol,
+                                           srv_enum->srv->priv->domain,
+                                           cancellable, error);
+      if (!targets)
+        return NULL;
+
+      if (!srv_enum->srv->priv->targets)
+        g_network_service_set_targets (srv_enum->srv, targets, TRUE);
+      else
+        g_resolver_free_targets (srv_enum->resolver, targets);
+    }
+
+  /* Make sure we have a set of resolved addresses for the current
+   * target. When resolving the first target, we save the GError, if
+   * any. If any later target succeeds, we'll free the earlier error,
+   * but if we get to the last target without any of them resolving,
+   * we return that initial error.
+   */
+  do
+    {
+      /* Get the current target, return if we're done. */
+      target = srv_enum->srv->priv->targets[srv_enum->t];
+      if (!target)
+        {
+          if (srv_enum->error)
+            {
+              g_propagate_error (error, srv_enum->error);
+              srv_enum->error = NULL;
+            }
+          return NULL;
+        }
+
+      /* If we haven't resolved the addrs for the current target, do that */
+      if (!srv_enum->addrs)
+        {
+          GError **error_p;
+
+          error_p = (srv_enum->t == 0) ? &srv_enum->error : NULL;
+          srv_enum->addrs = g_resolver_lookup_by_name (srv_enum->resolver,
+                                                       target->hostname,
+                                                       cancellable, error_p);
+          if (g_cancellable_set_error_if_cancelled (cancellable, error))
+            return NULL;
+
+          if (srv_enum->addrs)
+            {
+              srv_enum->a = 0;
+              if (srv_enum->error)
+                {
+                  g_error_free (srv_enum->error);
+                  srv_enum->error = NULL;
+                }
+            }
+          else
+            {
+              /* Try the next target */
+              srv_enum->t++;
+            }
+        }
+    }
+  while (!srv_enum->addrs);
+
+  g_return_val_if_fail (srv_enum->addrs[srv_enum->a] != NULL, NULL);
+
+  /* Return the next address for this target. If it's the last one,
+   * advance the target counter.
+   */
+  sockaddr = g_inet_socket_address_new (srv_enum->addrs[srv_enum->a],
+                                        target->port);
+
+  if (!srv_enum->addrs[++srv_enum->a])
+    {
+      g_resolver_free_addresses (srv_enum->resolver, srv_enum->addrs);
+      srv_enum->addrs = NULL;
+      srv_enum->t++;
+    }
+
+  return sockaddr;
+}
+
+static void get_next_async_resolved_targets   (GObject                          *source_object,
+                                               GAsyncResult                     *result,
+                                               gpointer                          user_data);
+static void get_next_async_have_targets       (GNetworkServiceAddressEnumerator *srv_enum);
+static void get_next_async_resolved_addresses (GObject                          *source_object,
+                                               GAsyncResult                     *result,
+                                               gpointer                          user_data);
+static void get_next_async_have_addresses     (GNetworkServiceAddressEnumerator *srv_enum);
+
+/* The async version is basically the same as the sync, except we have
+ * to split it into multiple functions.
+ */
+static void
+g_network_service_address_enumerator_get_next_async (GSocketAddressEnumerator  *enumerator,
+                                                     GCancellable              *cancellable,
+                                                     GAsyncReadyCallback        callback,
+                                                     gpointer                   user_data)
+{
+  GNetworkServiceAddressEnumerator *srv_enum =
+    G_NETWORK_SERVICE_ADDRESS_ENUMERATOR (enumerator);
+
+  g_return_if_fail (srv_enum->result == NULL);
+
+  srv_enum->result = g_simple_async_result_new (G_OBJECT (enumerator),
+                                                callback, user_data,
+                                                g_network_service_address_enumerator_get_next_async);
+  srv_enum->cancellable = cancellable;
+
+  /* If we haven't yet resolved srv, do that */
+  if (!srv_enum->srv->priv->targets)
+    {
+      g_resolver_lookup_service_async (srv_enum->resolver,
+                                       srv_enum->srv->priv->service,
+                                       srv_enum->srv->priv->protocol,
+                                       srv_enum->srv->priv->domain,
+                                       cancellable,
+                                       get_next_async_resolved_targets,
+                                       srv_enum);
+    }
+  else
+    get_next_async_have_targets (srv_enum);
+}
+
+static void
+get_next_async_resolved_targets (GObject      *source_object,
+                                 GAsyncResult *result,
+                                 gpointer      user_data)
+{
+  GNetworkServiceAddressEnumerator *srv_enum = user_data;
+  GSrvTarget **targets;
+  GError *error = NULL;
+
+  targets = g_resolver_lookup_service_finish (srv_enum->resolver, result, &error);
+  if (!srv_enum->srv->priv->targets)
+    {
+      if (error)
+        {
+          GSimpleAsyncResult *simple = srv_enum->result;
+
+          srv_enum->result = NULL;
+          g_simple_async_result_set_from_error (simple, error);
+          g_error_free (error);
+          g_simple_async_result_complete (simple);
+          g_object_unref (simple);
+          return;
+        }
+
+      g_network_service_set_targets (srv_enum->srv, targets, TRUE);
+    }
+  else
+    g_resolver_free_targets (srv_enum->resolver, targets);
+
+  get_next_async_have_targets (srv_enum);
+}
+
+static void
+get_next_async_have_targets (GNetworkServiceAddressEnumerator *srv_enum)
+{
+  GSrvTarget *target;
+
+  /* Get the current target, check if we're already done. */
+  target = srv_enum->srv->priv->targets[srv_enum->t];
+  if (!target)
+    {
+      if (srv_enum->error)
+        {
+          g_simple_async_result_set_from_error (srv_enum->result, srv_enum->error);
+          g_error_free (srv_enum->error);
+          srv_enum->error = NULL;
+        }
+      g_simple_async_result_complete_in_idle (srv_enum->result);
+      g_object_unref (srv_enum->result);
+      srv_enum->result = NULL;
+      return;
+    }
+
+  /* If we haven't resolved the addrs for the current target, do that */
+  if (!srv_enum->addrs)
+    {
+      g_resolver_lookup_by_name_async (srv_enum->resolver,
+                                       target->hostname,
+                                       srv_enum->cancellable,
+                                       get_next_async_resolved_addresses,
+                                       srv_enum);
+    }
+  else
+    get_next_async_have_addresses (srv_enum);
+}
+
+static void
+get_next_async_resolved_addresses (GObject      *source_object,
+                                   GAsyncResult *result,
+                                   gpointer      user_data)
+{
+  GNetworkServiceAddressEnumerator *srv_enum = user_data;
+  GError *error = NULL;
+
+  srv_enum->addrs = g_resolver_lookup_by_name_finish (srv_enum->resolver, result, &error);
+  if (srv_enum->addrs)
+    {
+      srv_enum->a = 0;
+      if (srv_enum->error)
+        {
+          g_error_free (srv_enum->error);
+          srv_enum->error = NULL;
+        }
+      get_next_async_have_addresses (srv_enum);
+    }
+  else
+    {
+      if (g_cancellable_is_cancelled (srv_enum->cancellable))
+        {
+          GSimpleAsyncResult *simple = srv_enum->result;
+
+          srv_enum->result = NULL;
+          g_simple_async_result_set_from_error (srv_enum->result, error);
+          g_error_free (error);
+          g_simple_async_result_complete (simple);
+          g_object_unref (simple);
+        }
+      else
+        {
+          if (srv_enum->t == 0)
+            srv_enum->error = error;
+          else
+            g_error_free (error);
+
+          /* Try the next target */
+          srv_enum->t++;
+          get_next_async_have_targets (srv_enum);
+        }
+    }
+}
+
+static void
+get_next_async_have_addresses (GNetworkServiceAddressEnumerator *srv_enum)
+{
+  GSocketAddress *sockaddr;
+  GSimpleAsyncResult *simple = srv_enum->result;
+
+  g_return_if_fail (srv_enum->addrs[srv_enum->a] != NULL);
+
+  /* Return the next address for this target. If it's the last one,
+   * advance the target counter.
+   */
+  sockaddr = g_inet_socket_address_new (srv_enum->addrs[srv_enum->a],
+                                        srv_enum->srv->priv->targets[srv_enum->t]->port);
+
+  if (!srv_enum->addrs[++srv_enum->a])
+    {
+      g_resolver_free_addresses (srv_enum->resolver, srv_enum->addrs);
+      srv_enum->addrs = NULL;
+      srv_enum->t++;
+    }
+
+  srv_enum->result = NULL;
+  g_simple_async_result_set_op_res_gpointer (simple, sockaddr, NULL);
+  g_simple_async_result_complete_in_idle (simple);
+  g_object_unref (simple);
+}
+
+static GSocketAddress *
+g_network_service_address_enumerator_get_next_finish (GSocketAddressEnumerator  *enumerator,
+                                                      GAsyncResult              *result,
+                                                      GError                   **error)
+{
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (result);
+
+  g_simple_async_result_propagate_error (simple, error);
+  return g_simple_async_result_get_op_res_gpointer (simple);
+}
+
+static void
+_g_network_service_address_enumerator_init (GNetworkServiceAddressEnumerator *enumerator)
+{
+}
+
+static void
+_g_network_service_address_enumerator_class_init (GNetworkServiceAddressEnumeratorClass *addrenum_class)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS (addrenum_class);
+  GSocketAddressEnumeratorClass *enumerator_class =
+    G_SOCKET_ADDRESS_ENUMERATOR_CLASS (addrenum_class);
+
+  enumerator_class->get_next = g_network_service_address_enumerator_get_next;
+  enumerator_class->get_next_async = g_network_service_address_enumerator_get_next_async;
+  enumerator_class->get_next_finish = g_network_service_address_enumerator_get_next_finish;
+  object_class->finalize = g_network_service_address_enumerator_finalize;
+}
+
+static GSocketAddressEnumerator *
+g_network_service_connectable_get_enumerator (GSocketConnectable *connectable)
+{
+  GNetworkServiceAddressEnumerator *srv_enum;
+
+  srv_enum = g_object_new (G_TYPE_NETWORK_SERVICE_ADDRESS_ENUMERATOR, NULL);
+  srv_enum->srv = g_object_ref (connectable);
+  srv_enum->resolver = g_resolver_get_default ();
+
+  return (GSocketAddressEnumerator *)srv_enum;
 }
 
 #define __G_NETWORK_SERVICE_C__

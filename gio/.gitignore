@@ -1,3 +1,5 @@
+actual-abi
+expected-abi
 gio-marshal.[ch]
 gioenumtypes.[ch]
 gioalias.h

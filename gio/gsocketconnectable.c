@@ -22,20 +22,7 @@
 #include "gsocketconnectable.h"
 #include "glibintl.h"
 
-#include "gsimpleasyncresult.h"
-
 #include "gioalias.h"
-
-static void            g_socket_connectable_base_init            (GSocketConnectableIface *connectable_iface);
-
-static void            g_socket_connectable_real_get_next_async  (GSocketConnectable      *connectable,
-								  GSocketConnectableIter  *iter,
-								  GCancellable            *cancellable,
-								  GAsyncReadyCallback      callback,
-								  gpointer                 user_data);
-static GSocketAddress *g_socket_connectable_real_get_next_finish (GSocketConnectable      *connectable,
-								  GAsyncResult            *result,
-								  GError                 **error);
 
 GType
 g_socket_connectable_get_type (void)
@@ -47,7 +34,7 @@ g_socket_connectable_get_type (void)
       const GTypeInfo connectable_info =
       {
         sizeof (GSocketConnectableIface), /* class_size */
-	(GBaseInitFunc) g_socket_connectable_base_init,   /* base_init */
+	NULL,		/* base_init */
 	NULL,		/* base_finalize */
 	NULL,
 	NULL,		/* class_finalize */
@@ -68,15 +55,8 @@ g_socket_connectable_get_type (void)
   return g_define_type_id__volatile;
 }
 
-static void
-g_socket_connectable_base_init (GSocketConnectableIface *connectable_iface)
-{
-  connectable_iface->get_next_async = g_socket_connectable_real_get_next_async;
-  connectable_iface->get_next_finish = g_socket_connectable_real_get_next_finish;
-}
-
-GSocketConnectableIter *
-g_socket_connectable_get_iter (GSocketConnectable *connectable)
+GSocketAddressEnumerator *
+g_socket_connectable_get_enumerator (GSocketConnectable *connectable)
 {
   GSocketConnectableIface *iface;
 
@@ -84,113 +64,7 @@ g_socket_connectable_get_iter (GSocketConnectable *connectable)
 
   iface = G_SOCKET_CONNECTABLE_GET_IFACE (connectable);
 
-  return (* iface->get_iter) (connectable);
-}
-
-void
-g_socket_connectable_free_iter (GSocketConnectable      *connectable,
-				GSocketConnectableIter  *iter)
-{
-  GSocketConnectableIface *iface;
-
-  g_return_if_fail (G_IS_SOCKET_CONNECTABLE (connectable));
-
-  iface = G_SOCKET_CONNECTABLE_GET_IFACE (connectable);
-
-  (* iface->free_iter) (connectable, iter);
-}
-
-GSocketAddress *
-g_socket_connectable_get_next (GSocketConnectable      *connectable,
-			       GSocketConnectableIter  *iter,
-			       GCancellable            *cancellable,
-			       GError                 **error)
-{
-  GSocketConnectableIface *iface;
-
-  g_return_val_if_fail (G_IS_SOCKET_CONNECTABLE (connectable), NULL);
-
-  iface = G_SOCKET_CONNECTABLE_GET_IFACE (connectable);
-
-  return (* iface->get_next) (connectable, iter, cancellable, error);
-}
-
-/* Default implementation just calls the synchronous method; this can
- * be used if the implementation already knows all of its addresses,
- * and so the synchronous method will never block.
- */
-static void
-g_socket_connectable_real_get_next_async (GSocketConnectable      *connectable,
-					  GSocketConnectableIter  *iter,
-					  GCancellable            *cancellable,
-					  GAsyncReadyCallback      callback,
-					  gpointer                 user_data)
-{
-  GSimpleAsyncResult *result;
-  GSocketAddress *address;
-  GError *error = NULL;
-
-  result = g_simple_async_result_new (G_OBJECT (connectable),
-				      callback, user_data,
-				      g_socket_connectable_real_get_next_async);
-  address = g_socket_connectable_get_next (connectable, iter,
-					   cancellable, &error);
-  if (address)
-    g_simple_async_result_set_op_res_gpointer (result, address, NULL);
-  else
-    {
-      g_simple_async_result_set_from_error (result, error);
-      g_error_free (error);
-    }
-  g_simple_async_result_complete_in_idle (result);
-  g_object_unref (result);
-}
-
-void
-g_socket_connectable_get_next_async (GSocketConnectable      *connectable,
-				     GSocketConnectableIter  *iter,
-				     GCancellable            *cancellable,
-				     GAsyncReadyCallback      callback,
-				     gpointer                 user_data)
-{
-  GSocketConnectableIface *iface;
-
-  g_return_if_fail (G_IS_SOCKET_CONNECTABLE (connectable));
-
-  iface = G_SOCKET_CONNECTABLE_GET_IFACE (connectable);
-
-  (* iface->get_next_async) (connectable, iter, cancellable, callback, user_data);
-}
-
-static GSocketAddress *
-g_socket_connectable_real_get_next_finish (GSocketConnectable      *connectable,
-					   GAsyncResult            *result,
-					   GError                 **error)
-{
-  GSimpleAsyncResult *simple;
-
-  g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), NULL);
-  simple = G_SIMPLE_ASYNC_RESULT (result);
-  g_return_val_if_fail (g_simple_async_result_get_source_tag (simple) == g_socket_connectable_real_get_next_async, NULL);
-
-  if (g_simple_async_result_propagate_error (simple, error))
-    return NULL;
-  else
-    return g_simple_async_result_get_op_res_gpointer (simple);
-}
-
-GSocketAddress *
-g_socket_connectable_get_next_finish (GSocketConnectable      *connectable,
-				      GAsyncResult            *result,
-				      GError                 **error)
-{
-  GSocketConnectableIface *iface;
-
-  g_return_val_if_fail (G_IS_SOCKET_CONNECTABLE (connectable), NULL);
-
-  iface = G_SOCKET_CONNECTABLE_GET_IFACE (connectable);
-
-  return (* iface->get_next_finish) (connectable, result, error);
+  return (* iface->get_enumerator) (connectable);
 }
 
 #define __G_SOCKET_CONNECTABLE_C__

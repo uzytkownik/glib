@@ -26,7 +26,7 @@ TEST_PROGS +=	 		\
 	g-icon			\
 	buffered-input-stream
 
-SAMPLE_PROGS = resolver
+SAMPLE_PROGS = connectable resolver
 
 if OS_UNIX
 TEST_PROGS += live-g-file unix-streams desktop-app-info
@@ -64,6 +64,10 @@ desktop_app_info_LDADD	  = $(progs_ldadd)
 
 unix_streams_SOURCES	  = unix-streams.c
 unix_streams_LDADD	  = $(progs_ldadd) \
+	$(top_builddir)/gthread/libgthread-2.0.la
+
+connectable_SOURCES	  = connectable.c
+connectable_LDADD	  = $(progs_ldadd) \
 	$(top_builddir)/gthread/libgthread-2.0.la
 
 resolver_SOURCES	  = resolver.c

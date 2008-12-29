@@ -204,8 +204,6 @@ libgio_2_0_la_SOURCES =		\
 	gfilterinputstream.c 	\
 	gfilteroutputstream.c 	\
 	gicon.c 		\
-	ginet4address.c		\
-	ginet6address.c		\
 	ginetaddress.c		\
 	ginetsocketaddress.c	\
 	ginputstream.c 		\
@@ -233,8 +231,9 @@ libgio_2_0_la_SOURCES =		\
 	gsimpleasyncresult.c 	\
 	gsocket.c		\
 	gsocketaddress.c	\
+	gsocketaddressenumerator.c \
 	gsocketconnectable.c	\
-	gstreamconnection.c	\
+	gstreamconnection.c     \
 	gthemedicon.c 		\
 	gthreadedresolver.c	\
 	gthreadedresolver.h	\
@@ -324,8 +323,6 @@ gio_headers =			\
 	gfilterinputstream.h 	\
 	gfilteroutputstream.h 	\
 	gicon.h 		\
-	ginet4address.h		\
-	ginet6address.h		\
 	ginetaddress.h		\
 	ginetsocketaddress.h	\
 	ginputstream.h 		\
@@ -350,8 +347,9 @@ gio_headers =			\
 	gsimpleasyncresult.h 	\
 	gsocket.h		\
 	gsocketaddress.h	\
+	gsocketaddressenumerator.h \
 	gsocketconnectable.h	\
-	gstreamconnection.h	\
+	gstreamconnection.h     \
 	gthemedicon.h 		\
 	gvfs.h 			\
 	gvolume.h 		\

@@ -54,37 +54,34 @@
 
 G_BEGIN_DECLS
 
-#ifdef G_OS_WIN32
-void      g_resolver_os_init                   (void);
-#else
-#define   g_resolver_os_init()
-#endif
+extern struct addrinfo _g_resolver_addrinfo_hints;
 
-void      g_network_address_get_addrinfo_hints (GNetworkAddress  *addr,
-						gchar             service[8],
-						struct addrinfo  *hints);
-gboolean  g_network_address_set_from_addrinfo  (GNetworkAddress  *addr,
-						struct addrinfo  *res,
-						gint              gai_retval,
-						GError          **error);
+void           _g_resolver_os_init                 (void);
 
-gboolean  g_network_address_set_from_nameinfo  (GNetworkAddress  *addr,
-						const gchar      *name,
-						gint              gni_retval,
-						GError          **error);
+GInetAddress **_g_resolver_addresses_from_addrinfo (const char       *hostname,
+						    struct addrinfo  *res,
+						    gint              gai_retval,
+						    GError          **error);
 
-gchar    *g_network_service_get_rrname         (GNetworkService  *srv);
+void           _g_resolver_address_to_sockaddr     (GInetAddress            *address,
+						    struct sockaddr_storage *sa,
+						    gsize                   *sa_len);
+char          *_g_resolver_name_from_nameinfo      (GInetAddress     *address,
+						    const gchar      *name,
+						    gint              gni_retval,
+						    GError          **error);
+
 #if defined(G_OS_UNIX)
-gboolean  g_network_service_set_from_res_query (GNetworkService  *srv,
-						guchar           *answer,
-						gint              len,
-						gint              herr,
-						GError          **error);
+GSrvTarget   **_g_resolver_targets_from_res_query  (const gchar      *rrname,
+						    guchar           *answer,
+						    gint              len,
+						    gint              herr,
+						    GError          **error);
 #elif defined(G_OS_WIN32)
-gboolean  g_network_service_set_from_DnsQuery  (GNetworkService  *srv,
-						DNS_STATUS        status,
-						DNS_RECORD       *results,
-						GError          **error);
+GSrvTarget   **_g_resolver_targets_from_DnsQuery   (const gchar      *rrname,
+						    DNS_STATUS        status,
+						    DNS_RECORD       *results,
+						    GError          **error);
 #endif
 
 G_END_DECLS

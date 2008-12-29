@@ -1,7 +1,11 @@
+buffered-input-stream
 data-input-stream
 data-output-stream
+desktop-app-info
 g-file
 g-file-info
+g-icon
 live-g-file
 memory-input-stream
 memory-output-stream
+unix-streams

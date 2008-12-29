@@ -39,25 +39,14 @@ G_BEGIN_DECLS
  *
  * Interface for objects that contain or generate #GSocketAddress<!-- -->es.
  **/
-typedef struct _GSocketConnectableIface   GSocketConnectableIface;
-
-/**
- * GSocketConnectableIter:
- *
- * An opaque type used to iterate a #GSocketConnectable.
- **/
-typedef struct _GSocketConnectableIter    GSocketConnectableIter;
+typedef struct _GSocketConnectableIface GSocketConnectableIface;
 
 /**
  * GSocketConnectableIface:
  * @g_iface: The parent interface.
- * @tell: Tells the current location within a stream.
- * @can_seek: Checks if seeking is supported by the stream.
- * @seek: Seeks to a location within a stream.
- * @can_truncate: Chekcs if truncation is suppored by the stream.
- * @truncate_fn: Truncates a stream.
+ * @get_enumerator: Gets a #GSocketAddressEnumerator
  *
- * Provides an interface for implementing connectable functionality on I/O Streams.
+ * Provides an interface for returning a #GSocketAddressEnumerator
  **/
 struct _GSocketConnectableIface
 {
@@ -65,44 +54,13 @@ struct _GSocketConnectableIface
 
   /* Virtual Table */
 
-  GSocketConnectableIter * (* get_iter)        (GSocketConnectable      *connectable);
-  void                     (* free_iter)       (GSocketConnectable      *connectable,
-						GSocketConnectableIter  *iter);
+  GSocketAddressEnumerator * (* get_enumerator) (GSocketConnectable *connectable);
 
-  GSocketAddress *         (* get_next)        (GSocketConnectable      *connectable,
-						GSocketConnectableIter  *iter,
-						GCancellable            *cancellable,
-						GError                 **error);
-
-  void                     (* get_next_async)  (GSocketConnectable      *connectable,
-						GSocketConnectableIter  *iter,
-						GCancellable            *cancellable,
-						GAsyncReadyCallback      callback,
-						gpointer                 user_data);
-  GSocketAddress *         (* get_next_finish) (GSocketConnectable      *connectable,
-						GAsyncResult            *result,
-						GError                 **error);
 };
 
-GType                    g_socket_connectable_get_type        (void) G_GNUC_CONST;
+GType                     g_socket_connectable_get_type       (void) G_GNUC_CONST;
 
-GSocketConnectableIter * g_socket_connectable_get_iter        (GSocketConnectable      *connectable);
-void                     g_socket_connectable_free_iter       (GSocketConnectable      *connectable,
-							       GSocketConnectableIter  *iter);
-
-GSocketAddress *         g_socket_connectable_get_next        (GSocketConnectable      *connectable,
-							       GSocketConnectableIter  *iter,
-							       GCancellable            *cancellable,
-							       GError                 **error);
-
-void                     g_socket_connectable_get_next_async  (GSocketConnectable      *connectable,
-							       GSocketConnectableIter  *iter,
-							       GCancellable            *cancellable,
-							       GAsyncReadyCallback      callback,
-							       gpointer                 user_data);
-GSocketAddress *         g_socket_connectable_get_next_finish (GSocketConnectable      *connectable,
-							       GAsyncResult            *result,
-							       GError                 **error);
+GSocketAddressEnumerator *g_socket_connectable_get_enumerator (GSocketConnectable *connectable);
 
 G_END_DECLS
 

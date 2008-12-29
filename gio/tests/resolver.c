@@ -50,8 +50,9 @@ usage (void)
 G_LOCK_DEFINE_STATIC (response);
 
 static void
-print_resolved_name (const char *phys, GNetworkAddress *addr,
-		     GError *error)
+print_resolved_name (const char *phys,
+                     char       *name,
+                     GError     *error)
 {
   G_LOCK (response);
   printf ("Address: %s\n", phys);
@@ -62,8 +63,8 @@ print_resolved_name (const char *phys, GNetworkAddress *addr,
     }
   else
     {
-      printf ("Name:    %s\n", g_network_address_get_hostname (addr));
-      g_object_unref (addr);
+      printf ("Name:    %s\n", name);
+      g_free (name);
     }
   printf ("\n");
 
@@ -74,10 +75,10 @@ print_resolved_name (const char *phys, GNetworkAddress *addr,
 }
 
 static void
-print_resolved_addresses (const char *name, GNetworkAddress *addr,
-			  GError *error)
+print_resolved_addresses (const char    *name,
+                          GInetAddress **addresses,
+			  GError        *error)
 {
-  GInetSocketAddress **addrs;
   char *phys;
   int i;
 
@@ -90,14 +91,14 @@ print_resolved_addresses (const char *name, GNetworkAddress *addr,
     }
   else
     {
-      addrs = g_network_address_get_sockaddrs (addr);
-      for (i = 0; addrs[i]; i++)
+      for (i = 0; addresses[i]; i++)
 	{
-	  phys = g_inet_address_to_string (g_inet_socket_address_get_address (addrs[i]));
+	  phys = g_inet_address_to_string (addresses[i]);
 	  printf ("Address: %s\n", phys);
 	  g_free (phys);
+          g_object_unref (addresses[i]);
 	}
-      g_object_unref (addr);
+      g_free (addresses);
     }
   printf ("\n");
 
@@ -108,10 +109,10 @@ print_resolved_addresses (const char *name, GNetworkAddress *addr,
 }
 
 static void
-print_resolved_service (const char *service, GNetworkService *srv,
-			GError *error)
+print_resolved_service (const char  *service,
+                        GSrvTarget **targets,
+			GError      *error)
 {
-  GSrvTarget **targets;
   int i;
 
   G_LOCK (response);
@@ -123,7 +124,6 @@ print_resolved_service (const char *service, GNetworkService *srv,
     }
   else
     {
-      targets = g_network_service_get_targets (srv);
       for (i = 0; targets[i]; i++)
 	{
 	  printf ("%s:%u (pri %u, weight %u)\n",
@@ -131,8 +131,9 @@ print_resolved_service (const char *service, GNetworkService *srv,
 		  g_srv_target_get_port (targets[i]),
 		  g_srv_target_get_priority (targets[i]),
 		  g_srv_target_get_weight (targets[i]));
+          g_srv_target_free (targets[i]);
 	}
-      g_object_unref (srv);
+      g_free (targets);
     }
   printf ("\n");
 
@@ -147,34 +148,36 @@ lookup_thread (gpointer data)
 {
   const char *arg = data;
   GError *error = NULL;
-  GNetworkAddress *addr;
-  GNetworkService *srv;
 
   if (strchr (arg, '/'))
     {
+      GSrvTarget **targets;
       /* service/protocol/domain */
       char **parts = g_strsplit (arg, "/", 3);
 
       if (!parts || !parts[2])
 	usage ();
 
-      srv = g_resolver_lookup_service (resolver, parts[0], parts[1], parts[2],
-				       cancellable, &error);
-      print_resolved_service (arg, srv, error);
+      targets = g_resolver_lookup_service (resolver,
+                                           parts[0], parts[1], parts[2],
+                                           cancellable, &error);
+      print_resolved_service (arg, targets, error);
     }
   else if (g_hostname_is_ip_address (arg))
     {
-      GInetAddress *iaddr = g_inet_address_from_string (arg);
-      GInetSocketAddress *sockaddr = g_inet_socket_address_new (iaddr, 0);
+      GInetAddress *addr = g_inet_address_from_string (arg);
+      char *name;
 
-      addr = g_resolver_lookup_address (resolver, sockaddr, cancellable, &error);
-      print_resolved_name (arg, addr, error);
-      g_object_unref (sockaddr);
+      name = g_resolver_lookup_by_address (resolver, addr, cancellable, &error);
+      print_resolved_name (arg, name, error);
+      g_object_unref (addr);
     }
   else
     {
-      addr = g_resolver_lookup_name (resolver, arg, 0, cancellable, &error);
-      print_resolved_addresses (arg, addr, error);
+      GInetAddress **addresses;
+
+      addresses = g_resolver_lookup_by_name (resolver, arg, cancellable, &error);
+      print_resolved_addresses (arg, addresses, error);
     }
 
   return NULL;
@@ -190,27 +193,27 @@ start_threaded_lookups (char **argv, int argc)
 }
 
 static void
-lookup_addr_callback (GObject *source, GAsyncResult *result,
-		      gpointer user_data)
+lookup_by_addr_callback (GObject *source, GAsyncResult *result,
+                         gpointer user_data)
 {
   const char *phys = user_data;
   GError *error = NULL;
-  GNetworkAddress *addr;
+  char *name;
 
-  addr = g_resolver_lookup_address_finish (resolver, result, &error);
-  print_resolved_name (phys, addr, error);
+  name = g_resolver_lookup_by_address_finish (resolver, result, &error);
+  print_resolved_name (phys, name, error);
 }
 
 static void
-lookup_name_callback (GObject *source, GAsyncResult *result,
-		      gpointer user_data)
+lookup_by_name_callback (GObject *source, GAsyncResult *result,
+                         gpointer user_data)
 {
   const char *name = user_data;
   GError *error = NULL;
-  GNetworkAddress *addr;
+  GInetAddress **addresses;
 
-  addr = g_resolver_lookup_name_finish (resolver, result, &error);
-  print_resolved_addresses (name, addr, error);
+  addresses = g_resolver_lookup_by_name_finish (resolver, result, &error);
+  print_resolved_addresses (name, addresses, error);
 }
 
 static void
@@ -219,10 +222,10 @@ lookup_service_callback (GObject *source, GAsyncResult *result,
 {
   const char *service = user_data;
   GError *error = NULL;
-  GNetworkService *srv;
+  GSrvTarget **targets;
 
-  srv = g_resolver_lookup_service_finish (resolver, result, &error);
-  print_resolved_service (service, srv, error);
+  targets = g_resolver_lookup_service_finish (resolver, result, &error);
+  print_resolved_service (service, targets, error);
 }
 
 static void
@@ -247,18 +250,17 @@ start_async_lookups (char **argv, int argc)
 	}
       else if (g_hostname_is_ip_address (argv[i]))
 	{
-          GInetAddress *iaddr = g_inet_address_from_string (argv[i]);
-          GInetSocketAddress *sockaddr = g_inet_socket_address_new (iaddr, 0);
+          GInetAddress *addr = g_inet_address_from_string (argv[i]);
 
-	  g_resolver_lookup_address_async (resolver, sockaddr, cancellable,
-					   lookup_addr_callback, argv[i]);
-	  g_object_unref (sockaddr);
+	  g_resolver_lookup_by_address_async (resolver, addr, cancellable,
+                                              lookup_by_addr_callback, argv[i]);
+	  g_object_unref (addr);
 	}
       else
 	{
-	  g_resolver_lookup_name_async (resolver, argv[i], 0, cancellable,
-					lookup_name_callback,
-					argv[i]);
+	  g_resolver_lookup_by_name_async (resolver, argv[i], cancellable,
+                                           lookup_by_name_callback,
+                                           argv[i]);
 	}
     }
 }

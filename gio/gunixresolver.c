@@ -114,7 +114,11 @@ typedef struct {
   GUnixResolver *gur;
 
   _g_asyncns_query_t *qy;
-  gpointer resolvable;
+  union {
+    gchar *hostname;
+    GInetAddress *address;
+    gchar *service;
+  } u;
 
   GCancellable *cancellable;
   GSimpleAsyncResult *async_result;
@@ -127,7 +131,6 @@ static void request_cancelled (GCancellable *cancellable,
 
 static GUnixResolverRequest *
 g_unix_resolver_request_new (GUnixResolver      *gur,
-                             gpointer            resolvable,
                              _g_asyncns_query_t *qy,
                              GCancellable       *cancellable,
                              GSimpleAsyncResult *async_result)
@@ -137,7 +140,6 @@ g_unix_resolver_request_new (GUnixResolver      *gur,
   req = g_slice_new0 (GUnixResolverRequest);
   req->gur = g_object_ref (gur);
   req->qy = qy;
-  req->resolvable = g_object_ref (resolvable);
 
   if (cancellable)
     {
@@ -156,8 +158,6 @@ g_unix_resolver_request_new (GUnixResolver      *gur,
 static void
 g_unix_resolver_request_free (GUnixResolverRequest *req)
 {
-  g_object_unref (req->resolvable);
-
   /* We don't have to free req->cancellable and req->async_result,
    * since they must already have been freed if we're here.
    */
@@ -233,9 +233,8 @@ g_unix_resolver_watch (GIOChannel   *iochannel,
   return TRUE;
 }
 
-static void
+static GUnixResolverRequest *
 resolve_async (GUnixResolver       *gur,
-               gpointer             resolvable,
                _g_asyncns_query_t  *qy,
                GCancellable        *cancellable,
                GAsyncReadyCallback  callback,
@@ -246,129 +245,133 @@ resolve_async (GUnixResolver       *gur,
   GUnixResolverRequest *req;
 
   result = g_simple_async_result_new (G_OBJECT (gur), callback, user_data, tag);
-  req = g_unix_resolver_request_new (gur, resolvable, qy, cancellable, result);
+  req = g_unix_resolver_request_new (gur, qy, cancellable, result);
   g_object_unref (result);
   _g_asyncns_setuserdata (gur->asyncns, qy, req);
+
+  return req;
 }
 
 static void
-lookup_name_async (GResolver           *resolver,
-                   GNetworkAddress     *addr,
-		   GCancellable        *cancellable,
-                   GAsyncReadyCallback  callback,
-		   gpointer             user_data)
+lookup_by_name_async (GResolver           *resolver,
+                      const gchar         *hostname,
+                      GCancellable        *cancellable,
+                      GAsyncReadyCallback  callback,
+                      gpointer             user_data)
 {
   GUnixResolver *gur = G_UNIX_RESOLVER (resolver);
+  GUnixResolverRequest *req;
   _g_asyncns_query_t *qy;
-  struct addrinfo hints;
-  gchar service[8];
 
-  g_network_address_get_addrinfo_hints (addr, service, &hints);
-  qy = _g_asyncns_getaddrinfo (gur->asyncns,
-                               g_network_address_get_ascii_name (addr),
-                               service, &hints);
-  resolve_async (gur, addr, qy, cancellable,
-                 callback, user_data, lookup_name_async);
+  qy = _g_asyncns_getaddrinfo (gur->asyncns, hostname, NULL,
+                               &_g_resolver_addrinfo_hints);
+  req = resolve_async (gur, qy, cancellable,
+                       callback, user_data, lookup_by_name_async);
+  req->u.hostname = g_strdup (hostname);
 }
 
-static gboolean
-lookup_name_finish (GResolver     *resolver,
-                    GAsyncResult  *result,
-		    GError       **error)
+static GInetAddress **
+lookup_by_name_finish (GResolver     *resolver,
+                       GAsyncResult  *result,
+                       GError       **error)
 {
   GSimpleAsyncResult *simple;
   GUnixResolverRequest *req;
   struct addrinfo *res;
   gint retval;
-  gboolean success;
+  GInetAddress **addresses;
 
   g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
   simple = G_SIMPLE_ASYNC_RESULT (result);
-  g_return_val_if_fail (g_simple_async_result_get_source_tag (simple) == lookup_name_async, FALSE);
+  g_return_val_if_fail (g_simple_async_result_get_source_tag (simple) == lookup_by_name_async, FALSE);
 
   if (g_simple_async_result_propagate_error (simple, error))
-    return FALSE;
+    {
+      g_free (req->u.hostname);
+      return FALSE;
+    }
 
   req = g_simple_async_result_get_op_res_gpointer (simple);
   retval = _g_asyncns_getaddrinfo_done (req->gur->asyncns, req->qy, &res);
-  success = g_network_address_set_from_addrinfo (req->resolvable, res, retval, error);
+  addresses = _g_resolver_addresses_from_addrinfo (req->u.hostname, res, retval, error);
+  g_free (req->u.hostname);
   if (res)
     freeaddrinfo (res);
 
-  return success;
+  return addresses;
 }
 
 
 static void
-lookup_address_async (GResolver           *resolver,
-                      GNetworkAddress     *addr,
-		      GCancellable        *cancellable,
-                      GAsyncReadyCallback  callback,
-		      gpointer             user_data)
+lookup_by_address_async (GResolver           *resolver,
+                         GInetAddress        *address,
+                         GCancellable        *cancellable,
+                         GAsyncReadyCallback  callback,
+                         gpointer             user_data)
 {
   GUnixResolver *gur = G_UNIX_RESOLVER (resolver);
+  GUnixResolverRequest *req;
   _g_asyncns_query_t *qy;
-  GInetSocketAddress **sockaddrs;
   struct sockaddr_storage sockaddr;
-  gssize sockaddr_size;
+  gsize sockaddr_size;
 
-  sockaddrs = g_network_address_get_sockaddrs (addr);
-  g_return_if_fail (sockaddrs != NULL && sockaddrs[0] != NULL);
-
-  sockaddr_size = g_socket_address_native_size (G_SOCKET_ADDRESS (sockaddrs[0]));
-  g_return_if_fail (sockaddr_size <= sizeof (sockaddr));
-  g_socket_address_to_native (G_SOCKET_ADDRESS (sockaddrs[0]), &sockaddr);
-
+  _g_resolver_address_to_sockaddr (address, &sockaddr, &sockaddr_size);
   qy = _g_asyncns_getnameinfo (gur->asyncns,
                                (struct sockaddr *)&sockaddr, sockaddr_size,
                                NI_NAMEREQD, TRUE, FALSE);
-  resolve_async (gur, addr, qy, cancellable,
-                 callback, user_data, lookup_address_async);
+  req = resolve_async (gur, qy, cancellable,
+                       callback, user_data, lookup_by_address_async);
+  req->u.address = g_object_ref (address);
 }
 
-static gboolean
-lookup_address_finish (GResolver     *resolver,
-                       GAsyncResult  *result,
-		       GError       **error)
+static gchar *
+lookup_by_address_finish (GResolver     *resolver,
+                          GAsyncResult  *result,
+                          GError       **error)
 {
   GSimpleAsyncResult *simple;
   GUnixResolverRequest *req;
-  gchar host[NI_MAXHOST];
+  gchar host[NI_MAXHOST], *name;
   gint retval;
 
   g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
   simple = G_SIMPLE_ASYNC_RESULT (result);
-  g_return_val_if_fail (g_simple_async_result_get_source_tag (simple) == lookup_address_async, FALSE);
+  g_return_val_if_fail (g_simple_async_result_get_source_tag (simple) == lookup_by_address_async, FALSE);
 
   if (g_simple_async_result_propagate_error (simple, error))
-    return FALSE;
+    {
+      g_object_unref (req->u.address);
+      return FALSE;
+    }
 
   req = g_simple_async_result_get_op_res_gpointer (simple);
   retval = _g_asyncns_getnameinfo_done (req->gur->asyncns, req->qy,
                                         host, sizeof (host), NULL, 0);
-  return g_network_address_set_from_nameinfo (req->resolvable, host, retval, error);
+  name = _g_resolver_name_from_nameinfo (req->u.address, host, retval, error);
+  g_object_unref (req->u.address);
+
+  return name;
 }
 
 
 static void
 lookup_service_async (GResolver           *resolver,
-                      GNetworkService     *srv,
+                      const char          *rrname,
 		      GCancellable        *cancellable,
                       GAsyncReadyCallback  callback,
 		      gpointer             user_data)
 {
   GUnixResolver *gur = G_UNIX_RESOLVER (resolver);
+  GUnixResolverRequest *req;
   _g_asyncns_query_t *qy;
-  gchar *dname;
 
-  dname = g_network_service_get_rrname (srv);
-  qy = _g_asyncns_res_query (gur->asyncns, dname, C_IN, T_SRV);
-  g_free (dname);
-  resolve_async (gur, srv, qy, cancellable,
-                 callback, user_data, lookup_service_async);
+  qy = _g_asyncns_res_query (gur->asyncns, rrname, C_IN, T_SRV);
+  req = resolve_async (gur, qy, cancellable,
+                       callback, user_data, lookup_service_async);
+  req->u.service = g_strdup (rrname);
 }
 
-static gboolean
+static GSrvTarget **
 lookup_service_finish (GResolver     *resolver,
                        GAsyncResult  *result,
 		       GError       **error)
@@ -377,14 +380,17 @@ lookup_service_finish (GResolver     *resolver,
   GUnixResolverRequest *req;
   guchar *answer;
   gint len, herr;
-  gboolean success;
+  GSrvTarget **targets;
 
   g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
   simple = G_SIMPLE_ASYNC_RESULT (result);
   g_return_val_if_fail (g_simple_async_result_get_source_tag (simple) == lookup_service_async, FALSE);
 
   if (g_simple_async_result_propagate_error (simple, error))
-    return FALSE;
+    {
+      g_free (req->u.service);
+      return FALSE;
+    }
 
   req = g_simple_async_result_get_op_res_gpointer (simple);
   len = _g_asyncns_res_done (req->gur->asyncns, req->qy, &answer);
@@ -393,9 +399,11 @@ lookup_service_finish (GResolver     *resolver,
   else
     herr = 0;
 
-  success = g_network_service_set_from_res_query (req->resolvable, answer, len, herr, error);
+  targets = _g_resolver_targets_from_res_query (req->u.service, answer, len, herr, error);
   _g_asyncns_freeanswer (answer);
-  return success;
+
+  g_free (req->u.service);
+  return targets;
 }
 
 
@@ -405,12 +413,12 @@ g_unix_resolver_class_init (GUnixResolverClass *unix_class)
   GResolverClass *resolver_class = G_RESOLVER_CLASS (unix_class);
   GObjectClass *object_class = G_OBJECT_CLASS (unix_class);
 
-  resolver_class->lookup_name_async     = lookup_name_async;
-  resolver_class->lookup_name_finish    = lookup_name_finish;
-  resolver_class->lookup_address_async  = lookup_address_async;
-  resolver_class->lookup_address_finish = lookup_address_finish;
-  resolver_class->lookup_service_async  = lookup_service_async;
-  resolver_class->lookup_service_finish = lookup_service_finish;
+  resolver_class->lookup_by_name_async     = lookup_by_name_async;
+  resolver_class->lookup_by_name_finish    = lookup_by_name_finish;
+  resolver_class->lookup_by_address_async  = lookup_by_address_async;
+  resolver_class->lookup_by_address_finish = lookup_by_address_finish;
+  resolver_class->lookup_service_async     = lookup_service_async;
+  resolver_class->lookup_service_finish    = lookup_service_finish;
 
   object_class->finalize = g_unix_resolver_finalize;
 }

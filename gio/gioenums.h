@@ -477,6 +477,21 @@ typedef enum {
   G_RESOLVER_ERROR_INTERNAL
 } GResolverError;
 
+/**
+ * GInetAddressFamily:
+ * @G_INET_ADDRESS_INVALID: no address family
+ * @G_INET_ADDRESS_IPV4: an IPv4 address
+ * @G_INET_ADDRESS_IPV6: an IPv6 address
+ *
+ * The protocol family of a #GInetAddress. (These values are identical
+ * to the system defines %AF_INET and %AF_INET6.)
+ */
+typedef enum {
+  G_INET_ADDRESS_INVALID,
+  G_INET_ADDRESS_IPV4	= GLIB_SYSDEF_AF_INET,
+  G_INET_ADDRESS_IPV6	= GLIB_SYSDEF_AF_INET6
+} GInetAddressFamily;
+
 G_END_DECLS
 
 #endif /* __GIO_ENUMS_H__ */

@@ -27,8 +27,6 @@
 
 #include "ginetsocketaddress.h"
 #include "ginetaddress.h"
-#include "ginet4address.h"
-#include "ginet6address.h"
 #include "gresolverprivate.h"
 
 #include "gioalias.h"
@@ -106,7 +104,7 @@ g_inet_socket_address_set_property (GObject      *object,
   switch (prop_id)
     {
       case PROP_ADDRESS:
-        address->priv->address = g_object_ref_sink (g_value_get_object (value));
+        address->priv->address = g_object_ref (g_value_get_object (value));
         break;
 
       case PROP_PORT:
@@ -122,14 +120,16 @@ static gssize
 g_inet_socket_address_native_size (GSocketAddress *address)
 {
   GInetSocketAddress *addr;
+  GInetAddressFamily family;
 
   g_return_val_if_fail (G_IS_INET_SOCKET_ADDRESS (address), 0);
 
   addr = G_INET_SOCKET_ADDRESS (address);
+  family = g_inet_address_get_family (addr->priv->address);
 
-  if (G_IS_INET4_ADDRESS (addr->priv->address))
+  if (family == AF_INET)
     return sizeof (struct sockaddr_in);
-  else if (G_IS_INET6_ADDRESS (addr->priv->address))
+  else if (family == AF_INET6)
     return sizeof (struct sockaddr_in6);
   else
     return -1;
@@ -137,17 +137,23 @@ g_inet_socket_address_native_size (GSocketAddress *address)
 
 static gboolean
 g_inet_socket_address_to_native (GSocketAddress *address,
-                                 gpointer        dest)
+                                 gpointer        dest,
+				 gsize           destlen)
 {
   GInetSocketAddress *addr;
+  GInetAddressFamily family;
 
   g_return_val_if_fail (G_IS_INET_SOCKET_ADDRESS (address), 0);
 
   addr = G_INET_SOCKET_ADDRESS (address);
+  family = g_inet_address_get_family (addr->priv->address);
 
-  if (G_IS_INET4_ADDRESS (addr->priv->address))
+  if (family == AF_INET)
     {
       struct sockaddr_in *sock = (struct sockaddr_in *) dest;
+
+      if (destlen < sizeof (*sock))
+	return FALSE;
 
       sock->sin_family = AF_INET;
       sock->sin_port = g_htons (addr->priv->port);
@@ -155,9 +161,13 @@ g_inet_socket_address_to_native (GSocketAddress *address,
       memset (sock->sin_zero, 0, sizeof (sock->sin_zero));
       return TRUE;
     }
-  else if (G_IS_INET6_ADDRESS (addr->priv->address))
+  else if (family == AF_INET6)
     {
       struct sockaddr_in6 *sock = (struct sockaddr_in6 *) dest;
+
+      if (destlen < sizeof (*sock))
+	return FALSE;
+
       memset (sock, 0, sizeof (sock));
       sock->sin6_family = AF_INET6;
       sock->sin6_port = g_htons (addr->priv->port);
@@ -217,13 +227,16 @@ g_inet_socket_address_init (GInetSocketAddress *address)
  * @address: a #GInetAddress
  * @port: a port number
  *
- * Returns: a new #GInetSocketAddress with a floating reference
+ * Returns: a new #GInetSocketAddress
  */
-GInetSocketAddress *
+GSocketAddress *
 g_inet_socket_address_new (GInetAddress *address,
                            guint16       port)
 {
-  return G_INET_SOCKET_ADDRESS (g_object_new (G_TYPE_INET_SOCKET_ADDRESS, "address", address, "port", port, NULL));
+  return g_object_new (G_TYPE_INET_SOCKET_ADDRESS,
+		       "address", address,
+		       "port", port,
+		       NULL);
 }
 
 /**

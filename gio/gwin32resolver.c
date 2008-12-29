@@ -89,7 +89,6 @@ typedef struct GWin32ResolverRequest GWin32ResolverRequest;
 typedef void (*GWin32ResolverRequestFreeFunc) (GWin32ResolverRequest *);
 
 struct GWin32ResolverRequest {
-  gpointer resolvable;
   GWin32ResolverRequestFreeFunc free_func;
 
   GCancellable *cancellable;
@@ -103,21 +102,20 @@ struct GWin32ResolverRequest {
   union {
     struct {
       const gchar *name;
-      gchar service[8];
-      struct addrinfo hints;
       gint retval;
       struct addrinfo *res;
     } name;
 
     struct {
-      struct sockaddr *addr;
-      gint addrlen;
+      GInetAddress *iaddr;
+      struct sockaddr_storage addr;
+      gsize addrlen;
       gint retval;
       gchar *namebuf;
     } address;
 
     struct {
-      gchar *dname;
+      gchar *rrname;
       DNS_STATUS retval;
       DNS_RECORD *results;
     } service;
@@ -135,7 +133,6 @@ static void     request_cancelled (GCancellable *cancellable,
 
 GWin32ResolverRequest *
 g_win32_resolver_request_new (GResolver                     *resolver,
-                              gpointer                       resolvable,
                               GWin32ResolverRequestFreeFunc  free_func,
                               GCancellable                  *cancellable,
                               GAsyncReadyCallback            callback,
@@ -145,7 +142,6 @@ g_win32_resolver_request_new (GResolver                     *resolver,
   GWin32ResolverRequest *req;
 
   req = g_slice_new0 (GWin32ResolverRequest);
-  req->resolvable = g_object_ref (resolvable);
   req->free_func = free_func;
 
   req->async_result = g_simple_async_result_new (G_OBJECT (resolver), callback,
@@ -190,7 +186,6 @@ request_completed (gpointer user_data)
     }
 
   /* And free req */
-  g_object_unref (req->resolvable);
   CloseHandle (req->event);
   req->free_func (req);
   g_slice_free (GWin32ResolverRequest, req);
@@ -239,129 +234,123 @@ request_cancelled (GCancellable *cancellable,
 }
 
 static DWORD WINAPI
-lookup_name_in_thread (LPVOID data)
+lookup_by_name_in_thread (LPVOID data)
 {
   GWin32ResolverRequest *req = data;
 
-  req->u.name.retval = getaddrinfo (req->u.name.name, req->u.name.service,
-                                    &req->u.name.hints, &req->u.name.res);
+  req->u.name.retval = getaddrinfo (req->u.name.name, NULL,
+                                    &_g_resolver_addrinfo_hints,
+                                    &req->u.name.res);
   SetEvent (req->event);
   return 0;
 }
 
 static void
-free_lookup_name (GWin32ResolverRequest *req)
+free_lookup_by_name (GWin32ResolverRequest *req)
 {
+  g_free (req->u.name.name);
   if (req->u.name.res)
     freeaddrinfo (req->u.name.res);
 }
 
 static void
-lookup_name_async (GResolver           *resolver,
-                   GNetworkAddress     *addr,
-		   GCancellable        *cancellable,
-                   GAsyncReadyCallback  callback,
-		   gpointer             user_data)
+lookup_by_name_async (GResolver           *resolver,
+                      const gchar         *hostname;
+                      GCancellable        *cancellable,
+                      GAsyncReadyCallback  callback,
+                      gpointer             user_data)
 {
   GWin32ResolverRequest *req;
-  const gchar *name;
 
-  name = g_network_address_get_ascii_name (addr);
-  g_return_if_fail (name != NULL);
-
-  req = g_win32_resolver_request_new (resolver, addr, free_lookup_name,
+  req = g_win32_resolver_request_new (resolver, free_lookup_by_name,
                                       cancellable, callback, user_data,
-                                      lookup_name_async);
-  req->u.name.name = name;
-  g_network_address_get_addrinfo_hints (addr, req->u.name.service,
-                                        &req->u.name.hints);
+                                      lookup_by_name_async);
+  req->u.name.name = g_strdup (name);
 
-  QueueUserWorkItem (lookup_name_in_thread, req, 0);
+  QueueUserWorkItem (lookup_by_name_in_thread, req, 0);
 }
 
-static gboolean
-lookup_name_finish (GResolver     *resolver,
-                    GAsyncResult  *result,
-		    GError       **error)
+static GInetAddress **
+lookup_by_name_finish (GResolver     *resolver,
+                       GAsyncResult  *result,
+                       GError       **error)
 {
   GSimpleAsyncResult *simple;
   GWin32ResolverRequest *req;
 
   g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
   simple = G_SIMPLE_ASYNC_RESULT (result);
-  g_return_val_if_fail (g_simple_async_result_get_source_tag (simple) == lookup_name_async, FALSE);
+  g_return_val_if_fail (g_simple_async_result_get_source_tag (simple) == lookup_by_name_async, FALSE);
 
   if (g_simple_async_result_propagate_error (simple, error))
     return FALSE;
 
   req = g_simple_async_result_get_op_res_gpointer (simple);
-  return g_network_address_set_from_addrinfo (req->resolvable, req->u.name.res,
+  return _g_resolver_addresses_from_addrinfo (req->u.name.name, req->u.name.res,
                                               req->u.name.retval, error);
 }
 
 
 static DWORD WINAPI
-lookup_addresses_in_thread (LPVOID data)
+lookup_by_addresses_in_thread (LPVOID data)
 {
   GWin32ResolverRequest *req = data;
 
   req->u.address.retval =
-    getnameinfo (req->u.address.addr, req->u.address.addrlen,
+    getnameinfo ((struct sockaddr *)&req->u.address.addr,
+                 req->u.address.addrlen,
                  req->u.address.namebuf, NI_MAXHOST, NULL, 0, NI_NAMEREQD);
   SetEvent (req->event);
   return 0;
 }
 
 static void
-free_lookup_address (GWin32ResolverRequest *req)
+free_lookup_by_address (GWin32ResolverRequest *req)
 {
-  g_free (req->u.address.addr);
+  g_object_unref (req->u.address.iaddr);
   g_free (req->u.address.namebuf);
 }
 
 static void
-lookup_address_async (GResolver           *resolver,
-                      GNetworkAddress     *addr,
-		      GCancellable        *cancellable,
-                      GAsyncReadyCallback  callback,
-		      gpointer             user_data)
+lookup_by_address_async (GResolver           *resolver,
+                         GInetAddress        *address,
+                         GCancellable        *cancellable,
+                         GAsyncReadyCallback  callback,
+                         gpointer             user_data)
 {
   GWin32ResolverRequest *req;
-  GInetSocketAddress **sockaddrs;
 
-  sockaddrs = g_network_address_get_sockaddrs (addr);
-  g_return_if_fail (sockaddrs != NULL && sockaddrs[0] != NULL);
-
-  req = g_win32_resolver_request_new (resolver, addr, free_lookup_address,
+  req = g_win32_resolver_request_new (resolver, addr, free_lookup_by_address,
                                       cancellable, callback, user_data,
-                                      lookup_address_async);
-  req->u.address.addrlen = g_socket_address_native_size (G_SOCKET_ADDRESS (sockaddrs[0]));
-  req->u.address.addr = g_malloc (req->u.address.addrlen);
-  g_socket_address_to_native (G_SOCKET_ADDRESS (sockaddrs[0]), req->u.address.addr);
+                                      lookup_by_address_async);
+
+  req->u.address.iaddr = g_object_ref (address);
+  _g_resolver_address_to_sockaddr (address, &req->u.address.addr,
+                                   &req->u.address.addrlen);
   req->u.address.namebuf = g_malloc (NI_MAXHOST);
 
-  QueueUserWorkItem (lookup_addresses_in_thread, req, 0);
+  QueueUserWorkItem (lookup_by_addresses_in_thread, req, 0);
 }
 
 static gboolean
-lookup_address_finish (GResolver     *resolver,
-                       GAsyncResult  *result,
-		       GError       **error)
+lookup_by_address_finish (GResolver     *resolver,
+                          GAsyncResult  *result,
+                          GError       **error)
 {
   GSimpleAsyncResult *simple;
   GWin32ResolverRequest *req;
 
   g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), FALSE);
   simple = G_SIMPLE_ASYNC_RESULT (result);
-  g_return_val_if_fail (g_simple_async_result_get_source_tag (simple) == lookup_address_async, FALSE);
+  g_return_val_if_fail (g_simple_async_result_get_source_tag (simple) == lookup_by_address_async, FALSE);
 
   if (g_simple_async_result_propagate_error (simple, error))
     return FALSE;
 
   req = g_simple_async_result_get_op_res_gpointer (simple);
-  return g_network_address_set_from_nameinfo (req->resolvable,
-                                              req->u.address.namebuf,
-                                              req->u.address.retval, error);
+  return _g_resolver_name_from_nameinfo (req->u.address.iaddr,
+                                         req->u.address.namebuf,
+                                         req->u.address.retval, error);
 }
 
 
@@ -371,7 +360,7 @@ lookup_service_in_thread (LPVOID data)
   GWin32ResolverRequest *req = data;
 
   req->u.service.retval =
-    DnsQuery_A (req->u.service.dname, DNS_TYPE_SRV, DNS_QUERY_STANDARD,
+    DnsQuery_A (req->u.service.rrname, DNS_TYPE_SRV, DNS_QUERY_STANDARD,
                 NULL, &req->u.service.results, NULL);
   SetEvent (req->event);
   return 0;
@@ -380,14 +369,14 @@ lookup_service_in_thread (LPVOID data)
 static void
 free_lookup_service (GWin32ResolverRequest *req)
 {
-  g_free (req->u.service.dname);
+  g_free (req->u.service.rrname);
   if (req->u.service.results)
     DnsRecordListFree (req->u.service.results, DnsFreeRecordList);
 }
 
 static void
 lookup_service_async (GResolver           *resolver,
-                      GNetworkService     *srv,
+                      const char          *rrname,
 		      GCancellable        *cancellable,
                       GAsyncReadyCallback  callback,
 		      gpointer             user_data)
@@ -397,12 +386,12 @@ lookup_service_async (GResolver           *resolver,
   req = g_win32_resolver_request_new (resolver, srv, free_lookup_service,
                                       cancellable, callback, user_data,
                                       lookup_service_async);
-  req->u.service.dname = g_network_service_get_rrname (srv);
+  req->u.service.rrname = g_strdup (rrname);
 
   QueueUserWorkItem (lookup_service_in_thread, req, 0);
 }
 
-static gboolean
+static GSrvTarget **
 lookup_service_finish (GResolver     *resolver,
                        GAsyncResult  *result,
 		       GError       **error)
@@ -418,10 +407,9 @@ lookup_service_finish (GResolver     *resolver,
     return FALSE;
 
   req = g_simple_async_result_get_op_res_gpointer (simple);
-
-  return g_network_service_set_from_DnsQuery (req->resolvable,
-                                              req->u.service.retval,
-                                              req->u.service.results, error);
+  return _g_resolver_targets_from_DnsQuery (req->u.service.rrname,
+                                            req->u.service.retval,
+                                            req->u.service.results, error);
 }
 
 
@@ -430,12 +418,12 @@ g_win32_resolver_class_init (GWin32ResolverClass *win32_class)
 {
   GResolverClass *resolver_class = G_RESOLVER_CLASS (win32_class);
 
-  resolver_class->lookup_name_async     = lookup_name_async;
-  resolver_class->lookup_name_finish    = lookup_name_finish;
-  resolver_class->lookup_address_async  = lookup_address_async;
-  resolver_class->lookup_address_finish = lookup_address_finish;
-  resolver_class->lookup_service_async  = lookup_service_async;
-  resolver_class->lookup_service_finish = lookup_service_finish;
+  resolver_class->lookup_by_name_async     = lookup_by_name_async;
+  resolver_class->lookup_by_name_finish    = lookup_by_name_finish;
+  resolver_class->lookup_by_address_async  = lookup_by_address_async;
+  resolver_class->lookup_by_address_finish = lookup_by_address_finish;
+  resolver_class->lookup_service_async     = lookup_service_async;
+  resolver_class->lookup_service_finish    = lookup_service_finish;
 }
 
 

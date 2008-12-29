@@ -115,10 +115,14 @@ g_unix_socket_address_native_size (GSocketAddress *address)
 
 static gboolean
 g_unix_socket_address_to_native (GSocketAddress *address,
-				 gpointer        dest)
+				 gpointer        dest,
+				 gsize           destlen)
 {
   GUnixSocketAddress *addr = G_UNIX_SOCKET_ADDRESS (address);
   struct sockaddr_un *sock;
+
+  if (destlen < sizeof (*sock))
+    return FALSE;
 
   sock = (struct sockaddr_un *) dest;
   sock->sun_family = AF_UNIX;
@@ -167,9 +171,9 @@ g_unix_socket_address_init (GUnixSocketAddress *address)
  * @address: a #GUnixAddress
  * @port: a port number
  *
- * Returns: a new #GUnixSocketAddress with a floating reference
+ * Returns: a new #GUnixSocketAddress
  */
-GUnixSocketAddress *
+GSocketAddress *
 g_unix_socket_address_new (const gchar *path)
 {
   return g_object_new (G_TYPE_UNIX_SOCKET_ADDRESS,

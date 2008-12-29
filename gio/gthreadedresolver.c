@@ -138,11 +138,25 @@ finalize (GObject *object)
  * conditions gets processed.
  */
 
-typedef gboolean (*GThreadedResolverResolveFunc) (gpointer, GError **);
+typedef struct _GThreadedResolverRequest GThreadedResolverRequest;
+typedef void (*GThreadedResolverResolveFunc) (GThreadedResolverRequest *, GError **);
 
-typedef struct {
-  gpointer resolvable;
+struct _GThreadedResolverRequest {
   GThreadedResolverResolveFunc resolve_func;
+  union {
+    struct {
+      gchar *hostname;
+      GInetAddress **addresses;
+    } name;
+    struct {
+      GInetAddress *address;
+      gchar *name;
+    } address;
+    struct {
+      gchar *rrname;
+      GSrvTarget **targets;
+    } service;
+  } u;
 
   GCancellable *cancellable;
   GError *error;
@@ -154,28 +168,26 @@ typedef struct {
   GSimpleAsyncResult *async_result;
   gboolean complete;
 
-} GThreadedResolverRequest;
+};
 
 static void g_threaded_resolver_request_unref (GThreadedResolverRequest *req);
 static void request_cancelled (GCancellable *cancellable, gpointer req);
 static void request_cancelled_disconnect_notify (gpointer req, GClosure *closure);
 
 static GThreadedResolverRequest *
-g_threaded_resolver_request_new (gpointer                      resolvable,
-				 GThreadedResolverResolveFunc  resolve_func,
-				 GCancellable                 *cancellable,
-				 GSimpleAsyncResult           *async_result)
+g_threaded_resolver_request_new (GThreadedResolverResolveFunc  resolve_func,
+				 GCancellable                 *cancellable)
 {
   GThreadedResolverRequest *req;
 
   req = g_slice_new0 (GThreadedResolverRequest);
-  req->resolvable = g_object_ref (resolvable);
   req->resolve_func = resolve_func;
 
   /* Initial refcount is 2; one for the caller and one for resolve_func */
   req->ref_count = 2;
 
-  req->mutex = g_mutex_new ();
+  if (g_thread_supported ())
+    req->mutex = g_mutex_new ();
   /* Initially locked; caller must unlock */
   g_mutex_lock (req->mutex);
 
@@ -187,15 +199,6 @@ g_threaded_resolver_request_new (gpointer                      resolvable,
 			     G_CALLBACK (request_cancelled), req,
 			     request_cancelled_disconnect_notify, 0);
     }
-
-  if (async_result)
-    {
-      req->async_result = g_object_ref (async_result);
-      /* Drop the caller's ref when @async_result is destroyed */
-      g_simple_async_result_set_op_res_gpointer (req->async_result, req, (GDestroyNotify)g_threaded_resolver_request_unref);
-    }
-  else
-    req->cond = g_cond_new ();
 
   return req;
 }
@@ -210,9 +213,6 @@ g_threaded_resolver_request_unref (GThreadedResolverRequest *req)
   g_mutex_unlock (req->mutex);
   if (ref_count > 0)
     return;
-
-  if (req->resolvable)
-    g_object_unref (req->resolvable);
 
   g_mutex_free (req->mutex);
 
@@ -302,26 +302,23 @@ threaded_resolver_thread (gpointer thread_data,
 {
   GThreadedResolverRequest *req = thread_data;
 
-  req->resolve_func (req->resolvable, &req->error);
+  req->resolve_func (req, &req->error);
   g_threaded_resolver_request_complete (req, FALSE);
   g_threaded_resolver_request_unref (req);
 }  
 
-static gboolean
-resolve_sync (GThreadedResolver             *gtr,
-	      gpointer                       resolvable,
-              GThreadedResolverResolveFunc   resolve_func,
-	      GCancellable                  *cancellable,
-              GError                       **error)
+static void
+resolve_sync (GThreadedResolver         *gtr,
+              GThreadedResolverRequest  *req,
+              GError                   **error)
 {
-  GThreadedResolverRequest *req;
-  gboolean success;
+  if (!req->cancellable || !gtr->thread_pool)
+    {
+      req->resolve_func (req, error);
+      return;
+    }
 
-  if (!cancellable || !gtr->thread_pool)
-    return resolve_func (resolvable, error);
-
-  req = g_threaded_resolver_request_new (resolvable, resolve_func,
-					 cancellable, NULL);
+  req->cond = g_cond_new ();
   g_thread_pool_push (gtr->thread_pool, req, NULL);
   g_cond_wait (req->cond, req->mutex);
   g_mutex_unlock (req->mutex);
@@ -330,37 +327,24 @@ resolve_sync (GThreadedResolver             *gtr,
     {
       g_propagate_error (error, req->error);
       req->error = NULL;
-      success = FALSE;
     }
-  else
-    success = TRUE;
-
-  g_threaded_resolver_request_unref (req);
-  return success;
 }
 
 static void
-resolve_async (GThreadedResolver            *gtr,
-	       gpointer                      resolvable,
-               GThreadedResolverResolveFunc  resolve_func,
-	       GCancellable                 *cancellable,
-               GAsyncReadyCallback           callback,
-	       gpointer                      user_data,
-               gpointer                      tag)
+resolve_async (GThreadedResolver        *gtr,
+               GThreadedResolverRequest *req,
+               GAsyncReadyCallback       callback,
+               gpointer                  user_data,
+               gpointer                  tag)
 {
-  GThreadedResolverRequest *req;
-  GSimpleAsyncResult *result;
-
-  result = g_simple_async_result_new (G_OBJECT (gtr), callback, user_data, tag);
-  req = g_threaded_resolver_request_new (resolvable, resolve_func,
-					 cancellable, result);
-  g_object_unref (result);
-
+  req->async_result = g_simple_async_result_new (G_OBJECT (gtr),
+                                                 callback, user_data, tag);
+  g_simple_async_result_set_op_res_gpointer (req->async_result, req, NULL);
   g_thread_pool_push (gtr->thread_pool, req, NULL);
   g_mutex_unlock (req->mutex);
 }
 
-static gboolean
+static GThreadedResolverRequest *
 resolve_finish (GResolver     *resolver,
                 GAsyncResult  *result,
 		gpointer       tag,
@@ -372,130 +356,147 @@ resolve_finish (GResolver     *resolver,
   simple = G_SIMPLE_ASYNC_RESULT (result);
   g_return_val_if_fail (g_simple_async_result_get_source_tag (simple) == tag, FALSE);
 
-  return !g_simple_async_result_propagate_error (simple, error);
-}
-
-static gboolean
-do_lookup_name (gpointer   data,
-                GError   **error)
-{
-  GNetworkAddress *addr = data;
-  struct addrinfo hints, *res = NULL;
-  gchar service[8];
-  gint retval;
-
-  g_network_address_get_addrinfo_hints (addr, service, &hints);
-  retval = getaddrinfo (g_network_address_get_ascii_name (addr),
-                        service, &hints, &res);
-  g_network_address_set_from_addrinfo (addr, res, retval, error);
-  if (res)
-    freeaddrinfo (res);
-  return retval == 0;
-}
-
-static gboolean
-lookup_name (GResolver        *resolver,
-             GNetworkAddress  *addr,
-             GCancellable     *cancellable,
-             GError          **error)
-{
-  GThreadedResolver *gtr = G_THREADED_RESOLVER (resolver);
-
-  if (!cancellable || !gtr->thread_pool)
-    return do_lookup_name (addr, error);
-  else
-    return resolve_sync (gtr, addr, do_lookup_name, cancellable, error);
+  g_simple_async_result_propagate_error (simple, error);
+  return g_simple_async_result_get_op_res_gpointer (simple);
 }
 
 static void
-lookup_name_async (GResolver           *resolver,
-                   GNetworkAddress     *addr,
-		   GCancellable        *cancellable,
-                   GAsyncReadyCallback  callback,
-		   gpointer             user_data)
+do_lookup_by_name (GThreadedResolverRequest  *req,
+                   GError                   **error)
+{
+  struct addrinfo *res = NULL;
+  gint retval;
+
+  retval = getaddrinfo (req->u.name.hostname, NULL,
+                        &_g_resolver_addrinfo_hints, &res);
+  req->u.name.addresses =
+    _g_resolver_addresses_from_addrinfo (req->u.name.hostname, res, retval, error);
+  if (res)
+    freeaddrinfo (res);
+}
+
+static GInetAddress **
+lookup_by_name (GResolver     *resolver,
+                const gchar   *hostname,
+                GCancellable  *cancellable,
+                GError       **error)
 {
   GThreadedResolver *gtr = G_THREADED_RESOLVER (resolver);
+  GThreadedResolverRequest *req;
+  GInetAddress **addresses;
 
-  resolve_async (gtr, addr, do_lookup_name, cancellable,
-		 callback, user_data, lookup_name_async);
+  req = g_threaded_resolver_request_new (do_lookup_by_name, cancellable);
+  req->u.name.hostname = (gchar *)hostname;
+  resolve_sync (gtr, req, error);
+
+  addresses = req->u.name.addresses;
+  g_threaded_resolver_request_unref (req);
+  return addresses;
 }
 
-static gboolean
-lookup_name_finish (GResolver     *resolver,
-                    GAsyncResult  *result,
-		    GError       **error)
+static void
+lookup_by_name_async (GResolver           *resolver,
+                      const gchar         *hostname,
+                      GCancellable        *cancellable,
+                      GAsyncReadyCallback  callback,
+                      gpointer             user_data)
 {
-  return resolve_finish (resolver, result, lookup_name_async, error);
+  GThreadedResolver *gtr = G_THREADED_RESOLVER (resolver);
+  GThreadedResolverRequest *req;
+
+  req = g_threaded_resolver_request_new (do_lookup_by_name, cancellable);
+  req->u.name.hostname = g_strdup (hostname);
+  resolve_async (gtr, req, callback, user_data, lookup_by_name_async);
+}
+
+static GInetAddress **
+lookup_by_name_finish (GResolver     *resolver,
+                       GAsyncResult  *result,
+                       GError       **error)
+{
+  GThreadedResolverRequest *req;
+  GInetAddress **addresses;
+
+  req = resolve_finish (resolver, result, lookup_by_name_async, error);
+  addresses = req->u.name.addresses;
+  g_free (req->u.name.hostname);
+  g_threaded_resolver_request_unref (req);
+  return addresses;
 }
 
 
-static gboolean
-do_lookup_address (gpointer   data,
-                   GError   **error)
+static void
+do_lookup_by_address (GThreadedResolverRequest  *req,
+                      GError                   **error)
 {
-  GNetworkAddress *addr = data;
-  GInetSocketAddress **sockaddrs;
   struct sockaddr_storage sockaddr;
-  gssize sockaddr_size;
+  gsize sockaddr_size;
   gchar name[NI_MAXHOST];
   gint retval;
 
-  sockaddrs = g_network_address_get_sockaddrs (addr);
-  g_return_val_if_fail (sockaddrs && sockaddrs[0], FALSE);
-
-  sockaddr_size = g_socket_address_native_size (G_SOCKET_ADDRESS (sockaddrs[0]));
-  g_return_val_if_fail (sockaddr_size <= sizeof (sockaddr), FALSE);
-  g_socket_address_to_native (G_SOCKET_ADDRESS (sockaddrs[0]), &sockaddr);
+  _g_resolver_address_to_sockaddr (req->u.address.address,
+                                   &sockaddr, &sockaddr_size);
 
   retval = getnameinfo ((struct sockaddr *)&sockaddr, sockaddr_size,
                         name, sizeof (name), NULL, 0, NI_NAMEREQD);
-  g_network_address_set_from_nameinfo (addr, name, retval, error);
-  return retval == 0;
+  req->u.address.name = _g_resolver_name_from_nameinfo (req->u.address.address,
+                                                        name, retval, error);
 }
 
-static gboolean
-lookup_address (GResolver        *resolver,
-                GNetworkAddress  *addr,
-		GCancellable     *cancellable,
-                GError          **error)
+static gchar *
+lookup_by_address (GResolver        *resolver,
+                   GInetAddress     *address,
+                   GCancellable     *cancellable,
+                   GError          **error)
 {
   GThreadedResolver *gtr = G_THREADED_RESOLVER (resolver);
+  GThreadedResolverRequest *req;
+  gchar *name;
 
-  if (!cancellable || !gtr->thread_pool)
-    return do_lookup_address (addr, error);
-  else
-    return resolve_sync (gtr, addr, do_lookup_address, cancellable, error);
+  req = g_threaded_resolver_request_new (do_lookup_by_address, cancellable);
+  req->u.address.address = address;
+  resolve_sync (gtr, req, error);
+
+  name = req->u.address.name;
+  g_threaded_resolver_request_unref (req);
+  return name;
 }
 
 static void
-lookup_address_async (GResolver           *resolver,
-                      GNetworkAddress     *addr,
-		      GCancellable        *cancellable,
-                      GAsyncReadyCallback  callback,
-		      gpointer             user_data)
+lookup_by_address_async (GResolver           *resolver,
+                         GInetAddress        *address,
+                         GCancellable        *cancellable,
+                         GAsyncReadyCallback  callback,
+                         gpointer             user_data)
 {
   GThreadedResolver *gtr = G_THREADED_RESOLVER (resolver);
+  GThreadedResolverRequest *req;
 
-  resolve_async (gtr, addr, do_lookup_address, cancellable,
-		 callback, user_data, lookup_address_async);
+  req = g_threaded_resolver_request_new (do_lookup_by_address, cancellable);
+  req->u.address.address = g_object_ref (address);
+  resolve_async (gtr, req, callback, user_data, lookup_by_address_async);
 }
 
-static gboolean
-lookup_address_finish (GResolver     *resolver,
-                       GAsyncResult  *result,
-		       GError       **error)
+static gchar *
+lookup_by_address_finish (GResolver     *resolver,
+                          GAsyncResult  *result,
+                          GError       **error)
 {
-  return resolve_finish (resolver, result, lookup_address_async, error);
+  GThreadedResolverRequest *req;
+  gchar *name;
+
+  req = resolve_finish (resolver, result, lookup_by_address_async, error);
+  name = req->u.address.name;
+  g_object_unref (req->u.address.address);
+  g_threaded_resolver_request_unref (req);
+  return name;
 }
 
 
-static gboolean
-do_lookup_service (gpointer   data,
+static void
+do_lookup_service (GThreadedResolverRequest *req,
                    GError   **error)
 {
-  GNetworkService *srv = data;
-  gboolean success;
-  gchar *dname;
 #if defined(G_OS_UNIX)
   gint len, herr;
   guchar answer[1024];
@@ -504,56 +505,65 @@ do_lookup_service (gpointer   data,
   DNS_RECORD *results;
 #endif
 
-  dname = g_network_service_get_rrname (srv);
-
 #if defined(G_OS_UNIX)
-  len = res_query (dname, C_IN, T_SRV, answer, sizeof (answer));
+  len = res_query (req->u.service.rrname, C_IN, T_SRV, answer, sizeof (answer));
   herr = h_errno;
-  success = g_network_service_set_from_res_query (srv, answer, len, herr, error);
+  req->u.service.targets = _g_resolver_targets_from_res_query (req->u.service.rrname, answer, len, herr, error);
 #elif defined(G_OS_WIN32)
-  status = DnsQuery_A (dname, DNS_TYPE_SRV, DNS_QUERY_STANDARD,
-                       NULL, &results, NULL);
-  success = g_network_service_set_from_DnsQuery (srv, status, results, error);
+  status = DnsQuery_A (req->u.service.rrname, DNS_TYPE_SRV,
+                       DNS_QUERY_STANDARD, NULL, &results, NULL);
+  req->u.service.targets = _g_resolver_targets_from_DnsQuery (req->u.service.rrname, status, results, error);
   DnsRecordListFree (results, DnsFreeRecordList);
 #endif
-
-  g_free (dname);
-  return success;
 }
 
-static gboolean
+static GSrvTarget **
 lookup_service (GResolver        *resolver,
-                GNetworkService  *srv,
+                const gchar      *rrname,
 		GCancellable     *cancellable,
                 GError          **error)
 {
   GThreadedResolver *gtr = G_THREADED_RESOLVER (resolver);
+  GThreadedResolverRequest *req;
+  GSrvTarget **targets;
 
-  if (!cancellable || !gtr->thread_pool)
-    return do_lookup_service (srv, error);
-  else
-    return resolve_sync (gtr, srv, do_lookup_service, cancellable, error);
+  req = g_threaded_resolver_request_new (do_lookup_service, cancellable);
+  req->u.service.rrname = (char *)rrname;
+  resolve_sync (gtr, req, error);
+
+  targets = req->u.service.targets;
+  g_threaded_resolver_request_unref (req);
+  return targets;
 }
 
 static void
 lookup_service_async (GResolver           *resolver,
-                      GNetworkService     *srv,
+                      const char          *rrname,
 		      GCancellable        *cancellable,
                       GAsyncReadyCallback  callback,
 		      gpointer             user_data)
 {
   GThreadedResolver *gtr = G_THREADED_RESOLVER (resolver);
+  GThreadedResolverRequest *req;
 
-  resolve_async (gtr, srv, do_lookup_service, cancellable,
-		 callback, user_data, lookup_service_async);
+  req = g_threaded_resolver_request_new (do_lookup_service, cancellable);
+  req->u.service.rrname = g_strdup (rrname);
+  resolve_async (gtr, req, callback, user_data, lookup_service_async);
 }
 
-static gboolean
+static GSrvTarget **
 lookup_service_finish (GResolver     *resolver,
                        GAsyncResult  *result,
 		       GError       **error)
 {
-  return resolve_finish (resolver, result, lookup_service_async, error);
+  GThreadedResolverRequest *req;
+  GSrvTarget **targets;
+
+  req = resolve_finish (resolver, result, lookup_service_async, error);
+  targets = req->u.service.targets;
+  g_free (req->u.service.rrname);
+  g_threaded_resolver_request_unref (req);
+  return targets;
 }
 
 
@@ -563,15 +573,15 @@ g_threaded_resolver_class_init (GThreadedResolverClass *threaded_class)
   GResolverClass *resolver_class = G_RESOLVER_CLASS (threaded_class);
   GObjectClass *object_class = G_OBJECT_CLASS (threaded_class);
 
-  resolver_class->lookup_name           = lookup_name;
-  resolver_class->lookup_name_async     = lookup_name_async;
-  resolver_class->lookup_name_finish    = lookup_name_finish;
-  resolver_class->lookup_address        = lookup_address;
-  resolver_class->lookup_address_async  = lookup_address_async;
-  resolver_class->lookup_address_finish = lookup_address_finish;
-  resolver_class->lookup_service        = lookup_service;
-  resolver_class->lookup_service_async  = lookup_service_async;
-  resolver_class->lookup_service_finish = lookup_service_finish;
+  resolver_class->lookup_by_name           = lookup_by_name;
+  resolver_class->lookup_by_name_async     = lookup_by_name_async;
+  resolver_class->lookup_by_name_finish    = lookup_by_name_finish;
+  resolver_class->lookup_by_address        = lookup_by_address;
+  resolver_class->lookup_by_address_async  = lookup_by_address_async;
+  resolver_class->lookup_by_address_finish = lookup_by_address_finish;
+  resolver_class->lookup_service           = lookup_service;
+  resolver_class->lookup_service_async     = lookup_service_async;
+  resolver_class->lookup_service_finish    = lookup_service_finish;
 
   object_class->finalize = finalize;
 }
