@@ -217,6 +217,8 @@ libgio_2_0_la_SOURCES =		\
 	gmemoryinputstream.c 	\
 	gmemoryoutputstream.c 	\
 	gmountoperation.c 	\
+	gnativedatagramsocket.c	\
+	gnativedatagramsocket.h \
 	gnativevolumemonitor.c 	\
 	gnativevolumemonitor.h 	\
 	gnetworkaddress.c	\
@@ -237,7 +239,6 @@ libgio_2_0_la_SOURCES =		\
 	gthemedicon.c 		\
 	gthreadedresolver.c	\
 	gthreadedresolver.h	\
-	gudpsocket.c		\
 	gunionvolumemonitor.c 	\
 	gunionvolumemonitor.h 	\
 	gvfs.c 			\
@@ -352,7 +353,6 @@ gio_headers =			\
 	gsocketconnectable.h	\
 	gstreamconnection.h     \
 	gthemedicon.h 		\
-	gudpsocket.h		\
 	gvfs.h 			\
 	gvolume.h 		\
 	gvolumemonitor.h 	\
