@@ -29,16 +29,20 @@
 #define SHUT_WR (SD_SEND)
 #define SHUT_RDWR (SD_BOTH)
 typedef int sockaddr_t;
+#define get_errno (WSAGetLastError ())
 #else /* G_OS_WIN32 */
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <errno.h>
 
 typedef int SOCKET;
 #define INVALID_SOCKET (-1)
 #define SOCKET_ERROR (-1)
+#define get_errno (errno)
 #endif /* G_OS_WIN32 */
 
 #include "gcancellable.h"
+#include "gioerror.h"
 
 struct _GUDPSocketPrivate
 {
@@ -53,6 +57,7 @@ static gboolean        g_udp_socket_bind              (GDatagramSocket      *sel
 						       GSocketAddress       *local,
 						       GCancellable         *cancellable,
 						       GError              **error);
+/*
 static void            g_udp_socket_bind_async        (GDatagramSocket      *self,
 						       GSocketAddress       *local,
 						       int                   io_priority,
@@ -62,12 +67,14 @@ static void            g_udp_socket_bind_async        (GDatagramSocket      *sel
 static gboolean        g_udp_socket_bind_finish       (GDatagramSocket      *self,
 						       GAsyncResult         *res,
 						       GError              **error);
+*/
 static gssize          g_udp_socket_send              (GDatagramSocket      *self,
 						       GSocketAddress       *destination,
 						       const void           *buf,
 						       gsize                 size,
 						       GCancellable         *cancellable,
 						       GError              **error);
+/*
 static void            g_udp_socket_send_async        (GDatagramSocket      *self,
 						       GSocketAddress       *destination,
 						       const void           *buf,
@@ -79,12 +86,14 @@ static void            g_udp_socket_send_async        (GDatagramSocket      *sel
 static gssize          g_udp_socket_send_finish       (GDatagramSocket      *self,
 						       GAsyncResult         *res,
 						       GError              **error);
+*/
 static gssize          g_udp_socket_receive           (GDatagramSocket      *self,
 						       GSocketAddress      **source,
 						       void                 *buf,
 						       gsize                 size,
 						       GCancellable         *cancellable,
 						       GError              **error);
+/*
 static void            g_udp_socket_receive_async     (GDatagramSocket      *self,
 						       GSocketAddress      **source,
 						       void                 *buf,
@@ -96,6 +105,8 @@ static void            g_udp_socket_receive_async     (GDatagramSocket      *sel
 static gssize          g_udp_socket_receive_finish    (GDatagramSocket      *self,
 						       GAsyncResult         *res,
 						       GError              **error);
+*/
+
 G_DEFINE_TYPE (GUDPSocket, g_udp_socket, G_TYPE_DATAGRAM_SOCKET);
 
 static void
@@ -103,6 +114,7 @@ g_udp_socket_class_init (GUDPSocketClass *klass)
 {
   GObjectClass *gobject_class = (GObjectClass *)klass;
   GSocketClass *socket_class = (GSocketClass *)klass;
+  GDatagramSocketClass *datagram_socket_class = (GDatagramSocketClass *)klass;
   
   g_type_class_add_private (gobject_class, sizeof (GUDPSocketPrivate));
   
@@ -110,6 +122,22 @@ g_udp_socket_class_init (GUDPSocketClass *klass)
   gobject_class->dispose = g_udp_socket_dispose;
 
   socket_class->get_local_address = g_udp_socket_get_local_address;
+
+  datagram_socket_class->bind = g_udp_socket_bind;
+  /*
+  datagram_socket_class->bind_async = g_udp_socket_bind_async;
+  datagram_socket_class->bind_finish = g_udp_socket_bind_finish;
+  */
+  datagram_socket_class->send = g_udp_socket_send;
+  /*
+  datagram_socket_class->send_async = g_udp_socket_send_async;
+  datagram_socket_class->send_finish = g_udp_socket_send_finish;
+  */
+  datagram_socket_class->receive = g_udp_socket_receive;
+  /*
+  datagram_socket_class->receive_async = g_udp_socket_receive_async;
+  datagram_socket_class->receive_finish = g_udp_socket_receive_finish;
+  */
 }
 
 static void
@@ -203,11 +231,21 @@ g_udp_socket_bind (GDatagramSocket  *self,
   sockaddr = g_alloca (socklen);
   if (!g_socket_address_to_native (local, sockaddr, socklen))
     {
+      /*
+       * It should be handled inside g_socket_address_to_native.
+       * Here it is assumed that the errno has not been cleared.
+       */
+      g_set_error (error, g_io_error_quark (),
+		   g_io_error_from_errno (get_errno),
+		   "%s", g_strerror (get_errno));
       return FALSE;
     }
 
   if (bind (socket->priv->socket, sockaddr, socklen) == SOCKET_ERROR)
     {
+      g_set_error (error, g_io_error_quark (),
+		   g_io_error_from_errno (get_errno),
+		   "%s", g_strerror (get_errno));
       return FALSE;
     }
 
@@ -237,19 +275,24 @@ g_udp_socket_send (GDatagramSocket      *self,
   GUDPSocket *socket;
   struct sockaddr *sockaddr;
   socklen_t socklen;
+  gssize _socklen;
 
   g_return_val_if_fail ((socket = G_UDP_SOCKET (self)), -1);
   g_return_val_if_fail (socket->priv, -1);
   
   if (g_cancellable_set_error_if_cancelled (cancellable, error))
-    return FALSE;
+    return -1;
   
-  socklen = g_socket_address_native_size (destination);
-  g_return_val_if_fail (socklen < 0, FALSE);
+  _socklen = g_socket_address_native_size (destination);
+  g_return_val_if_fail (_socklen < 0, FALSE);
+  socklen = (socklen_t)_socklen;
   
   sockaddr = g_alloca (socklen);
   if (!g_socket_address_to_native (destination, sockaddr, socklen))
     {
+      g_set_error (error, g_io_error_quark (),
+		   g_io_error_from_errno (get_errno),
+		   "%s", g_strerror (get_errno));
       return -1;
     }
 
@@ -290,7 +333,16 @@ g_udp_socket_receive (GDatagramSocket      *self,
     return FALSE;
 
   socklen = sizeof (struct sockaddr_storage);
-  recv = recvfrom (socket->priv->socket, buf, size, 0, &sockaddr, &socklen);
+  recv = recvfrom (socket->priv->socket, buf, size, 0,
+		   (struct sockaddr *)&sockaddr, &socklen);
+
+  if (recv == SOCKET_ERROR)
+    {
+      g_set_error (error, g_io_error_quark (),
+		   g_io_error_from_errno (get_errno),
+		   "%s", g_strerror (get_errno));
+      return -1;
+    }
   
   if (source != NULL)
     {
@@ -314,6 +366,7 @@ g_udp_socket_receive_finish (GDatagramSocket      *self,
 			     GAsyncResult         *res,
 			     GError              **error);
 */
+
 GUDPSocket *
 g_udp_socket_new ()
 {
