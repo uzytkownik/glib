@@ -20,7 +20,7 @@
  * Author: Maciej Piechotka <uzytkownik2@gmail.com>
  */
 
-#include "gudpsocket.h"
+#include "gnativedatagramsocket.h"
 
 #ifdef G_OS_WIN32
 #include "winsock2.h"
@@ -201,17 +201,17 @@ g_native_datagram_socket_set_property (GObject      *object,
 				       const GValue *value,
 				       GParamSpec   *pspec)
 {
-  GNativeDatagreamSocket *udp_socket;
+  GNativeDatagreamSocket *dgram_socket;
 
-  g_return_if_fail ((udp_socket = G_NATIVE_DATAGRAM_SOCKET (object)));
-  g_return_if_fail (udp_socket->priv);
+  g_return_if_fail ((dgram_socket = G_NATIVE_DATAGRAM_SOCKET (object)));
+  g_return_if_fail (dgram_socket->priv);
   
   switch (prop_id)
     {
     case PROP_AF:
-      udp_socket->priv->familly = g_value_get_enum (value);
-      udp_socket->priv->socket = socket (udp_socket->priv->familly,
-					 SOCK_STREAM, 0);
+      dgram_socket->priv->familly = g_value_get_enum (value);
+      dgram_socket->priv->socket = socket (dgram_socket->priv->familly,
+					   SOCK_STREAM, 0);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
