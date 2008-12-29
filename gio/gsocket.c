@@ -20,7 +20,12 @@
  * Author: Maciej Piechotka <uzytkownik2@gmail.com>
  */
 
+#include "config.h"
+#include <glib.h>
+#include "glibintl.h"
+
 #include "gsocket.h"
+#include "gioerror.h"
 
 enum
   {
@@ -93,7 +98,7 @@ g_socket_get_local_address (GSocket *self)
 {
   GSocketClass *klass;
 
-  g_return_val_if_fail (klass = G_SOCKET_GET_CLASS (self), NULL);
+  g_return_val_if_fail ((klass = G_SOCKET_GET_CLASS (self)), NULL);
   g_return_val_if_fail (klass->get_local_address, NULL);
 
   return klass->get_local_address (self);
@@ -117,7 +122,7 @@ g_socket_set_pending (GSocket  *socket,
     {
       g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_PENDING,
 			   _("Socket has outstanding operation"));
-      return FALSE:
+      return FALSE;
     }
 }
 
@@ -126,3 +131,4 @@ g_socket_clear_pending (GSocket *socket)
 {
   g_atomic_int_set (&socket->priv->pending, 0);
 }
+

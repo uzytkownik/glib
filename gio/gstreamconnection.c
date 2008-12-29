@@ -92,7 +92,7 @@ g_stream_connection_get_input_stream  (GStreamConnection *self)
 {
   GStreamConnectionClass *klass;
 
-  g_return_val_if_fail (klass = G_STREAM_CONNECTION_GET_CLASS (self), NULL);
+  g_return_val_if_fail ((klass = G_STREAM_CONNECTION_GET_CLASS (self)), NULL);
   g_return_val_if_fail (klass->get_input_stream, NULL);
 
   return klass->get_input_stream (self);
@@ -103,7 +103,7 @@ g_stream_connection_get_output_stream (GStreamConnection *self)
 {
   GStreamConnectionClass *klass;
 
-  g_return_val_if_fail (klass = G_STREAM_CONNECTION_GET_CLASS (self), NULL);
+  g_return_val_if_fail ((klass = G_STREAM_CONNECTION_GET_CLASS (self)), NULL);
   g_return_val_if_fail (klass->get_output_stream, NULL);
 
   return klass->get_output_stream (self);
