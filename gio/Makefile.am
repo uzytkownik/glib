@@ -237,6 +237,7 @@ libgio_2_0_la_SOURCES =		\
 	gthemedicon.c 		\
 	gthreadedresolver.c	\
 	gthreadedresolver.h	\
+	gudpsocket.c		\
 	gunionvolumemonitor.c 	\
 	gunionvolumemonitor.h 	\
 	gvfs.c 			\
@@ -351,6 +352,7 @@ gio_headers =			\
 	gsocketconnectable.h	\
 	gstreamconnection.h     \
 	gthemedicon.h 		\
+	gudpsocket.h		\
 	gvfs.h 			\
 	gvolume.h 		\
 	gvolumemonitor.h 	\
