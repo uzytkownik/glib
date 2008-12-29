@@ -26,6 +26,10 @@
 
 #include "gioalias.h"
 
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#endif
+
 /**
  * SECTION:gioerror
  * @short_description: Error helper functions
@@ -72,8 +76,13 @@ g_io_error_from_errno (gint err_no)
       break;
 #endif
 
+#if defined(EACCES) || defined(WSAEACCES)
 #ifdef EACCES
     case EACCES:
+#endif
+#ifdef WSAEACCES
+    case WSAEACCES:
+#endif
       return G_IO_ERROR_PERMISSION_DENIED;
       break;
 #endif
@@ -102,8 +111,13 @@ g_io_error_from_errno (gint err_no)
       break;
 #endif
 
+#if defined(ELOOP) || defined(WSAELOOP)
 #ifdef ELOOP
     case ELOOP:
+#endif
+#ifdef WSAELOOP
+    case WSAELOOP:
+#endif
       return G_IO_ERROR_TOO_MANY_LINKS;
       break;
 #endif
@@ -119,9 +133,14 @@ g_io_error_from_errno (gint err_no)
       return G_IO_ERROR_NO_SPACE;
       break;
 #endif
-      
+
+#if defined(EINVAL) || defined(WSAEINVAL)
 #ifdef EINVAL
     case EINVAL:
+#endif
+#ifdef WSAEINVAL
+    case WSAEINVAL:
+#endif
       return G_IO_ERROR_INVALID_ARGUMENT;
       break;
 #endif
@@ -132,26 +151,46 @@ g_io_error_from_errno (gint err_no)
       break;
 #endif
 
+#if defined(ECANCELED) || defined(WSAECANCELLED)
 #ifdef ECANCELED
     case ECANCELED:
+#endif
+#ifdef WSAECANCELLED
+    case WSAECANCELLED:
+#endif
       return G_IO_ERROR_CANCELLED;
       break;
 #endif
 
+#if defined(ENOTEMPTY) || defined(WSAENOTEMPTY)
 #ifdef ENOTEMPTY
     case ENOTEMPTY:
+#endif
+#ifdef WSAENOTEMPTY
+    case WSAENOTEMPTY:
+#endif
       return G_IO_ERROR_NOT_EMPTY;
       break;
 #endif
 
+#if defined(ENOTEMPTY) || defined(WSAENOTEMPTY)
 #ifdef ENOTSUP
     case ENOTSUP:
+#endif
+#ifdef WSAEOPNOTSUPP
+    case WSAEOPNOTSUPP:
+#endif
       return G_IO_ERROR_NOT_SUPPORTED;
       break;
 #endif
 
+#if defined(ETIMEDOUT) || defined(WSAETIMEDOUT)
 #ifdef ETIMEDOUT
     case ETIMEDOUT:
+#endif
+#ifdef WSAETIMEDOUT
+    case WSAETIMEDOUT:
+#endif
       return G_IO_ERROR_TIMED_OUT;
       break;
 #endif
@@ -162,8 +201,13 @@ g_io_error_from_errno (gint err_no)
       break;
 #endif
 
+#if defined(EWOULDBLOCK) || defined(WSAEWOULDBLOCK)
 #ifdef EWOULDBLOCK
     case EWOULDBLOCK:
+#endif
+#ifdef WSAEWOULDBLOCK
+    case WSAEWOULDBLOCK:
+#endif
       return G_IO_ERROR_WOULD_BLOCK;
       break;
 #endif
