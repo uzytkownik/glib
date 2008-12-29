@@ -181,6 +181,7 @@ libgio_2_0_la_SOURCES =		\
 	gconnection.h		\
 	gcontenttype.c 		\
 	gcontenttypeprivate.h 	\
+	gdatagramsocket.c	\
 	gdatainputstream.c 	\
 	gdataoutputstream.c 	\
 	gdrive.c 		\
@@ -305,6 +306,7 @@ gio_headers =			\
 	gcancellable.h 		\
 	gconnection.h		\
 	gcontenttype.h 		\
+	gdatagramsocket.h	\
 	gdatainputstream.h 	\
 	gdataoutputstream.h 	\
 	gdrive.h 		\
