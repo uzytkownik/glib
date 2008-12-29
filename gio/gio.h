@@ -34,6 +34,7 @@
 #include <gio/gcancellable.h>
 #include <gio/gconnection.h>
 #include <gio/gcontenttype.h>
+#include <gio/gdatagramsocket.h>
 #include <gio/gdatainputstream.h>
 #include <gio/gdataoutputstream.h>
 #include <gio/gdrive.h>
