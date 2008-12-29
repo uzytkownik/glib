@@ -43,8 +43,10 @@ typedef int SOCKET;
 
 #include "gcancellable.h"
 #include "gioerror.h"
+#include "gioenums.h"
+#include "gioenumtypes.h"
 
-struct _GNativeDatagreamSocketPrivate
+struct _GNativeDatagramSocketPrivate
 {
   SOCKET socket;
   GInetAddressFamily familly;
@@ -122,16 +124,16 @@ static gssize          g_native_datagram_socket_receive_finish    (GDatagramSock
 						       GError              **error);
 */
 
-G_DEFINE_TYPE (GNativeDatagreamSocket, g_native_datagram_socket, G_TYPE_DATAGRAM_SOCKET);
+G_DEFINE_TYPE (GNativeDatagramSocket, g_native_datagram_socket, G_TYPE_DATAGRAM_SOCKET);
 
 static void
-g_native_datagram_socket_class_init (GNativeDatagreamSocketClass *klass)
+g_native_datagram_socket_class_init (GNativeDatagramSocketClass *klass)
 {
   GObjectClass *gobject_class = (GObjectClass *)klass;
   GSocketClass *socket_class = (GSocketClass *)klass;
   GDatagramSocketClass *datagram_socket_class = (GDatagramSocketClass *)klass;
   
-  g_type_class_add_private (gobject_class, sizeof (GNativeDatagreamSocketPrivate));
+  g_type_class_add_private (gobject_class, sizeof (GNativeDatagramSocketPrivate));
 
   gobject_class->set_property = g_native_datagram_socket_set_property;
   gobject_class->get_property = g_native_datagram_socket_get_property;
@@ -140,7 +142,7 @@ g_native_datagram_socket_class_init (GNativeDatagreamSocketClass *klass)
 
   g_object_class_install_property (gobject_class, PROP_AF,
 				   g_param_spec_enum ("address-familly",
-						      "address familly"
+						      "address familly",
 						      "Adress familly of the socket",
 						      G_TYPE_INET_ADDRESS_FAMILY,
 						      G_INET_ADDRESS_IPV4,
@@ -166,10 +168,10 @@ g_native_datagram_socket_class_init (GNativeDatagreamSocketClass *klass)
 }
 
 static void
-g_native_datagram_socket_init (GNativeDatagreamSocket *self)
+g_native_datagram_socket_init (GNativeDatagramSocket *self)
 {
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), G_TYPE_NATIVE_DATAGRAM_SOCKET,
-					    GNativeDatagreamSocketPrivate);
+					    GNativeDatagramSocketPrivate);
   self->priv->socket = INVALID_SOCKET;
   self->priv->local = NULL;
 }
@@ -180,7 +182,7 @@ g_native_datagram_socket_get_property (GObject    *object,
 				       GValue     *value,
 				       GParamSpec *pspec)
 {
-  GNativeDatagreamSocket *socket;
+  GNativeDatagramSocket *socket;
 
   g_return_if_fail ((socket = G_NATIVE_DATAGRAM_SOCKET (object)));
   g_return_if_fail (socket->priv);
@@ -201,7 +203,7 @@ g_native_datagram_socket_set_property (GObject      *object,
 				       const GValue *value,
 				       GParamSpec   *pspec)
 {
-  GNativeDatagreamSocket *dgram_socket;
+  GNativeDatagramSocket *dgram_socket;
 
   g_return_if_fail ((dgram_socket = G_NATIVE_DATAGRAM_SOCKET (object)));
   g_return_if_fail (dgram_socket->priv);
@@ -221,7 +223,7 @@ g_native_datagram_socket_set_property (GObject      *object,
 static void
 g_native_datagram_socket_dispose (GObject *object)
 {
-  GNativeDatagreamSocket *self = (GNativeDatagreamSocket *)object;
+  GNativeDatagramSocket *self = (GNativeDatagramSocket *)object;
 
   if (self->priv->local != NULL)
     {
@@ -235,7 +237,7 @@ g_native_datagram_socket_dispose (GObject *object)
 static void
 g_native_datagram_socket_finalize (GObject *object)
 {
-  GNativeDatagreamSocket *self = (GNativeDatagreamSocket *)object;
+  GNativeDatagramSocket *self = (GNativeDatagramSocket *)object;
 
   if (self->priv->socket != INVALID_SOCKET)
     {
@@ -249,7 +251,7 @@ g_native_datagram_socket_finalize (GObject *object)
 static GSocketAddress *
 g_native_datagram_socket_get_local_address (GSocket *self)
 {
-  GNativeDatagreamSocket *socket;
+  GNativeDatagramSocket *socket;
   struct sockaddr_storage sockaddr;
   gsize sockaddr_len;
   GSocketAddress *address;
@@ -284,7 +286,7 @@ g_native_datagram_socket_bind (GDatagramSocket  *self,
 			       GCancellable     *cancellable,
 			       GError          **error)
 {
-  GNativeDatagreamSocket *socket;
+  GNativeDatagramSocket *socket;
   struct sockaddr *sockaddr;
   gssize socklen;
 
@@ -341,7 +343,7 @@ g_native_datagram_socket_send (GDatagramSocket      *self,
 		   GCancellable         *cancellable,
 		   GError              **error)
 {
-  GNativeDatagreamSocket *socket;
+  GNativeDatagramSocket *socket;
   struct sockaddr *sockaddr;
   socklen_t socklen;
   gssize _socklen;
@@ -390,7 +392,7 @@ g_native_datagram_socket_receive (GDatagramSocket      *self,
 				  GCancellable         *cancellable,
 				  GError              **error)
   {
-  GNativeDatagreamSocket *socket;
+  GNativeDatagramSocket *socket;
   struct sockaddr_storage sockaddr;
   socklen_t socklen;
   gssize recv;
@@ -436,10 +438,10 @@ g_native_datagram_socket_receive_finish (GDatagramSocket      *self,
 					 GError              **error);
 */
 
-GNativeDatagreamSocket *
+GNativeDatagramSocket *
 g_native_datagram_socket_new (GInetAddressFamily inet)
 {
-  return (GNativeDatagreamSocket *)g_object_new (G_TYPE_NATIVE_DATAGRAM_SOCKET,
+  return (GNativeDatagramSocket *)g_object_new (G_TYPE_NATIVE_DATAGRAM_SOCKET,
 						 "address-familly", inet,
 						 NULL);
 }

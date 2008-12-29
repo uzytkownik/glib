@@ -24,8 +24,8 @@
 #error "Only <gio/gio.h> can be included directly."
 #endif
 
-#ifndef G_NATIVE_DATAGREAM_SOCKET_H
-#define G_NATIVE_DATAGREAM_SOCKET_H
+#ifndef G_NATIVE_DATAGRAM_SOCKET_H
+#define G_NATIVE_DATAGRAM_SOCKET_H
 
 #include <glib-object.h>
 #include <gio/gdatagramsocket.h>
@@ -33,25 +33,25 @@
 
 G_BEGIN_DECLS
 
-#define G_TYPE_NATIVE_DATAGREAM_SOCKET                                               \
-   (g_native_datagream_socket_get_type())
-#define G_NATIVE_DATAGREAM_SOCKET(obj)                                               \
+#define G_TYPE_NATIVE_DATAGRAM_SOCKET                                               \
+   (g_native_datagram_socket_get_type())
+#define G_NATIVE_DATAGRAM_SOCKET(obj)                                               \
    (G_TYPE_CHECK_INSTANCE_CAST ((obj),                                  \
-                                G_TYPE_NATIVE_DATAGREAM_SOCKET,                      \
+                                G_TYPE_NATIVE_DATAGRAM_SOCKET,                      \
                                 GNativeDatagramSocket))
-#define G_NATIVE_DATAGREAM_SOCKET_CLASS(klass)                                       \
+#define G_NATIVE_DATAGRAM_SOCKET_CLASS(klass)                                       \
    (G_TYPE_CHECK_CLASS_CAST ((klass),                                   \
-                             G_TYPE_NATIVE_DATAGREAM_SOCKET,                         \
+                             G_TYPE_NATIVE_DATAGRAM_SOCKET,                         \
                              GNativeDatagramSocketClass))
-#define IS_G_NATIVE_DATAGREAM_SOCKET(obj)                                            \
+#define IS_G_NATIVE_DATAGRAM_SOCKET(obj)                                            \
    (G_TYPE_CHECK_INSTANCE_TYPE ((obj),                                  \
-                                G_TYPE_NATIVE_DATAGREAM_SOCKET))
-#define IS_G_NATIVE_DATAGREAM_SOCKET_CLASS(klass)                                    \
+                                G_TYPE_NATIVE_DATAGRAM_SOCKET))
+#define IS_G_NATIVE_DATAGRAM_SOCKET_CLASS(klass)                                    \
    (G_TYPE_CHECK_CLASS_TYPE ((klass),                                   \
-                             G_TYPE_NATIVE_DATAGREAM_SOCKET))
-#define G_NATIVE_DATAGREAM_SOCKET_GET_CLASS(obj)                                     \
+                             G_TYPE_NATIVE_DATAGRAM_SOCKET))
+#define G_NATIVE_DATAGRAM_SOCKET_GET_CLASS(obj)                                     \
    (G_TYPE_INSTANCE_GET_CLASS ((obj),                                   \
-                               G_TYPE_NATIVE_DATAGREAM_SOCKET,                       \
+                               G_TYPE_NATIVE_DATAGRAM_SOCKET,                       \
                                GNativeDatagramSocketClass))
 
 typedef struct _GNativeDatagramSocket        GNativeDatagramSocket;
