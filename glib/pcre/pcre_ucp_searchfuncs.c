@@ -113,7 +113,7 @@ Returns:      the other case or NOTACHAR if none
 unsigned int
 _pcre_ucp_othercase(const unsigned int c)
 {
-int other_case = NOTACHAR;
+unsigned int other_case = NOTACHAR;
 
 if (g_unichar_islower(c))
   other_case = g_unichar_toupper(c);
