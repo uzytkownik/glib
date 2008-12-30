@@ -163,6 +163,14 @@ g_socket_address_from_native (gpointer native,
   return NULL;
 }
 
+GDatagramSocket *
+g_socket_address_create_datagram_socket (GSocketAddress *address)
+{
+  g_return_val_if_fail (G_IS_SOCKET_ADDRESS (address), NULL);
+
+  return G_SOCKET_ADDRESS_GET_CLASS (address)->create_datagram_socket (address);
+}
+
 #define G_TYPE_SOCKET_ADDRESS_ADDRESS_ENUMERATOR (_g_socket_address_address_enumerator_get_type ())
 #define G_SOCKET_ADDRESS_ADDRESS_ENUMERATOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), G_TYPE_SOCKET_ADDRESS_ADDRESS_ENUMERATOR, GSocketAddressAddressEnumerator))
 

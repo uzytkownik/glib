@@ -29,6 +29,7 @@
 #define __G_SOCKET_ADDRESS_H__
 
 #include <gio/giotypes.h>
+#include <gio/gdatagramsocket.h>
 
 G_BEGIN_DECLS
 
@@ -50,11 +51,12 @@ struct _GSocketAddressClass
 {
   GObjectClass parent_class;
 
-  gssize   (*native_size) (GSocketAddress *address);
+  gssize           (*native_size)            (GSocketAddress *address);
 
-  gboolean (*to_native)   (GSocketAddress *address,
-			   gpointer        dest,
-			   gsize           destlen);
+  gboolean         (*to_native)              (GSocketAddress *address,
+					      gpointer        dest,
+					      gsize           destlen);
+  GDatagramSocket *(*create_datagram_socket) (GSocketAddress *address);
 };
 
 GType           g_socket_address_get_type    (void) G_GNUC_CONST;
@@ -67,7 +69,7 @@ gssize          g_socket_address_native_size (GSocketAddress *address);
 
 GSocketAddress *g_socket_address_from_native (gpointer        native,
 					      gsize           len);
-
+GDatagramSocket *(*create_datagram_socket) (GSocketAddress *address);
 G_END_DECLS
 
 #endif /* __G_SOCKET_ADDRESS_H__ */
