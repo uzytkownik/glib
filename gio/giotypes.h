@@ -121,6 +121,17 @@ typedef struct _GThemedIcon                   GThemedIcon;
 typedef struct _GVfs                          GVfs; /* Dummy typedef */
 
 /**
+ * GSocket:
+ *
+ * The network sockets
+ */
+typedef struct _GSocket                       GSocket;
+typedef struct _GDatagramSocket               GDatagramSocket;
+typedef struct _GConnection                   GConnection;
+typedef struct _GStreamConnection             GStreamConnection;
+typedef struct _GPacketConnection             GPacketConnection;
+
+/**
  * GVolume:
  *
  * Opaque mountable volume object.

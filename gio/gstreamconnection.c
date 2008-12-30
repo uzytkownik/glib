@@ -21,6 +21,8 @@
  */
 
 #include "gstreamconnection.h"
+#include "ginputstream.h"
+#include "goutputstream.h"
 
 enum
   {

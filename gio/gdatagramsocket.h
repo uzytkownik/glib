@@ -29,8 +29,8 @@
 
 #include <glib-object.h>
 
+#include "giotypes.h"
 #include "gsocket.h"
-
 
 G_BEGIN_DECLS
 
@@ -55,7 +55,6 @@ G_BEGIN_DECLS
                                G_TYPE_DATAGRAM_SOCKET,                  \
                                GDatagramSocketClass))
 
-typedef struct _GDatagramSocket      GDatagramSocket;
 typedef struct _GDatagramSocketClass GDatagramSocketClass;
 
 struct _GDatagramSocket

@@ -21,6 +21,7 @@
  */
 
 #include "gconnection.h"
+#include "gsocketaddress.h"
 
 enum
   {

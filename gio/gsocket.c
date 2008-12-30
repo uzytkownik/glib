@@ -25,6 +25,7 @@
 #include "glibintl.h"
 
 #include "gsocket.h"
+#include "gsocketaddress.h"
 #include "gioerror.h"
 
 enum

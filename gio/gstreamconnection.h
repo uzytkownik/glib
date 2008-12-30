@@ -27,8 +27,10 @@
 #ifndef G_STREAM_CONNECTION_H
 #define G_STREAM_CONNECTION_H
 
+#include <glib-object.h>
+
+#include "giotypes.h"
 #include "gconnection.h"
-#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -53,7 +55,6 @@ G_BEGIN_DECLS
                                G_TYPE_STREAM_CONNECTION,                \
                                GStreamConnectionClass))
 
-typedef struct _GStreamConnection      GStreamConnection;
 typedef struct _GStreamConnectionClass GStreamConnectionClass;
 
 struct _GStreamConnection

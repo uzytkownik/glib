@@ -27,8 +27,10 @@
 #ifndef G_PACKET_CONNECTION_H
 #define G_PACKET_CONNECTION_H
 
+#include <glib-object.h>
+
+#include "giotypes.h"
 #include "gconnection.h"
-#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -53,7 +55,6 @@ G_BEGIN_DECLS
                                G_TYPE_PACKET_CONNECTION,                \
                                GPacketConnectionClass))
 
-typedef struct _GPacketConnection      GPacketConnection;
 typedef struct _GPacketConnectionClass GPacketConnectionClass;
 
 struct _GPacketConnection

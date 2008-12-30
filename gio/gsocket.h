@@ -29,7 +29,7 @@
 
 #include <glib-object.h>
 
-#include "gsocketaddress.h"
+#include "giotypes.h"
 
 G_BEGIN_DECLS
 
@@ -54,7 +54,6 @@ G_BEGIN_DECLS
                                G_TYPE_SOCKET,                           \
                                GSocketClass))
 
-typedef struct _GSocket        GSocket;
 typedef struct _GSocketClass   GSocketClass;
 typedef struct _GSocketPrivate GSocketPrivate;
 
@@ -71,12 +70,12 @@ struct _GSocketClass
 };
 
 GType           g_socket_get_type          (void) G_GNUC_CONST;
-GSocketAddress *g_socket_get_local_address (GSocket *self) G_GNUC_PURE;
+GSocketAddress *g_socket_get_local_address (GSocket          *self) G_GNUC_PURE;
 
 /* For implementations: */
 gboolean        g_socket_has_pending       (GSocket          *socket);
 gboolean        g_socket_set_pending       (GSocket          *socket,
-					    GError               **error);
+					    GError          **error);
 void            g_socket_clear_pending     (GSocket          *socket);
 
 G_END_DECLS

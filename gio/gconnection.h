@@ -27,7 +27,9 @@
 #ifndef G_CONNECTION_H
 #define G_CONNECTION_H
 
-#include "gsocketaddress.h"
+#include <glib-object.h>
+
+#include "giotypes.h"
 
 G_BEGIN_DECLS
 
@@ -52,7 +54,6 @@ G_BEGIN_DECLS
                                G_TYPE_CONNECTION,                       \
                                GConnectionClass))
 
-typedef struct _GConnection        GConnection;
 typedef struct _GConnectionClass   GConnectionClass;
 
 struct _GConnection
@@ -72,6 +73,5 @@ GSocketAddress *g_connection_get_local_address (GConnection *self) G_GNUC_PURE;
 GSocketAddress *g_connection_get_peer_address  (GConnection *self) G_GNUC_PURE;
 
 G_END_DECLS
-
 
 #endif
