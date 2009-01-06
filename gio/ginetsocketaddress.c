@@ -205,6 +205,7 @@ g_inet_socket_address_class_init (GInetSocketAddressClass *klass)
 
   gsocketaddress_class->to_native = g_inet_socket_address_to_native;
   gsocketaddress_class->native_size = g_inet_socket_address_native_size;
+  gsocketaddress_class->create_datagram_socket = g_inet_socket_address_create_datagram_socket;
 
   g_object_class_install_property (gobject_class, PROP_ADDRESS,
                                    g_param_spec_object ("address",
