@@ -45,6 +45,7 @@ typedef int SOCKET;
 #include "gioerror.h"
 #include "gioenums.h"
 #include "gioenumtypes.h"
+#include "gsocketaddress.h"
 
 struct _GNativeDatagramSocketPrivate
 {
