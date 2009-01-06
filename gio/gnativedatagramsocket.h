@@ -70,9 +70,9 @@ struct _GNativeDatagramSocketClass
   GDatagramSocketClass parent_class;
 };
 
-GType                  g_native_datagream_socket_get_type         (void) G_GNUC_CONST;
-GNativeDatagramSocket *g_native_datagream_socket_new              (GInetAddressFamily inet);
-GInetAddressFamily     g_native_datagream_socket_get_inet_familly (GNativeDatagramSocket *socket) G_GNUC_PURE;
+GType                  g_native_datagram_socket_get_type         (void) G_GNUC_CONST;
+GNativeDatagramSocket *g_native_datagram_socket_new              (GInetAddressFamily inet);
+GInetAddressFamily     g_native_datagram_socket_get_inet_familly (GNativeDatagramSocket *socket) G_GNUC_PURE;
 
 G_END_DECLS
 

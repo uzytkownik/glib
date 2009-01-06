@@ -178,16 +178,16 @@ g_inet_socket_address_to_native (GSocketAddress *address,
     return FALSE;
 }
 
-static GDatagramSocket
+static GDatagramSocket *
 g_inet_socket_address_create_datagram_socket (GSocketAddress *object)
 {
   GInetSocketAddress *self;
-  GInetAddressFamilly familly;
+  GInetAddressFamily family;
   
   g_return_val_if_fail ((self = G_INET_SOCKET_ADDRESS (object)), NULL);
-  family = g_inet_address_get_family (addr->priv->address);
+  family = g_inet_address_get_family (self->priv->address);
 
-  return g_native_datagream_socket_new (familly);
+  return g_native_datagram_socket_new (family);
 }
 
 static void
