@@ -236,6 +236,7 @@ libgio_2_0_la_SOURCES =		\
 	gsocketaddressenumerator.c \
 	gsocketconnectable.c	\
 	gstreamconnection.c     \
+	gstreamsocket.c 	\
 	gthemedicon.c 		\
 	gthreadedresolver.c	\
 	gthreadedresolver.h	\
@@ -352,6 +353,7 @@ gio_headers =			\
 	gsocketaddressenumerator.h \
 	gsocketconnectable.h	\
 	gstreamconnection.h     \
+	gstreamsocket.h		\
 	gthemedicon.h 		\
 	gvfs.h 			\
 	gvolume.h 		\
