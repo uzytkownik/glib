@@ -59,17 +59,14 @@ struct _GSocketAddressClass
   GDatagramSocket *(*create_datagram_socket) (GSocketAddress *address);
 };
 
-GType           g_socket_address_get_type    (void) G_GNUC_CONST;
-
-gboolean        g_socket_address_to_native   (GSocketAddress *address,
-					      gpointer        dest,
-					      gsize           destlen);
-
-gssize          g_socket_address_native_size (GSocketAddress *address);
-
-GSocketAddress *g_socket_address_from_native (gpointer        native,
-					      gsize           len);
-GDatagramSocket *(*create_datagram_socket) (GSocketAddress *address);
+GType           g_socket_address_get_type     (void) G_GNUC_CONST;
+gboolean        g_socket_address_to_native    (GSocketAddress *address,
+					       gpointer        dest,
+					       gsize           destlen);
+gssize          g_socket_address_native_size  (GSocketAddress *address);
+GSocketAddress  *g_socket_address_from_native (gpointer        native,
+					       gsize           len);
+GDatagramSocket *g_socket_create_datagram_socket (GSocketAddress *address);
 G_END_DECLS
 
 #endif /* __G_SOCKET_ADDRESS_H__ */
