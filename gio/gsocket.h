@@ -67,10 +67,15 @@ struct _GSocketClass
 {
   GObjectClass parent_class;
   GSocketAddress *(*get_local_address) (GSocket *self);
+  gboolean        (*support_address)   (GSocket *self,
+					GSocketAddress *address);
 };
 
 GType           g_socket_get_type          (void) G_GNUC_CONST;
-GSocketAddress *g_socket_get_local_address (GSocket          *self) G_GNUC_PURE;
+GSocketAddress *g_socket_get_local_address (GSocket          *self);
+/* Internal API */
+gboolean        g_socket_support_address   (GSocket          *self,
+                                            GSocketAddress   *address);
 
 /* For implementations: */
 gboolean        g_socket_has_pending       (GSocket          *socket);

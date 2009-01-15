@@ -106,6 +106,18 @@ g_socket_get_local_address (GSocket *self)
 }
 
 gboolean
+g_socket_support_address (GSocket        *self,
+			  GSocketAddress *address)
+{
+  GSocketClass *klass;
+
+  g_return_val_if_fail ((klass = G_SOCKET_GET_CLASS (self)), NULL);
+  g_return_val_if_fail (klass->support_address, NULL);
+
+  return klass->support_address (self);
+}
+
+gboolean
 g_socket_has_pending (GSocket *socket)
 {
   return g_atomic_int_get (&socket->priv->pending);

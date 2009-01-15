@@ -124,6 +124,8 @@ static gssize          g_native_datagram_socket_receive_finish    (GDatagramSock
 						       GAsyncResult         *res,
 						       GError              **error);
 */
+static gboolean        g_native_datagram_socket_support_address   (GSocket        *socket,
+								   GSocketAddress *address)
 
 G_DEFINE_TYPE (GNativeDatagramSocket, g_native_datagram_socket, G_TYPE_DATAGRAM_SOCKET);
 
@@ -150,6 +152,7 @@ g_native_datagram_socket_class_init (GNativeDatagramSocketClass *klass)
 						      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT | G_PARAM_CONSTRUCT_ONLY));
   
   socket_class->get_local_address = g_native_datagram_socket_get_local_address;
+  socket_class->support_address = g_native_datagram_socket_support_address;
 
   datagram_socket_class->bind = g_native_datagram_socket_bind;
   /*
@@ -439,11 +442,30 @@ g_native_datagram_socket_receive_finish (GDatagramSocket      *self,
 					 GError              **error);
 */
 
+static gboolean
+g_native_datagram_socket_support_address (GSocket        *socket,
+					  GSocketAddress *address)
+{
+  GNativeDatagramSocket *self;
+  struct sockaddr_storage sockaddr;
+  g_return_val_if_fail ((self = G_NATIVE_DATAGRAM_SOCKET (self)), FALSE);
+
+  if (!g_socket_address_to_native (address, &sockaddr,
+				   sizeof (struct sockaddr_storage)))
+    {
+      return FALSE;
+    }
+  else
+    {
+      return self->priv->familly == sockaddr.ss_familly;
+    }
+}
+
 GNativeDatagramSocket *
 g_native_datagram_socket_new (GInetAddressFamily inet)
 {
   return (GNativeDatagramSocket *)g_object_new (G_TYPE_NATIVE_DATAGRAM_SOCKET,
-						 "address-familly", inet,
-						 NULL);
+						"address-familly", inet,
+						NULL);
 }
 
