@@ -114,7 +114,7 @@ g_socket_support_address (GSocket        *self,
   g_return_val_if_fail ((klass = G_SOCKET_GET_CLASS (self)), NULL);
   g_return_val_if_fail (klass->support_address, NULL);
 
-  return klass->support_address (self);
+  return klass->support_address (self, address);
 }
 
 gboolean
