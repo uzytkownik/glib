@@ -81,6 +81,7 @@ struct _GDatagramSocketClass
 			      gsize                 size,
 			      GCancellable         *cancellable,
 			      GError              **error);
+  gboolean (*has_next)       (GDatagramSocket      *self);
   /* Optional */
   void     (*bind_async)     (GDatagramSocket      *self,
 			      GSocketAddress       *local,
@@ -163,6 +164,7 @@ void     g_datagram_socket_receive_async  (GDatagramSocket      *self,
 gssize   g_datagram_socket_receive_finish (GDatagramSocket      *self,
 					   GAsyncResult         *res,
 					   GError              **error);
+gboolean g_datagram_socket_has_next       (GDatagramSocket      *self);
 
 G_END_DECLS
 

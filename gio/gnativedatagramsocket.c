@@ -28,9 +28,11 @@
 #define SHUT_RD (SD_REVEIVE)
 #define SHUT_WR (SD_SEND)
 #define SHUT_RDWR (SD_BOTH)
-typedef int sockaddr_t;
+typedef int socklen_t;
 #define get_errno (WSAGetLastError ())
+#define ioctl ioctlsocket
 #else /* G_OS_WIN32 */
+#include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <errno.h>
@@ -125,7 +127,8 @@ static gssize          g_native_datagram_socket_receive_finish    (GDatagramSock
 						       GError              **error);
 */
 static gboolean        g_native_datagram_socket_support_address   (GSocket        *socket,
-								   GSocketAddress *address)
+								   GSocketAddress *address);
+static gboolean        g_native_datagram_socket_has_next          (GDatagramSocket *self);
 
 G_DEFINE_TYPE (GNativeDatagramSocket, g_native_datagram_socket, G_TYPE_DATAGRAM_SOCKET);
 
@@ -457,8 +460,33 @@ g_native_datagram_socket_support_address (GSocket        *socket,
     }
   else
     {
-      return self->priv->familly == sockaddr.ss_familly;
+      return self->priv->familly == sockaddr.ss_family;
     }
+}
+
+static gboolean
+g_native_datagram_socket_has_next (GDatagramSocket *socket)
+{
+  int non_blocking;
+  char buf[10];
+  gssize read;
+  struct sockaddr_storage sockaddr;
+  socklen_t len;
+  GNativeDatagramSocket *self;
+
+  g_return_val_if_fail ((self = G_NATIVE_DATAGRAM_SOCKET (socket)), FALSE);
+  
+  non_blocking = 1;
+  ioctl (self->priv->socket, FIONBIO, &non_blocking);
+
+  len = sizeof (sockaddr);
+  read = recvfrom (self->priv->socket, &buf, sizeof (buf), MSG_PEEK,
+		   &sockaddr, &len);
+  
+  non_blocking = 0;
+  ioctl (self->priv->socket, FIONBIO, &non_blocking);
+  
+  return read > 0;
 }
 
 GNativeDatagramSocket *

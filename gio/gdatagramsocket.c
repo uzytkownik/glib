@@ -471,3 +471,26 @@ g_datagram_socket_receive_finish (GDatagramSocket  *self,
   g_simple_async_result_propagate_error (res, error);
   return g_simple_async_result_get_op_res_gssize (res);
 }
+
+gboolean
+g_datagram_socket_has_next (GDatagramSocket *self)
+{
+  GDatagramSocketClass *klass;
+  
+  g_return_val_if_fail ((klass = G_DATAGRAM_SOCKET_GET_CLASS (self)), FALSE);
+  g_return_val_if_fail (klass->has_next, FALSE);
+
+  if (g_socket_set_pending ((GSocket *)self, NULL))
+    {
+      gboolean res;
+
+      res = klass->has_next (self);
+      g_socket_clear_pending ((GSocket *)self);
+
+      return res;
+    }
+  else
+    {
+      return FALSE;
+    }
+}
