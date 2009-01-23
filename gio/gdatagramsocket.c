@@ -38,7 +38,7 @@ g_datagram_socket_init (GDatagramSocket *self)
 
 gboolean
 g_datagram_socket_bind (GDatagramSocket  *self,
-			GSocketAddress   *local,
+			GSocketConnectable   *local,
 			GCancellable     *cancellable,
 			GError          **error)
 {
@@ -65,7 +65,7 @@ g_datagram_socket_bind (GDatagramSocket  *self,
 typedef struct {
   GAsyncReadyCallback callback;
   gpointer user_data;
-  GSocketAddress *local;
+  GSocketConnectable *local;
 } BindAsyncData;
 
 static void
@@ -114,7 +114,7 @@ bind_thread (GSimpleAsyncResult *res,
 
 void
 g_datagram_socket_bind_async (GDatagramSocket     *self,
-			      GSocketAddress      *local,
+			      GSocketConnectable      *local,
 			      int                  io_priority,
 			      GCancellable        *cancellable,
 			      GAsyncReadyCallback  callback,
@@ -176,7 +176,7 @@ g_datagram_socket_bind_finish (GDatagramSocket  *self,
 
 gssize
 g_datagram_socket_send (GDatagramSocket  *self,
-			GSocketAddress   *destination,
+			GSocketConnectable   *destination,
 			const void       *buf,
 			gsize             size,
 			GCancellable     *cancellable,
@@ -205,7 +205,7 @@ g_datagram_socket_send (GDatagramSocket  *self,
 typedef struct {
   GAsyncReadyCallback callback;
   gpointer user_data;
-  GSocketAddress *destination;
+  GSocketConnectable *destination;
   const void *buf;
   gsize size;
 } SendAsyncData;
@@ -259,7 +259,7 @@ send_thread (GSimpleAsyncResult *res,
 
 void
 g_datagram_socket_send_async (GDatagramSocket     *self,
-			      GSocketAddress      *destination,
+			      GSocketConnectable      *destination,
 			      const void          *buf,
 			      gsize                size,
 			      int                  io_priority,
@@ -352,7 +352,7 @@ g_datagram_socket_receive (GDatagramSocket  *self,
 typedef struct {
   GAsyncReadyCallback callback;
   gpointer user_data;
-  GSocketAddress **source;
+  GSocketConnectable **source;
   void *buf;
   gsize size;
 } ReceiveAsyncData;
@@ -406,7 +406,7 @@ receive_thread (GSimpleAsyncResult *res,
 
 void
 g_datagram_socket_receive_async (GDatagramSocket      *self,
-				 GSocketAddress      **source,
+				 GSocketAddress  **source,
 				 void                 *buf,
 				 gsize                 size,
 				 int                   io_priority,

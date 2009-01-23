@@ -66,11 +66,11 @@ struct _GDatagramSocketClass
 {
   GSocketClass parent_class;
   gboolean (*bind)           (GDatagramSocket      *self,
-			      GSocketAddress       *local,
+			      GSocketConnectable   *local,
 			      GCancellable         *cancellable,
 			      GError              **error);
   gssize   (*send)           (GDatagramSocket      *self,
-			      GSocketAddress       *destination,
+			      GSocketConnectable   *destination,
 			      const void           *buf,
 			      gsize                 size,
 			      GCancellable         *cancellable,
@@ -84,7 +84,7 @@ struct _GDatagramSocketClass
   gboolean (*has_next)       (GDatagramSocket      *self);
   /* Optional */
   void     (*bind_async)     (GDatagramSocket      *self,
-			      GSocketAddress       *local,
+			      GSocketConnectable   *local,
 			      int                   io_priority,
 			      GCancellable         *cancellable,
 			      GAsyncReadyCallback   callback,
@@ -93,7 +93,7 @@ struct _GDatagramSocketClass
 			      GAsyncResult         *res,
 			      GError              **error);
   void     (*send_async)     (GDatagramSocket      *self,
-			      GSocketAddress       *destination,
+			      GSocketConnectable   *destination,
 			      const void           *buf,
 			      gsize                 size,
 			      int                   io_priority,
@@ -118,11 +118,11 @@ struct _GDatagramSocketClass
 
 GType    g_datagram_socket_get_type       (void) G_GNUC_CONST;
 gboolean g_datagram_socket_bind           (GDatagramSocket      *self,
-					   GSocketAddress       *local,
+					   GSocketConnectable   *local,
 					   GCancellable         *cancellable,
 					   GError              **error);
 void     g_datagram_socket_bind_async     (GDatagramSocket      *self,
-					   GSocketAddress       *local,
+					   GSocketConnectable   *local,
 					   int                   io_priority,
 					   GCancellable         *cancellable,
 					   GAsyncReadyCallback   callback,
@@ -131,13 +131,13 @@ gboolean g_datagram_socket_bind_finish    (GDatagramSocket      *self,
 					   GAsyncResult         *res,
 					   GError              **error);
 gssize   g_datagram_socket_send           (GDatagramSocket      *self,
-					   GSocketAddress       *destination,
+					   GSocketConnectable   *destination,
 					   const void           *buf,
 					   gsize                 size,
 					   GCancellable         *cancellable,
 					   GError              **error);
 void     g_datagram_socket_send_async     (GDatagramSocket      *self,
-					   GSocketAddress       *destination,
+					   GSocketConnectable   *destination,
 					   const void           *buf,
 					   gsize                 size,
 					   int                   io_priority,

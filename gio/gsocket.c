@@ -25,7 +25,7 @@
 #include "glibintl.h"
 
 #include "gsocket.h"
-#include "gsocketaddress.h"
+#include "gsocketconnectable.h"
 #include "gioerror.h"
 
 enum
@@ -59,7 +59,7 @@ g_socket_class_init (GSocketClass *klass)
 				   g_param_spec_object ("local-address",
 							"local address",
 							"binded address",
-							G_TYPE_SOCKET_ADDRESS,
+							G_TYPE_SOCKET_CONNECTABLE,
 							G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
@@ -94,7 +94,7 @@ g_socket_get_property (GObject    *object,
     }
 }
 
-GSocketAddress *
+GSocketConnectable *
 g_socket_get_local_address (GSocket *self)
 {
   GSocketClass *klass;

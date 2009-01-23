@@ -74,13 +74,13 @@ static void           g_native_datagram_socket_set_property       (GObject      
 								   GParamSpec           *pspec);
 static void            g_native_datagram_socket_finalize          (GObject              *object);
 static void            g_native_datagram_socket_dispose           (GObject              *object);
-static GSocketAddress *g_native_datagram_socket_get_local_address (GSocket              *self);
+static GSocketConnectable *g_native_datagram_socket_get_local_address (GSocket              *self);
 static gboolean        g_native_datagram_socket_bind              (GDatagramSocket      *self,
-								   GSocketAddress       *local,
+								   GSocketConnectable       *local,
 								   GCancellable         *cancellable,
 								   GError              **error);
 static void            g_native_datagram_socket_bind_async        (GDatagramSocket      *self,
-								   GSocketAddress       *local,
+								   GSocketConnectable       *local,
 								   int                   io_priority,
 								   GCancellable         *cancellable,
 								   GAsyncReadyCallback   callback,
@@ -89,13 +89,13 @@ static gboolean        g_native_datagram_socket_bind_finish       (GDatagramSock
 								   GAsyncResult         *res,
 								   GError              **error);
 static gssize          g_native_datagram_socket_send              (GDatagramSocket      *self,
-								   GSocketAddress       *destination,
+								   GSocketConnectable       *destination,
 								   const void           *buf,
 								   gsize                 size,
 								   GCancellable         *cancellable,
 								   GError              **error);
 static void            g_native_datagram_socket_send_async        (GDatagramSocket      *self,
-								   GSocketAddress       *destination,
+								   GSocketConnectable       *destination,
 								   const void           *buf,
 								   gsize                 size,
 								   int                   io_priority,
@@ -246,7 +246,7 @@ g_native_datagram_socket_finalize (GObject *object)
     G_OBJECT_CLASS (g_native_datagram_socket_parent_class)->finalize (object);
 }
 
-static GSocketAddress *
+static GSocketConnectable *
 g_native_datagram_socket_get_local_address (GSocket *self)
 {
   GNativeDatagramSocket *socket;
@@ -258,7 +258,7 @@ g_native_datagram_socket_get_local_address (GSocket *self)
   g_return_val_if_fail (socket->priv, NULL);
   
   if (socket->priv->local)
-    return (GSocketAddress *)socket->priv->local;
+    return (GSocketConnectable *)socket->priv->local;
 
   sockaddr_len = sizeof (struct sockaddr_storage);
   if (getsockname (socket->priv->socket,
@@ -275,21 +275,23 @@ g_native_datagram_socket_get_local_address (GSocket *self)
       g_object_unref (address);
     }
 
-  return (GSocketAddress *)socket->priv->local;
+  return (GSocketConnectable *)socket->priv->local;
 }
 
 static gboolean
-g_native_datagram_socket_bind (GDatagramSocket  *self,
-			       GSocketAddress   *local,
-			       GCancellable     *cancellable,
-			       GError          **error)
+g_native_datagram_socket_bind (GDatagramSocket     *self,
+			       GSocketConnectable  *_local,
+			       GCancellable        *cancellable,
+			       GError             **error)
 {
   GNativeDatagramSocket *socket;
+  GSocketAddress *local;
   struct sockaddr *sockaddr;
   gssize socklen;
 
   g_return_val_if_fail ((socket = G_NATIVE_DATAGRAM_SOCKET (self)), FALSE);
   g_return_val_if_fail (socket->priv, FALSE);
+  g_return_val_if_fail ((local = G_SOCKET_ADDRESS (_local)), FALSE);
   
   if (g_cancellable_set_error_if_cancelled (cancellable, error))
     return FALSE;
@@ -401,7 +403,7 @@ g_native_datagram_socket_bind_idle (gpointer _data)
 
 static void
 g_native_datagram_socket_bind_async (GDatagramSocket      *self,
-				     GSocketAddress       *local,
+				     GSocketConnectable   *_local,
 				     int                   io_priority,
 				     GCancellable         *cancellable,
 				     GAsyncReadyCallback   callback,
@@ -409,8 +411,10 @@ g_native_datagram_socket_bind_async (GDatagramSocket      *self,
 {
   GNativeDatagramSocket *socket;
   struct BindData *data;
+  GSocketAddress *local;
 
   g_return_if_fail ((socket = G_NATIVE_DATAGRAM_SOCKET (self)));
+  g_return_if_fail ((local = G_SOCKET_ADDRESS (_local)));
 
   data = g_slice_new (struct BindData);
   data->socket = socket;
@@ -439,7 +443,7 @@ g_native_datagram_socket_bind_finish (GDatagramSocket      *self,
 
 static gssize
 g_native_datagram_socket_send (GDatagramSocket      *self,
-			       GSocketAddress       *destination,
+			       GSocketConnectable   *_destination,
 			       const void           *buf,
 			       gsize                 size,
 			       GCancellable         *cancellable,
@@ -450,9 +454,11 @@ g_native_datagram_socket_send (GDatagramSocket      *self,
   socklen_t socklen;
   gssize _socklen;
   gssize result;
+  GSocketAddress *destination;
 
   g_return_val_if_fail ((socket = G_NATIVE_DATAGRAM_SOCKET (self)), -1);
   g_return_val_if_fail (socket->priv, -1);
+  g_return_val_if_fail ((destination = G_SOCKET_ADDRESS (_destination)), -1);
   
   if (g_cancellable_set_error_if_cancelled (cancellable, error))
     return -1;
@@ -565,7 +571,7 @@ g_native_datagram_socket_send_idle (gpointer _data)
 
 static void
 g_native_datagram_socket_send_async (GDatagramSocket      *self,
-				     GSocketAddress       *destination,
+				     GSocketConnectable   *_destination,
 				     const void           *buf,
 				     gsize                 size,
 				     int                   io_priority,
@@ -576,8 +582,10 @@ g_native_datagram_socket_send_async (GDatagramSocket      *self,
   GNativeDatagramSocket *socket;
   struct SendData *data;
   gssize _socklen;
+  GSocketAddress *destination;
 
   g_return_if_fail ((socket = G_NATIVE_DATAGRAM_SOCKET (self)));
+  g_return_if_fail ((destination = G_SOCKET_ADDRESS (_destination)));
   
   data = g_slice_new (struct SendData);
   _socklen = g_socket_address_native_size (destination);
