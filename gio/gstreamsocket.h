@@ -67,33 +67,59 @@ struct _GStreamSocket
 struct _GStreamSocketClass
 {
   GSocketClass parent_class;
-  GSocketAddress    *(*get_remote_address) (GStreamSocket       *self);
-  GStreamConnection *(*connect)            (GStreamSocket        *self,
-					    GCancellable         *cancllable,
-					    GError              **error);
-  void               (*connect_async)      (GStreamSocket        *self,
-					    int                   io_priority,
-					    GCancellable         *cancellable,
-					    GAsyncReadyCallback   callback,
-					    void                 *user_data);
-  GStreamConnection *(*connect_finish)     (GStreamSocket        *self,
-					    GAsyncResult         *res,
-					    GError              **error);
+  GSocketAddress    *(*get_remote_address)    (GStreamSocket        *self);
+  gboolean           (*connect)               (GStreamSocket        *self,
+					       GCancellable         *cancellable,
+					       GError              **error);
+  void               (*connect_async)         (GStreamSocket        *self,
+					       int                   io_priority,
+					       GCancellable         *cancellable,
+					       GAsyncReadyCallback   callback,
+					       void                 *user_data);
+  gboolean           (*connect_finish)        (GStreamSocket        *self,
+					       GAsyncResult         *res,
+					       GError              **error);
+  GStreamConnection *(*get_connection)        (GStreamSocket        *self,
+					       int                   conn_id,
+					       GCancellable         *cancellable,
+					       GError              **error);
+  void               (*get_connection_async)  (GStreamSocket        *self,
+					       int                   io_priority,
+					       int                   conn_id,
+					       GCancellable         *cancellable,
+					       GAsyncReadyCallback   callback,
+					       void                 *user_data);
+  GStreamConnection *(*get_connection_finish) (GStreamSocket        *self,
+					       GAsyncResult         *res,
+					       GError              **error);
 };
 
-GType              g_stream_socket_get_type           (void) G_GNUC_CONST;
-GSocketAddress    *g_stream_socket_get_remote_address (GStreamSocket        *self);
-GStreamConnection *g_stream_socket_connect            (GStreamSocket        *self,
-						       GCancellable         *cancllable,
-						       GError               **error);
-void               g_stream_socket_connect_async      (GStreamSocket        *self,
-						       int                   io_priority,
-						       GCancellable         *cancellable,
-						       GAsyncReadyCallback   callback,
-						       void                 *user_data);
-GStreamConnection *g_stream_socket_connect_finish     (GStreamSocket        *self,
-						       GAsyncResult         *res,
-						       GError              **error);
+GType              g_stream_socket_get_type              (void) G_GNUC_CONST;
+GSocketAddress    *g_stream_socket_get_remote_address    (GStreamSocket        *self);
+gboolean           g_stream_socket_connect               (GStreamSocket        *self,
+							  GCancellable         *cancllable,
+							  GError               **error);
+void               g_stream_socket_connect_async         (GStreamSocket        *self,
+							  int                   io_priority,
+							  GCancellable         *cancellable,
+							  GAsyncReadyCallback   callback,
+							  void                 *user_data);
+gboolean           g_stream_socket_connect_finish        (GStreamSocket        *self,
+							  GAsyncResult         *res,
+							  GError              **error);
+GStreamConnection *g_stream_socket_get_connection        (GStreamSocket        *self,
+							  int                   conn_id,
+							  GCancellable         *cancellable,
+							  GError              **error);
+void               g_stream_socket_get_connection_async  (GStreamSocket        *self,
+							  int                   io_priority,
+							  int                   conn_id,
+							  GCancellable         *cancellable,
+							  GAsyncReadyCallback   callback,
+							  void                 *user_data);
+GStreamConnection *g_stream_socket_get_connection_finish (GStreamSocket        *self,
+							  GAsyncResult         *res,
+							  GError              **error);
 
 G_END_DECLS
 

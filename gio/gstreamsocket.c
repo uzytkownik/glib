@@ -88,7 +88,7 @@ g_stream_socket_get_remote_address (GStreamSocket *self)
   return klass->get_remote_address (self);
 }
 
-GStreamConnection *
+gboolean
 g_stream_socket_connect (GStreamSocket *self,
 			 GCancellable *cancellable,
 			 GError **error)
@@ -128,7 +128,7 @@ connect_thread (GSimpleAsyncResult *res,
 		GObject            *object,
 		GCancellable       *cancellable)
 {
-  GStreamConnection *result;
+  gboolean result;
   ConnectAsyncData *data;
   GError *error;
   GStreamSocketClass *klass;
@@ -145,7 +145,7 @@ connect_thread (GSimpleAsyncResult *res,
     {
       g_simple_async_result_set_from_error (res, error);
     }
-  g_simple_async_result_set_op_res_gpointer (res, result, g_object_unref);
+  g_simple_async_result_set_op_res_gboolean (res, result);
 
   g_simple_async_result_complete_in_idle (res);
 }
@@ -198,7 +198,7 @@ g_stream_socket_connect_async (GStreamSocket       *self,
     }
 }
 
-GStreamConnection *
+gboolean
 g_stream_socket_connect_finish (GStreamSocket  *self,
 				GAsyncResult   *_res,
 				GError        **error)
@@ -211,8 +211,137 @@ g_stream_socket_connect_finish (GStreamSocket  *self,
 
   g_simple_async_result_propagate_error (res, error);
 
+  data = g_simple_async_result_get_op_res_gboolean (res);
+  return data;
+}
+
+GStreamConnection *
+g_stream_socket_get_connection (GStreamSocket *self,
+				int conn_id,
+				GCancellable *cancellable,
+				GError **error)
+{
+  GStreamSocketClass *klass;
+
+  g_return_val_if_fail ((klass = G_STREAM_SOCKET_GET_CLASS (self)), NULL);
+  g_return_val_if_fail (klass->get_connection, NULL);
+
+  return klass->get_connection (self, cancellable, error);
+}
+
+typedef struct {
+  int conn_id;
+  GAsyncReadyCallback callback;
+  gpointer user_data;
+} GetConnectionData;
+
+static void
+get_connection_callback (GObject      *source,
+		  GAsyncResult *res,
+		  gpointer      user_data)
+{
+  ConnectAsyncData *data;
+  GAsyncReadyCallback callback;
+
+  data = (GetConnectionData *)user_data;
+  callback = data->callback;
+  user_data = data->user_data;
+
+  g_slice_free (ConnectAsyncData, data);
+
+  callback (source, res, user_data);
+}
+
+static void
+get_connection_thread (GSimpleAsyncResult *res,
+		       GObject            *object,
+		       GCancellable       *cancellable)
+{
+  GStreamConnection *result;
+  struct GetConnectionData *data;
+  GError *error;
+  GStreamSocketClass *klass;
+
+  g_return_if_fail ((klass = G_STREAM_SOCKET_GET_CLASS (object)));
+  g_return_if_fail (klass->get_connection);
+  
+  error = NULL;
   data = g_simple_async_result_get_op_res_gpointer (res);
-  if (data)
-    g_object_ref ((GObject *)data);
+  result = klass->get_connection ((GStreamSocket *)object, data->conn_id,
+				  cancellable, &error);
+
+  if (error != NULL)
+    {
+      g_simple_async_result_set_from_error (res, error);
+    }
+  g_simple_async_result_set_op_res_gpointer (res, result, g_object_unref);
+
+  g_simple_async_result_complete_in_idle (res);
+}
+
+void
+g_stream_socket_get_connection_async (GStreamSocket       *self,
+				      int                  io_priority,
+				      int                  conn_id,
+				      GCancellable        *cancellable,
+				      GAsyncReadyCallback  callback,
+				      void                *user_data)
+{
+  GStreamSocketClass *klass;
+  ConnectAsyncData *data;
+  GError *error;
+  
+  g_return_if_fail ((klass = G_STREAM_SOCKET_GET_CLASS (self)));
+
+  if (g_socket_set_pending ((GSocket *)self, &error))
+    {
+      if (klass->get_connection_async)
+	{
+	  data = g_slice_new (GetConnectionData);
+	  //data->
+	  data->callback = callback;
+	  data->user_data = user_data;
+	  klass->connect_async (self, io_priority, cancellable,
+				connect_callback, data); 
+	}
+      else
+	{
+	  GSimpleAsyncResult *res;
+
+	  data = g_slice_new (ConnectAsyncData);
+	  data->callback = callback;
+	  data->user_data = user_data;
+
+	  res = g_simple_async_result_new ((GObject *)self, connect_callback,
+					   data,
+					   g_stream_socket_connect_async);
+
+	  g_simple_async_result_set_op_res_gpointer (res, data, NULL);
+
+	  g_simple_async_result_run_in_thread (res, connect_thread,
+					       io_priority, cancellable);
+	}
+    }
+  else
+    {
+      g_simple_async_report_gerror_in_idle ((GObject *)self, callback,
+					    user_data, error);
+    }
+}
+
+gboolean
+g_stream_socket_connect_finish (GStreamSocket  *self,
+				GAsyncResult   *_res,
+				GError        **error)
+{
+  GSimpleAsyncResult *res;
+  GStreamConnection *data;
+
+  g_return_val_if_fail ((GObject *)self != g_async_result_get_source_object(_res), FALSE);
+  g_return_val_if_fail ((res = G_SIMPLE_ASYNC_RESULT (_res)), FALSE);
+
+  g_simple_async_result_propagate_error (res, error);
+
+  data = g_simple_async_result_get_op_res_gboolean (res);
   return data;
 }
