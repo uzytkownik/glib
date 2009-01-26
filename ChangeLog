@@ -1,20 +1,204 @@
-2008-12-13  Matthias Clasen <mclaesn@redhat.com>
+2009-01-23  Stefan Kost  <ensonic@users.sf.net>
+
+	* docs/reference/glib/Makefile.am:
+	  Add SCAN_OPTIONS=--ignore-decorators="GLIB_VAR" to Makefile.am to fix
+	  on problem with the doc build.
+
+2009-01-21  Tor Lillqvist  <tml@novell.com>
+
+	* glib/gwin32.c (g_win32_locale_filename_from_utf8): Drop the code
+	in the else branch of #if GLIB_CHECK_VERSION (2, 19, 0). Drop
+	unused variables.
+
+2009-01-20  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 568294 – A wrong reference in the description of 
+	g_bookmark_file_add_application()
+
+	* glib/gbookmarkfile.c (g_bookmark_file_add_application):
+	Fix a typo in the docs. Pointed out by Takeshi Aihana
+
+2009-01-19  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.5 ===
+
+2009-01-18  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gstrfuncs.c (g_strdup_printf): Fix a doc typo.
+
+2009-01-18  Matthias Clasen  <mclasen@redhat.com>
+
+	* NEWS: Updates
+
+2009-01-18  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 512779 – --disable-regex breaks compilation
+	
+	* configure.in: Define an ENABLE_REGEX macro
+
+	* gobject/gboxed.c: Don't refer to g_regex_ref if ENABLE_REGEX
+	is not defined.
+
+2009-01-18  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gbsearcharray.h: Quell some compiler warnings.
+
+2009-01-18  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/pcre: Update to PCRE 7.8
+
+2009-01-17  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 567977 – textdomain() macro should not return NULL when 
+	ENABLE_NLS is not set
+
+	* glib/glibintl.h: If !ENABLE_NLS, make textomain() macro 
+	return "messages" in case of a NULL argument. Patch by
+	Peter Kjellerstedt.
+
+2009-01-17  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 567838 – G_STRUCT_OFFSETOF fails to compile under icc 9.1
+
+	* glib/gmacros.h (G_STRUCT_OFFSETOF): Use offsetof instead of 
+	__builtin_offsetof, for icc's sake. Proposed by Hrvoje Niksic.
+
+2009-01-13  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 564728 Add function to decode base64 encoded data in place
+
+	* glib/glib.symbols:
+	* glib/gbase64.[hc] (g_base64_decode_inplace): New convenience
+	API to decode in place, overwriting the input string. Patch by
+	Sebastian Dröge.
+
+2009-01-12  Matthias Clasen  <mclasen@redhat.com>
+	
+	* glib/gtestutils.c (g_strcmp0): Be more explicit about the NULL
+	handling in the docs.
+
+2009-01-12  Tor Lillqvist  <tml@novell.com>
+
+	* glib/goption.c (parse_arg): Guard against a mis-written
+	GOptionArgFunc that has returned FALSE but not set the GError.
+
+2009-01-10  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 566573 – g_match_info_fetch_pos docs
+
+	* glib/gregex.c: Mention that positions are in bytes. 
+	Proposed by Christian Persch.
+
+2009-01-10  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 566569 – gregex docs clarification
+
+	* glib/gregex.c: Copy the warning about @string to all
+	relevant docs. Proposed by Christian Persch
+
+2009-01-09  Tor Lillqvist  <tml@iki.fi>
+
+	Bug 567138 - get_package_directory_from_module() does not free its
+	lock when failing
+
+	* glib/gwin32.c (get_package_directory_from_module): Obvious fix.
+
+2009-01-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* configure.in: Bump version
+
+2009-01-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.4 ===
+
+	* NEWS: Updates
+
+2009-01-05  Dan Winship  <danw@gnome.org>
+
+	* glib/tests/.gitignore: update
+
+	* tests/.gitignore: update, sort
+
+	* tests/gobject/.gitignore: add
+
+2009-01-05  Tor Lillqvist  <tml@iki.fi>
+
+	Bug 566348 - g_file_open_tmp uses the wrong g_mkstemp on win32
+
+	* glib/gfileutils.c: Move the binary compatibility versions of
+	g_file_test(), g_file_get_contents(), g_mkstemp() and
+	g_file_open_tmp() last in the file. Remove the restriction that
+	the XXXXXX is last in the template in the binary compatibility
+	version of g_mkstemp(). Thanks to Morten Welinder and Jody
+	Goldberg.
+
+2009-01-03  Matthias Clasen  <mclasen@redhat.com>
+
+	* NEWS: Updates
+
+2009-01-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gregex.c: Add an example to the g_regex_replace_eval() docs.
+
+2009-01-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gstrfuncs.c: Move docs inline, adding references to g_free()
+	where appropriate.
+
+2009-01-02  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 564210 – SUN Studio 12 has supported visibility attribute
+
+	* configure.in: Use visibility attribute for new enough sun cc.
+	Patch by Chris Wang
+
+2008-12-30  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 565905 – There is no named g_context_group_set_translation_domain()
+	in GOption command line parser
+
+	* glib/goption.c: Fix a wrong reference in the docs, reported by
+	Takeshi Aihana.
+
+2008-12-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gspawn.c:
+	* glib/gthread.c:
+	* glib/goption.c:
+	* glib/gmain.c:
+	* glib/gkeyfile.c:
+	* glib/gfileutils.c:
+	* glib/gdate.c:
+	* glib/garray.c:
+	* glib/gbookmarkfile.c:
+	* glib/gbacktrace.c: Fix some compiler warnings.
+
+2008-12-19  Tor Lillqvist  <tml@novell.com>
+
+	* glib/glib.symbols: Add g_thread_get_initialized here,
+	too. Surround g_test_config_vars with ifdef INCLUDE_VARIABLES.
+
+2008-12-18  Mike Kestner <mkestner@novell.com>
+
+	Bug 560676 - function access for g_threads_supported
+
+	* glib/gthreads.c (g_thread_get_initialized): new accessor for
+	g_threads_supported macro.
+	* glib/gthreads.h: add g_thread_get_initialized
+
+2008-12-15  Matthias Clasen <mclasen@redhat.com>
+
+	* configure.in: Bump version
+
+	* === Released 2.19.3 ===
+
+2008-12-13  Matthias Clasen <mclasen@redhat.com>
 
 	* NEWS: Updates
 
 2008-12-12  Dan Winship  <danw@gnome.org>
 
 	* glib/pltcheck.sh: make this work on x86_64
- 
-2008-12-12  Ryan Lortie  <desrt@desrt.ca>
-
-	* gio/gicon.c (g_icon_to_string_tokenized): free the tokens when done
-	with them
-
-2008-12-12  Ryan Lortie  <desrt@desrt.ca>
-
-	* gio/gunixmounts.c (g_unix_mount_at): fix leak that occurs when
-	multiple mount entries match the requested path
 
 2008-12-12  Behdad Esfahbod  <behdad@gnome.org>
 

@@ -1,3 +1,31 @@
+2009-01-19  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.5 ===
+
+2009-01-13  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/glib-sections.txt:
+	* glib/tmpl/base64.sgml: Mention g_base64_decode_inplace
+
+2009-01-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.4 ===
+
+2009-01-02  Matthias Clasen <mclasen@redhat.com>
+
+	* glib/tmpl/string_utils.sgml: Move most function docs inline.
+
+2009-01-01  Matthias Clasen <mclasen@redhat.com>
+
+	Bug 565831 – error in interface creation sample
+
+	* gobject/tut_howto.xml: Fix an example. Pointed out by
+	Jens Georg.
+
+2008-12-15  Matthias Clasen <mclasen@redhat.com>
+
+	* === Released 2.19.3 ===
+
 2008-12-08  Matthias Clasen  <mclasen@redhat.com>
 
 	* gio/gio-sections.txt: Add new functions

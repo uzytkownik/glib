@@ -1,6 +1,141 @@
+2009-01-22  Ryan Lortie  <desrt@desrt.ca>
+
+	Bug 568723 – g_buffered_input_stream_fill_async doesn't take count == -1
+
+	* gbufferedinputstream.c (g_buffered_input_stream_fill_async,
+	g_buffered_input_stream_fill): check for count < -1 instead of count <
+	0 and copy modified check to non-async version for consistency.
+	document the "count = -1" API.
+
+2009-01-22  Ryan Lortie  <desrt@desrt.ca>
+
+	Bug 568741 – g_buffered_input_stream_fill_async doesn't work
+
+	* gbufferedinputstream.c (fill_async_callback): grow the buffer tail
+	after we have successfully read data from the base stream
+
+2009-01-20  Ryan Lortie  <desrt@desrt.ca>
+
+	Bug 568394 – dropping the last reference to a stream filter closes the
+	base stream
+
+	* gfilterinputstream.h:
+	* gfilterinputstream.c: add "close-base-stream" property and only
+	close the base stream if it is true.  issue async close callbacks from
+	correct source object.
+	* gfilteroutputstream.h:
+	* gfilteroutputstream.c: add a "close-base-stream" property and only
+	close the base stream if it is true.  issue async close callbacks from
+	correct source object.
+	* gbufferedoutputstream: check g_filter_output_stream_get_close_base()
+	before closing the base stream.  fix invalid source tag comparison in
+	close_async (was comparing to flush_async).
+	* ../docs/reference/gio/gio-sections.txt:
+	* gio.symbols: add
+	g_filter_{in,out}put_stream_{g,s}et_close_base_stream
+	* tests/filter-streams.c: new test cases
+	* tests/Makefile.am: add new test
+	* tests/.gitignore: add new test
+
+2009-01-19  Matthias Clasen  <mclasen@redhat.com>
+
+	* gdesktopappinfo.c (g_desktop_app_info_new): Expand the docs.
+
+2009-01-19  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.5 ===
+
+2009-01-19  Matthias Clasen  <mclasen@redhat.com>
+
+	* gappinfo.h: Document get_commandline vfunc
+
+2009-01-19  Matthias Clasen  <mclasen@redhat.com>
+
+	* gunixmounts.c: Some stylistic fixes.
+
+2009-01-08  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 565484 – g_content_type_guess passes non-UTF8 text to XDG 
+	functions in non-UTF8 locale
+
+	* xdgmime/xdgmimecache.c:
+	* xdgmime/xdgmimeglob.c: Don't assume filenames are UTF-8.
+
+2009-01-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* xdgmime/test-mime.c: Make tests work with current shared-mime-info.
+
+2009-01-07  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 566770 – error code 0 for Too many open files is useless
+
+	* gioenums.h: Add a G_IO_ERROR_TOO_MANY_OPEN_FILES error code.
+	Requested by Olivier Sessink.
+
+	* gioerror.c: Translate EMFILE to G_IO_ERROR_TOO_MANY_OPEN_FILES.
+
+	* glocalfileenumerator.c: Translate G_FILE_ERROR_MFILE to
+	G_IO_ERROR_TOO_MANY_OPEN_FILES.
+
+2009-01-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.4 ===
+
+2009-01-05  Dan Winship  <danw@gnome.org>
+
+	* gdesktopappinfo.c (update_mimeapps_list): cast a "char **" to
+	"const char **" to avoid a warning.
+
+	* gemblem.c (g_emblem_from_tokens):
+	* gemblemedicon.c (g_emblemed_icon_from_tokens):
+	* xdgmime/xdgmime.c (xdg_mime_get_icon): remove unused
+	variables
+
+2009-01-05  Matthias Clasen <mclasen@redhat.com>
+
+	Bug 566064 – Add NOATIME flag to query_info_flags
+
+	* glocalfileinfo.c (get_content_type): Try using O_NOATIME when
+	sniffing for mime types. Based on a patch by A. Walton
+
+2009-01-05  Ryan Lortie  <desrt@desrt.ca>
+
+	* tests/.gitignore: improve
+	* tests/Makefile.am: add new simple-async-result test
+	* tests/simple-async-result.c: new file to test GSimpleAsyncResult
+
+2009-01-05  Ryan Lortie  <desrt@desrt.ca>
+
+	* gio.symbols:
+	* ../docs/reference/gio/gio-sections.txt:
+	* gsimpleasyncresult.h:
+	* gsimpleasyncresult.c: Add g_simple_async_result_is_valid().
+	Implementation by Dan Winship.  Closes #566170.
+
+2008-12-31  Matthias Clasen <mclasen@redhat.com>
+
+	* gdesktopappinfo.c:
+	* gunixmounts.c:
+	* gunixinputstream.c:
+	* gunixoutputstream.c: Add a note about being UNIX-specific.
+
+2008-12-15  Matthias Clasen <mclasen@redhat.com>
+
+	* === Released 2.19.3 ===
+
 2008-12-12  Dan Winship  <danw@gnome.org>
 
 	* pltcheck.sh: make this work on x86_64
+
+2008-12-12  Ryan Lortie  <desrt@desrt.ca>
+
+	* gio/gicon.c (g_icon_to_string_tokenized): free the tokens when done
+	with them
+
+2008-12-12  Ryan Lortie  <desrt@desrt.ca>
+
+	* gio/gunixmounts.c (g_unix_mount_at): fix leak that occurs when
+	multiple mount entries match the requested path
 
 2008-12-10  Alexander Larsson  <alexl@redhat.com>
 

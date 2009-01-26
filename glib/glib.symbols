@@ -111,6 +111,7 @@ g_base64_encode_close
 g_base64_encode G_GNUC_MALLOC
 g_base64_decode_step
 g_base64_decode G_GNUC_MALLOC
+g_base64_decode_inplace
 #endif
 #endif
 
@@ -1289,6 +1290,7 @@ g_static_rw_lock_writer_lock
 g_static_rw_lock_writer_trylock
 g_static_rw_lock_writer_unlock
 g_thread_foreach
+g_thread_get_initialized
 #endif
 #endif
 
@@ -1324,7 +1326,9 @@ g_test_add_func
 g_test_add_vtable
 g_test_bug
 g_test_bug_base
+#ifdef INCLUDE_VARIABLES
 g_test_config_vars
+#endif
 g_test_create_case
 g_test_create_suite
 g_test_get_root

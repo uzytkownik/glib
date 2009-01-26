@@ -794,7 +794,7 @@ g_match_info_fetch (const GMatchInfo *match_info,
  * @start_pos: pointer to location where to store the start position
  * @end_pos: pointer to location where to store the end position
  *
- * Retrieves the position of the @match_num<!-- -->'th capturing 
+ * Retrieves the position in bytes of the @match_num<!-- -->'th capturing 
  * parentheses. 0 is the full text of the match, 1 is the first 
  * paren set, 2 the second, and so on.
  *
@@ -917,7 +917,7 @@ g_match_info_fetch_named (const GMatchInfo *match_info,
  * @start_pos: pointer to location where to store the start position
  * @end_pos: pointer to location where to store the end position
  *
- * Retrieves the position of the capturing parentheses named @name.
+ * Retrieves the position in bytes of the capturing parentheses named @name.
  *
  * If @name is a valid sub pattern name but it didn't match anything 
  * (e.g. sub pattern "X", matching "b" against "(?P&lt;X&gt;a)?b") 
@@ -1351,6 +1351,10 @@ g_regex_match_simple (const gchar        *pattern,
  * }
  * ]|
  *
+ * @string is not copied and is used in #GMatchInfo internally. If 
+ * you use any #GMatchInfo method (except g_match_info_free()) after 
+ * freeing or modifying @string then the behaviour is undefined.
+ *
  * Returns: %TRUE is the string matched, %FALSE otherwise
  *
  * Since: 2.14
@@ -1478,6 +1482,10 @@ g_regex_match_full (const GRegex      *regex,
  * i.e. you must free it regardless if regular expression actually 
  * matched.
  *
+ * @string is not copied and is used in #GMatchInfo internally. If 
+ * you use any #GMatchInfo method (except g_match_info_free()) after 
+ * freeing or modifying @string then the behaviour is undefined.
+ * 
  * Returns: %TRUE is the string matched, %FALSE otherwise
  *
  * Since: 2.14
@@ -1535,6 +1543,10 @@ g_regex_match_all (const GRegex      *regex,
  * not %NULL then it is created even if the function returns %FALSE, 
  * i.e. you must free it regardless if regular expression actually 
  * matched.
+ *
+ * @string is not copied and is used in #GMatchInfo internally. If 
+ * you use any #GMatchInfo method (except g_match_info_free()) after 
+ * freeing or modifying @string then the behaviour is undefined.
  *
  * Returns: %TRUE is the string matched, %FALSE otherwise
  *
@@ -2529,6 +2541,45 @@ g_regex_replace_literal (const GRegex      *regex,
  * Setting @start_position differs from just passing over a shortened 
  * string and setting #G_REGEX_MATCH_NOTBOL in the case of a pattern 
  * that begins with any kind of lookbehind assertion, such as "\b".
+ *
+ * The following example uses g_regex_replace_eval() to replace multiple
+ * strings at once:
+ * |[
+ * static gboolean 
+ * eval_cb (const GMatchInfo *info,          
+ *          GString          *res,
+ *          gpointer          data)
+ * {
+ *   gchar *match;
+ *   gchar *r;
+ * 
+ *    match = g_match_info_fetch (info, 0);
+ *    r = g_hash_table_lookup ((GHashTable *)data, match);
+ *    g_string_append (res, r);
+ *    g_free (match);
+ * 
+ *    return FALSE;
+ * }
+ * 
+ * /&ast; ... &ast;/
+ * 
+ * GRegex *reg;
+ * GHashTable *h;
+ * gchar *res;
+ *
+ * h = g_hash_table_new (g_str_hash, g_str_equal);
+ * 
+ * g_hash_table_insert (h, "1", "ONE");
+ * g_hash_table_insert (h, "2", "TWO");
+ * g_hash_table_insert (h, "3", "THREE");
+ * g_hash_table_insert (h, "4", "FOUR");
+ * 
+ * reg = g_regex_new ("1|2|3|4", 0, 0, NULL);
+ * res = g_regex_replace_eval (reg, text, -1, 0, 0, eval_cb, h, NULL);
+ * g_hash_table_destroy (h);
+ *
+ * /&ast; ... &ast;/
+ * ]|
  *
  * Returns: a newly allocated string containing the replacements
  *

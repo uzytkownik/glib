@@ -24,7 +24,9 @@ TEST_PROGS +=	 		\
 	data-input-stream 	\
 	data-output-stream 	\
 	g-icon			\
-	buffered-input-stream
+	buffered-input-stream	\
+	filter-streams		\
+	simple-async-result
 
 if OS_UNIX
 TEST_PROGS += live-g-file unix-streams desktop-app-info
@@ -63,3 +65,11 @@ desktop_app_info_LDADD	  = $(progs_ldadd)
 unix_streams_SOURCES	  = unix-streams.c
 unix_streams_LDADD	  = $(progs_ldadd) \
 	$(top_builddir)/gthread/libgthread-2.0.la
+
+simple_async_result_SOURCES	= simple-async-result.c
+simple_async_result_LDADD	= $(progs_ldadd)
+
+filter_streams_SOURCES		= filter-streams.c
+filter_streams_LDADD		= $(progs_ldadd)
+
+DISTCLEAN_FILES = applications/mimeinfo.cache

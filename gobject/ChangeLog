@@ -1,3 +1,22 @@
+2009-01-19  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.5 ===
+
+2009-01-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.4 ===
+
+2009-01-02  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 565136 – Gobject's "notify" signal parameters are wrong in gtk-doc
+	Patch from  Andrzej Zaborowski
+
+	* gobject.c (g_object_do_class_init): Fix param order in docs.
+
+2008-12-15  Matthias Clasen <mclasen@redhat.com>
+
+	* === Released 2.19.3 ===
+
 2008-12-12  Dan Winship  <danw@gnome.org>
 
 	* pltcheck.sh: make this work on x86_64

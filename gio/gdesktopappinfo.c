@@ -52,8 +52,11 @@
  * 
  * #GDesktopAppInfo is an implementation of #GAppInfo based on
  * desktop files.
- *
- **/
+ * 
+ * Note that <filename>&lt;gio/gdesktopappinfo.h&gt;</filename> belongs to 
+ * the UNIX-specific GIO interfaces, thus you have to use the 
+ * <filename>gio-unix-2.0.pc</filename> pkg-config file when using it.
+ */
 
 #define DEFAULT_APPLICATIONS_GROUP  "Default Applications" 
 #define ADDED_ASSOCIATIONS_GROUP    "Added Associations" 
@@ -328,10 +331,20 @@ g_desktop_app_info_new_from_filename (const char *filename)
  * g_desktop_app_info_new:
  * @desktop_id: the desktop file id
  * 
- * Creates a new #GDesktopAppInfo.
+ * Creates a new #GDesktopAppInfo based on a desktop file id. 
+ *
+ * A desktop file id is the basename of the desktop file, including the 
+ * .desktop extension. GIO is looking for a desktop file with this name 
+ * in the <filename>applications</filename> subdirectories of the XDG data
+ * directories (i.e. the directories specified in the 
+ * <envar>XDG_DATA_HOME</envar> and <envar>XDG_DATA_DIRS</envar> environment 
+ * variables). GIO also supports the prefix-to-subdirectory mapping that is
+ * described in the <ulink url="http://standards.freedesktop.org/menu-spec/latest/">Menu Spec</ulink> 
+ * (i.e. a desktop id of kde-foo.desktop will match
+ * <filename>/usr/share/applications/kde/foo.desktop</filename>).
  * 
  * Returns: a new #GDesktopAppInfo, or %NULL if no desktop file with that id
- **/
+ */
 GDesktopAppInfo *
 g_desktop_app_info_new (const char *desktop_id)
 {
@@ -1303,7 +1316,7 @@ update_mimeapps_list (const char  *desktop_id,
 	     add the current list of (not yet listed) apps before it. */
 
 	  list[i] = NULL; /* Terminate current list so we can use it */
-	  system_list =  get_all_desktop_entries_for_mime_type (content_type, list);
+	  system_list =  get_all_desktop_entries_for_mime_type (content_type, (const char **)list);
 	  
 	  list = g_renew (char *, list, 1 + length + g_list_length (system_list) + 1);
 	  

@@ -23,7 +23,7 @@ m4_define(glib_configure_in)
 #
 m4_define([glib_major_version], [2])
 m4_define([glib_minor_version], [19])
-m4_define([glib_micro_version], [3])
+m4_define([glib_micro_version], [5])
 m4_define([glib_interface_age], [0])
 m4_define([glib_binary_age],
           [m4_eval(100 * glib_minor_version + glib_micro_version)])
@@ -2502,6 +2502,7 @@ esac],
 AM_CONDITIONAL(ENABLE_REGEX, $enable_regex)
 
 if test x$enable_regex = xtrue; then
+  AC_DEFINE(ENABLE_REGEX, [], [include GRegex])
   # Check if we should use the internal or the system-supplied pcre
   AC_ARG_WITH(pcre,
              [AC_HELP_STRING([--with-pcre=@<:@internal/system@:>@],
@@ -2877,13 +2878,15 @@ _______EOF
 _______EOF
 	fi
 		cat >>$outfile <<_______EOF
-#if defined(__SUNPRO_C) && (__SUNPRO_C >= 0x550)
+#if defined(__SUNPRO_C) && (__SUNPRO_C >= 0x590)
+#define G_GNUC_INTERNAL __attribute__((visibility("hidden")))
+#elif defined(__SUNPRO_C) && (__SUNPRO_C >= 0x550)
 #define G_GNUC_INTERNAL __hidden
 #elif defined (__GNUC__) && defined (G_HAVE_GNUC_VISIBILITY)
 #define G_GNUC_INTERNAL __attribute__((visibility("hidden")))
 #else
 #define G_GNUC_INTERNAL
-#endif
+#endif 
 _______EOF
 
 
