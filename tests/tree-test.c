@@ -98,14 +98,12 @@ check_order (gpointer key,
   return FALSE;
 }
 
-
-
 int
 main (int   argc,
       char *argv[])
 {
   gint i;
-  GTree *tree;
+  GTree *tree, *cloned;
   gboolean removed;
   char c, d;
   char *p;
@@ -115,22 +113,33 @@ main (int   argc,
   for (i = 0; chars[i]; i++)
     g_tree_insert (tree, &chars[i], &chars[i]);
 
+  cloned = g_tree_copy (tree, NULL, NULL, NULL);
+  
   g_tree_foreach (tree, my_traverse, NULL);
-
+  g_tree_foreach (cloned, my_traverse, NULL);
+  
   g_assert (g_tree_nnodes (tree) == strlen (chars));
   g_assert (g_tree_height (tree) == 6);
+  g_assert (g_tree_nnodes (cloned) == strlen (chars));
+  g_assert (g_tree_height (cloned) == 6);
   
   p = chars;
   g_tree_foreach (tree, check_order, &p);
+  p = chars;
+  g_tree_foreach (cloned, check_order, &p);
 
   for (i = 0; i < 26; i++)
     {
       removed = g_tree_remove (tree, &chars[i + 10]);
       g_assert (removed);
+      removed = g_tree_remove (cloned, &chars[i + 10]);
+      g_assert (removed);
     }
 
   c = '\0';
   removed = g_tree_remove (tree, &c);
+  g_assert (removed == FALSE);
+  removed = g_tree_remove (cloned, &c);
   g_assert (removed == FALSE);
 
   g_tree_foreach (tree, my_traverse, NULL);

@@ -33,6 +33,7 @@
 
 #include <glib/gtypes.h>
 #include <glib/glist.h>
+#include <glib/gnode.h>
 
 G_BEGIN_DECLS
 
@@ -96,12 +97,14 @@ guint	    g_hash_table_foreach_steal	   (GHashTable	   *hash_table,
 					    gpointer	    user_data);
 GHashTable *g_hash_table_copy              (GHashTable     *hash_table,
 					    GCopyFunc       copy_key,
-					    GCopyFunc       copy_value)
+					    GCopyFunc       copy_value,
+					    gpointer        user_data);
 GHashTable *g_hash_table_copy_extended     (GHashTable     *hash_table,
 					    GCopyFunc       copy_key,
 					    GCopyFunc       copy_value,
 					    GDestroyNotify  new_key_destroy,
-					    GDestroyNotify  new_value_destroy);
+					    GDestroyNotify  new_value_destroy,
+					    gpointer        user_data);
 guint	    g_hash_table_size		   (GHashTable	   *hash_table);
 GList *     g_hash_table_get_keys          (GHashTable     *hash_table);
 GList *     g_hash_table_get_values        (GHashTable     *hash_table);

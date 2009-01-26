@@ -1212,23 +1212,25 @@ g_hash_table_foreach (GHashTable *hash_table,
 }
 
 GHashTable*
-g_hash_table_clone (GHashTable     *hash_table,
-		    GCopyFunc       copy_key,
-		    GCopyFunc       copy_value)
+g_hash_table_copy (GHashTable     *hash_table,
+		   GCopyFunc       copy_key,
+		   GCopyFunc       copy_value,
+		   gpointer        user_data)
 {
-  return g_hash_table_clone_extended (hash_table, copy_key, copy_value,
-				      NULL, NULL);
+  return g_hash_table_copy_extended (hash_table, copy_key, copy_value,
+				     NULL, NULL, user_data);
 }
 
 GHashTable*
-g_hash_table_clone_extended (GHashTable     *self,
-			     GCopyFunc       copy_key,
-			     GCopyFunc       copy_value,
-			     GDestroyNotify  new_key_destroy,
-			     GDestroyNotify  new_value_destroy)
+g_hash_table_copy_extended (GHashTable     *self,
+			    GCopyFunc       copy_key,
+			    GCopyFunc       copy_value,
+			    GDestroyNotify  new_key_destroy,
+			    GDestroyNotify  new_value_destroy,
+			    gpointer        user_data)
 {
   GHashTable *cloned;
-  gint        iter;
+  gint        i;
 
   cloned = g_slice_new (GHashTable);
   cloned->size = self->size;
@@ -1250,14 +1252,14 @@ g_hash_table_clone_extended (GHashTable     *self,
 
   for (i = 0; i < self->size; i++)
     {
-      GHashNode *node = cloned->nodes[i];
+      GHashNode *node = &cloned->nodes[i];
 
       if (node->key_hash >= 2)
 	{
 	  node->key =
-	    (copy_key != NULL ? copy_key(node->key) : node->key);
+	    (copy_key != NULL ? copy_key(node->key, user_data) : node->key);
 	  node->value =
-	    (copy_value != NULL ? copy_value(node->value) : node->value);
+	    (copy_value != NULL ? copy_value(node->value, user_data) : node->value);
 	}
     }
 

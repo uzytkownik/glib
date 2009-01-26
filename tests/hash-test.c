@@ -383,7 +383,7 @@ int
 main (int   argc,
       char *argv[])
 {
-  GHashTable *hash_table;
+  GHashTable *hash_table, *copied;
   gint i;
   gint value = 120;
   gint *pvalue;
@@ -398,7 +398,11 @@ main (int   argc,
   pvalue = g_hash_table_find (hash_table, find_first, &value);
   if (!pvalue || *pvalue != value)
     g_assert_not_reached();
-
+  copied = g_hash_table_copy (hash_table, NULL, NULL, NULL);
+  pvalue = g_hash_table_find (copied, find_first, &value);
+  if (!pvalue || *pvalue != value)
+    g_assert_not_reached ();
+  
   keys = g_hash_table_get_keys (hash_table);
   if (!keys)
     g_assert_not_reached ();
@@ -409,12 +413,28 @@ main (int   argc,
 
   keys_len = g_list_length (keys);
   values_len = g_list_length (values);
-  if (values_len != keys_len &&  keys_len != g_hash_table_size (hash_table))
+  if (values_len != keys_len ||  keys_len != g_hash_table_size (hash_table))
     g_assert_not_reached ();
 
   g_list_free (keys);
   g_list_free (values);
 
+  keys = g_hash_table_get_keys (copied);
+  if (!keys)
+    g_assert_not_reached ();
+
+  values = g_hash_table_get_values (copied);
+  if (!values)
+    g_assert_not_reached ();
+
+  keys_len = g_list_length (keys);
+  values_len = g_list_length (values);
+  if (values_len != keys_len || keys_len != g_hash_table_size (copied) || keys_len != g_hash_table_size (hash_table))
+    g_assert_not_reached ();
+
+  g_list_free (keys);
+  g_list_free (values);
+  
   init_result_array (result_array);
   g_hash_table_iter_init (&iter, hash_table);
   for (i = 0; i < 10000; i++)
@@ -430,6 +450,21 @@ main (int   argc,
   g_assert (g_hash_table_size (hash_table) == 5000);
   verify_result_array (result_array);
 
+  init_result_array (result_array);
+  g_hash_table_iter_init (&iter, copied);
+  for (i = 0; i < 10000; i++)
+    {
+      g_assert (g_hash_table_iter_next (&iter, &ikey, &ivalue));
+
+      handle_pair (ikey, ivalue, result_array);
+
+      if (i % 2)
+	g_hash_table_iter_remove (&iter);
+    }
+  g_assert (! g_hash_table_iter_next (&iter, &ikey, &ivalue));
+  g_assert (g_hash_table_size (copied) == 5000);
+  verify_result_array (result_array);
+  
   fill_hash_table_and_array (hash_table);
 
   init_result_array (result_array);

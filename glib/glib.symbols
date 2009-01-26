@@ -380,6 +380,8 @@ g_mkstemp_utf8
 
 #if IN_HEADER(__G_HASH_H__)
 #if IN_FILE(__G_HASH_C__)
+g_hash_table_copy
+g_hash_table_copy_extended
 g_hash_table_destroy
 g_hash_table_unref
 g_hash_table_ref
@@ -1380,6 +1382,8 @@ g_usleep
 
 #if IN_HEADER(__G_TREE_H__)
 #if IN_FILE(__G_TREE_C__)
+g_tree_copy
+g_tree_copy_extended
 g_tree_destroy
 g_tree_foreach
 g_tree_height

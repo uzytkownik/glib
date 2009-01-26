@@ -32,6 +32,7 @@
 #define __G_TREE_H__
 
 #include <glib/gnode.h>
+#include <glib/gtypes.h>
 
 G_BEGIN_DECLS
 
@@ -72,12 +73,14 @@ void     g_tree_foreach         (GTree            *tree,
                                  gpointer	   user_data);
 GTree   *g_tree_copy            (GTree            *tree,
 				 GCopyFunc         copy_key,
-				 GCopyFunc         copy_value);
+				 GCopyFunc         copy_value,
+				 gpointer          user_data);
 GTree   *g_tree_copy_extended   (GTree            *tree,
 				 GCopyFunc         copy_key,
 				 GCopyFunc         copy_value,
-				 GDestroyFunc      new_key_destory_func,
-				 GDestroyFunc      new_value_destroy_func);
+				 GDestroyNotify    new_key_destory_func,
+				 GDestroyNotify    new_value_destroy_func,
+				 gpointer          user_data);
 #ifndef G_DISABLE_DEPRECATED
 void     g_tree_traverse        (GTree            *tree,
                                  GTraverseFunc     traverse_func,
