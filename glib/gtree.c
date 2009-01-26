@@ -825,6 +825,22 @@ g_tree_foreach (GTree         *tree,
     }
 }
 
+/**
+ * g_tree_copy:
+ * @tree: a #GTree.
+ * @copy_key: the function coping the keys. On %NULL the key will be just
+ *   copied (if it is a pointer it will point to the same region of memory).
+ * @copy_value: the function which is used to copy the value. On %NULL the
+ *   value  will be just copied (if it is a pointer it will point to the same
+ *   region of memory).
+ * @user_data: the data supplied as third parameter to @copy_key
+ *   and @copy_value.
+ *
+ * Recursively copies a #GTree. Please note that it is performed in linear
+ * time.
+ *
+ * Return value: a new #GTree containing the same key-value pairs
+ */
 GTree*
 g_tree_copy (GTree     *tree,
 	     GCopyFunc  copy_key,
@@ -868,6 +884,25 @@ g_tree_node_copy (GTreeNode *node,
   return new_node;
 }
 
+/**
+ * g_tree_copy_extended:
+ * @tree: a #GTree.
+ * @copy_key: the function coping the keys. On %NULL the key will be just
+ *   copied (if it is a pointer it will point to the same region of memory).
+ * @copy_value: the function which is used to copy the value. On %NULL the
+ *   value  will be just copied (if it is a pointer it will point to the same
+ *   region of memory).
+ * @new_key_destory_func: if the function destroying key is different it can
+ *   be changed by this parameter. On %NULL the original one is used.
+ * @new_value_destroy_func: if the function destroying value is different it
+ *   can be changed by this parameter. On %NULL the original one is used.
+ * @user_data: the data supplied as third parameter to @copy_key
+ *
+ * Recursively copies a #GTree. Please note that it is performed in linear
+ * time.
+ *
+ * Return value: a new #GTree containg the same key-value pairs
+ */
 GTree*
 g_tree_copy_extended (GTree          *tree,
 		      GCopyFunc       copy_key,

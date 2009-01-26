@@ -1211,6 +1211,19 @@ g_hash_table_foreach (GHashTable *hash_table,
     }
 }
 
+/**
+ * g_hash_table_copy_extended:
+ * @self: a #GHashTable
+ * @copy_key: a function coping key. On %NULL the key will be just copied
+ *   (if it is a pointer it points to the same region of memory).
+ * @copy_value: a function coping value. On %NULL the value will be just copied
+ *   (if it is a pointer it points to the same region of memory).
+ * @user_data: the data passed to @copy_key and @copy_value.
+ *
+ * The function copies the content of a #GHashTable into a new one.
+ *
+ * Return value: a new #GHashTable containg the same key-value pairs
+ */
 GHashTable*
 g_hash_table_copy (GHashTable     *hash_table,
 		   GCopyFunc       copy_key,
@@ -1221,6 +1234,23 @@ g_hash_table_copy (GHashTable     *hash_table,
 				     NULL, NULL, user_data);
 }
 
+/**
+ * g_hash_table_copy_extended:
+ * @self: a #GHashTable
+ * @copy_key: a function coping key. On %NULL the key will be just copied
+ *   (if it is a pointer it points to the same region of memory).
+ * @copy_value: a function coping value. On %NULL the value will be just copied
+ *   (if it is a pointer it points to the same region of memory).
+ * @new_key_destroy: if the destroy function for key changes it can be changed
+ *   by this parameter. On %NULL the previous one is used.
+ * @new_value_destroy: if the destroy function for value changes it can be
+ *   changed by this parameter. On %NULL the previous one is used.
+ * @user_data: the data passed to @copy_key and @copy_value.
+ *
+ * The function copies the content of a #GHashTable into a new one.
+ *
+ * Return value: a new #GHashTable containg the same key-value pairs
+ */
 GHashTable*
 g_hash_table_copy_extended (GHashTable     *self,
 			    GCopyFunc       copy_key,
